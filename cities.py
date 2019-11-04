@@ -1,14 +1,16 @@
 def read_cities(file_name):
-    """
-    Read in the cities from the given `file_name`, and return 
-    them as a list of four-tuples: 
 
-      [(state, city, latitude, longitude), ...] 
+    if type(file_name) is not str:
+        raise TypeError('read_cities requires a path string, ' + str(type(file_name)) + ' passed instead')
+    infile = open(file_name, "r")
+    lines = infile.readlines()
+    if len(lines)== 0:
+        raise EOFError('file was empty')
 
-    Use this as your initial `road_map`, that is, the cycle 
+    return lines
 
-      Alabama -> Alaska -> Arizona -> ... -> Wyoming -> Alabama.
-    """
+    infile.close()
+
     pass
   
 def print_cities(road_map):
