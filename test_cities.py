@@ -51,6 +51,13 @@ def test_read_cities_test_data():
         assert actual_data[i][2] == pytest.approx(expected_data[i][2])
         assert actual_data[i][3] == pytest.approx(expected_data[i][3])
 
+#TODO: test for situation that file with bad data is passed
+#      test for situation that coodirnates aren't valid lat / long
+#      test for repeated cities
+#      test for multiple cities at the same coordinates
+#      test for multiple coords for same city name
+
+
 '''
 #compute_total_distance tests
 def test_compute_total_distance_calculates_as_expected():
