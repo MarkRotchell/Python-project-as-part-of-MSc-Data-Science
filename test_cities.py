@@ -39,6 +39,18 @@ def test_read_cities_returns_tuples_with_members_of_right_type():
 def test_read_cities_returns_list_of_right_length():
     assert len(read_cities('test-city-data.txt')) == 3
 
+
+def test_read_cities_test_data():
+    expected_data = [('Alabama', 'Montgomery', 32.361538, -86.279118), \
+                     ('Alaska', 'Juneau', 58.301935, -134.41974), \
+                     ('Arizona', 'Phoenix', 33.448457, - 112.073844)]
+    actual_data = read_cities('test-city-data.txt')
+    for i in range(3):
+        assert actual_data[i][0] == expected_data[i][0]
+        assert actual_data[i][1] == expected_data[i][1]
+        assert actual_data[i][2] == pytest.approx(expected_data[i][2])
+        assert actual_data[i][3] == pytest.approx(expected_data[i][3])
+
 '''
 #compute_total_distance tests
 def test_compute_total_distance_calculates_as_expected():
