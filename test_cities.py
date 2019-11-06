@@ -51,6 +51,12 @@ def test_read_cities_test_data():
         assert actual_data[i][2] == pytest.approx(expected_data[i][2])
         assert actual_data[i][3] == pytest.approx(expected_data[i][3])
 
+
+def test_read_cities_bad_no_coords():
+    with pytest.raises(ValueError):
+        read_cities('test-city-data-bad-no-coords.txt')
+
+
 #TODO: test for situation that file with bad data is passed
 #      test for situation that coodirnates aren't valid lat / long
 #      test for repeated cities
