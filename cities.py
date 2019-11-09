@@ -1,6 +1,5 @@
 from math import sqrt
-import random
-
+from random import randint as rand
 
 def read_cities(file_name):
     if type(file_name) is not str:
@@ -27,15 +26,20 @@ def print_cities(road_map):
     Prints a list of cities, along with their locations. 
     Print only one or two digits after the decimal point.
     """
-    # max_state_length = max(len(city[0]) for city in road_map)
-    # max_city_length = max(len(city[0]) for city in road_map)
+
     print('State                City                  Latitude  Longitude')
-    for city in road_map:
-        state, city, lat, long = (city[i] for i in range(4))
+    for node in road_map:
+        state, city, lat, long = (node[i] for i in range(4))
         print(f'{state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}')
 
+
+
 def distance(city_1, city_2):
+    """
+    Calculates the distance between two cities via pythagoras
+    """
     return sqrt((city_2[2] - city_1[2]) ** 2 + (city_2[3] - city_1[3]) ** 2)
+
 
 def print_map(road_map):
     """
@@ -53,13 +57,7 @@ def compute_total_distance(road_map):
     (for example) in the initial `road_map`, Wyoming connects to Alabama...
     """
     n = len(road_map)
-    dist = 0
-
-    for i in range(n):
-        city_1, city_2 = road_map[i], road_map[(i+1) % n]
-        dist += sqrt((city_2[2] - city_1[2]) ** 2 + (city_2[3] - city_1[3]) ** 2)
-
-    return dist
+    return sum([distance(road_map[i], road_map[(i + 1) % n]) for i in range(n)])
 
 
 def swap_cities(road_map, index1, index2):
@@ -94,8 +92,22 @@ def find_best_cycle(road_map):
     After `10000` swaps/shifts, return the best cycle found so far.
     Use randomly generated indices for swapping.
     """
+    best_map = road_map[:]
 
-    return None
+    best_distance = compute_total_distance(best_map)
+
+    n = len(best_map) - 1
+
+    for i in range(10000):
+
+        candidate_map, candidate_distance = swap_cities(best_map[:], rand(0,n), rand(0,n))
+
+        if candidate_distance < best_distance:
+            best_map, best_distance = candidate_map, candidate_distance
+
+        shift_cities(best_map)
+
+    return best_map
 
 
 def main():
@@ -105,9 +117,12 @@ def main():
     """
 
     road_map = read_cities('city-data.txt')
-    for i in road_map:
-        print(i)
-    #print_cities(road_map)
+
+    print(compute_total_distance(road_map))
+
+    road_map = find_best_cycle(road_map)
+
+    print(compute_total_distance(road_map))
 
 
 if __name__ == "__main__":  # keep this in
