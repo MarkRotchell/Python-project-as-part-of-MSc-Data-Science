@@ -50,25 +50,54 @@ def test_read_cities_test_data():
 
 # compute_total_distance tests
 def test_compute_total_distance_calculates_as_expected_single_city():
-    road_map3 = [('Michigan', 'Lansing', 42.7335, -84.5467)]
-    assert compute_total_distance(road_map3) == pytest.approx(0)
+    road_map = [('Michigan', 'Lansing', 42.7335, -84.5467)]
+    assert compute_total_distance(road_map) == pytest.approx(0)
+
+
+def test_compute_total_distance_calculates_as_expected_repeated_city():
+    road_map = [('Michigan', 'Lansing', 42.7335, -84.5467),
+                ('Michigan', 'Lansing', 42.7335, -84.5467)]
+    assert compute_total_distance(road_map) == pytest.approx(0)
 
 
 def test_compute_total_distance_calculates_as_expected_1():
-    road_map1 = [("Kentucky", "Frankfort", 38.197274, -84.86311),
+    road_map = [("Kentucky", "Frankfort", 38.197274, -84.86311),
                  ("Delaware", "Dover", 39.161921, -75.526755),
                  ("Minnesota", "Saint Paul", 44.95, -93.094)]
 
-    assert compute_total_distance(road_map1) == pytest.approx(9.386 + 18.496 + 10.646, 0.01)
+    assert compute_total_distance(road_map) == pytest.approx(9.386 + 18.496 + 10.646, 0.01)
 
 
 def test_compute_total_distance_calculates_as_expected_2():
-    road_map2 = [('Michigan', 'Lansing', 42.7335, -84.5467),
+    road_map = [('Michigan', 'Lansing', 42.7335, -84.5467),
                  ('Minnesota', 'Saint Paul', 44.95, -93.094),
                  ('Mississippi', 'Jackson', 32.32, -90.207),
                  ('Missouri', 'Jefferson City', 38.572954, -92.189283)]
-    assert compute_total_distance(road_map2) == pytest.approx(37.0470)
+    assert compute_total_distance(road_map) == pytest.approx(37.0470)
 
+
+def test_compute_total_distance_calculates_as_expected_3():
+    road_map = [('New York', 'Albany', 42.659829, -73.781339),
+                 ('North Carolina', 'Raleigh', 35.771, -78.638),
+                 ('North Dakota', 'Bismarck', 48.813343, -100.779004),
+                 ('Ohio', 'Columbus', 39.962245, -83.000647),
+                 ('Oklahoma', 'Oklahoma City', 35.482309, -97.534994),
+                 ('Oregon', 'Salem', 44.931109, -123.029159),
+                 ('Pennsylvania', 'Harrisburg', 40.269789, -76.875613),
+                 ('Rhode Island', 'Providence', 41.82355, -71.422132)]
+    assert compute_total_distance(road_map) == pytest.approx(150.9452)
+
+
+def test_compute_total_distance_calculates_as_expected_pole_to_pole():
+    road_map = [('The Arctic', 'North Pole', 90, -180),
+                ('The Antarctic', 'South Pole', -90, 180)]
+    assert compute_total_distance(road_map) == pytest.approx(804.98)
+
+
+def test_compute_total_distance_calculates_as_expected_equatorial_trip():
+    road_map = [('No Where', 'No Where', 0.0, 180.0),
+                 ('No Where', 'No Where', 0.0, -180.0)]
+    assert compute_total_distance(road_map) == pytest.approx(360)
 
 
 def test_compute_total_distance_returns_float():
@@ -79,7 +108,7 @@ def test_compute_total_distance_returns_float():
     assert isinstance(compute_total_distance(road_map1), float)
 
 
-
+# swap_cities tests
 def test_swap_cities():
     # add your tests
     assert 1 == 0
