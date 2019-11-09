@@ -1,4 +1,6 @@
 import pytest
+import random
+
 from cities import *
 
 
@@ -114,6 +116,7 @@ city2 = ("Delaware", "Dover", 39.161921, -75.526755)
 city3 = ("Minnesota", "Saint Paul", 44.95, -93.094)
 map_in = [city1, city2, city3]
 
+
 def test_swap_cities_as_expected_1():
     map_out = swap_cities(map_in, 0, 2)[0]
 
@@ -138,6 +141,22 @@ def test_swap_cities_same_city():
     assert map_in[2] is map_out[2]
 
 
+def test_swap_cities_large_map():
+    map_in_random = [('state', 'city', random.randint(-90, 90), random.randint(-180, 180)) for x in range(1000)]
+
+    city_1, city_2 = random.randint(0, 999), random.randint(0, 999)
+
+    map_out = swap_cities(map_in_random, city_1, city_2)
+
+    for i in range(1000):
+        if i == city_1:
+            assert map_out[city_1] is map_in_random[city_2]
+        elif i == city_2:
+            assert map_out[city_2] is map_in_random[city_1]
+        else:
+            assert map_out[i] is map_in_random[i]
+
+
 def test_swap_cities_returns_tuple():
     assert isinstance(swap_cities(map_in, 0, 0), tuple)
 
@@ -147,9 +166,14 @@ def test_swap_cities_returns_iterable_length_2():
 
 
 def test_swap_cities_returns_list_and_float():
+    map_out, distance = swap_cities(map_in, 1, 1)
+    assert isinstance(map_out, list)
+    assert isinstance(distance, float)
+
+
+def test_swap_cities_returns_list_of_same_length_as_input():
     map_out = swap_cities(map_in, 1, 1)[0]
-    assert isinstance(map_out[0], list)
-    assert isinstance(map_out[1], float)
+    assert len(map_out) == len(map_in)
 
 
 def test_shift_cities():
