@@ -110,15 +110,21 @@ def test_compute_total_distance_returns_float():
     assert isinstance(compute_total_distance(road_map), float)
 
 
-# swap_cities tests
+# Example cities for testing on
 city1 = ("Kentucky", "Frankfort", 38.197274, -84.86311)
 city2 = ("Delaware", "Dover", 39.161921, -75.526755)
 city3 = ("Minnesota", "Saint Paul", 44.95, -93.094)
-map_in = [city1, city2, city3]
+
+
+# swap_cities tests
+def test_swap_cities_in_place():
+    map_in = [city1, city2, city3]
+    assert swap_cities(map_in, 0, 2)[0] is map_in
 
 
 def test_swap_cities_as_expected_1():
-    map_out = swap_cities(map_in, 0, 2)[0]
+    map_in = [city1, city2, city3]
+    map_out = swap_cities(map_in[:], 0, 2)[0]
 
     assert map_in[0] is map_out[2]
     assert map_in[2] is map_out[0]
@@ -126,7 +132,8 @@ def test_swap_cities_as_expected_1():
 
 
 def test_swap_cities_as_expected_2():
-    map_out = swap_cities(map_in, 2, 1)[0]
+    map_in = [city1, city2, city3]
+    map_out = swap_cities(map_in[:], 2, 1)[0]
 
     assert map_in[2] is map_out[1]
     assert map_in[1] is map_out[2]
@@ -134,7 +141,8 @@ def test_swap_cities_as_expected_2():
 
 
 def test_swap_cities_same_city():
-    map_out = swap_cities(map_in, 1, 1)[0]
+    map_in = [city1, city2, city3]
+    map_out = swap_cities(map_in[:], 1, 1)[0]
 
     assert map_in[0] is map_out[0]
     assert map_in[1] is map_out[1]
@@ -142,40 +150,62 @@ def test_swap_cities_same_city():
 
 
 def test_swap_cities_large_map():
-    map_in_random = [('state', 'city', random.randint(-90, 90), random.randint(-180, 180)) for x in range(1000)]
+    map_in = [('state', 'city', random.randint(-90, 90), random.randint(-180, 180)) for x in range(1000)]
 
-    city_1, city_2 = random.randint(0, 999), random.randint(0, 999)
+    index_1, index_2 = (random.randint(0, 999) for x in range(2))
 
-    map_out = swap_cities(map_in_random, city_1, city_2)
+    map_out = swap_cities(map_in[:], index_1, index_2)[0]
 
     for i in range(1000):
-        if i == city_1:
-            assert map_out[city_1] is map_in_random[city_2]
-        elif i == city_2:
-            assert map_out[city_2] is map_in_random[city_1]
+        if i == index_1:
+            assert map_out[index_1] is map_in[index_2]
+        elif i == index_2:
+            assert map_out[index_2] is map_in[index_1]
         else:
-            assert map_out[i] is map_in_random[i]
+            assert map_out[i] is map_in[i]
 
 
 def test_swap_cities_returns_tuple():
+    map_in = [city1, city2, city3]
     assert isinstance(swap_cities(map_in, 0, 0), tuple)
 
 
-def test_swap_cities_returns_iterable_length_2():
+def test_swap_cities_returns_tuple_length_2():
+    map_in = [city1, city2, city3]
     assert len(swap_cities(map_in, 0, 0)) == 2
 
 
 def test_swap_cities_returns_list_and_float():
-    map_out, distance = swap_cities(map_in, 1, 1)
+    map_in = [city1, city2, city3]
+    map_out, distance = swap_cities(map_in, 0, 1)
     assert isinstance(map_out, list)
     assert isinstance(distance, float)
 
 
 def test_swap_cities_returns_list_of_same_length_as_input():
+    map_in = [city1, city2, city3]
     map_out = swap_cities(map_in, 1, 1)[0]
     assert len(map_out) == len(map_in)
 
 
-def test_shift_cities():
-    # add your tests
-    assert 1 == 0
+# shift_cities tests
+def test_shift_cities_in_place():
+    map_in = [city1, city2, city3]
+    map_out = shift_cities(map_in)
+    assert map_in == map_out
+
+
+def test_shift_cities_as_expected_1():
+    map_in = [city1, city2, city3]
+    map_out = shift_cities(map_in)
+
+    assert map_in[0] is map_out[1]
+    assert map_in[1] is map_out[2]
+    assert map_in[2] is map_out[0]
+
+
+def test_shift_cities_as_expected_large_map():
+    map_in = [('state', 'city', random.randint(-90, 90), random.randint(-180, 180)) for x in range(1000)]
+    map_out = shift_cities(map_in[:])
+    for i in range(1000):
+        assert map_in[i] is map_out[(i + 1) % 1000]
