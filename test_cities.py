@@ -191,7 +191,7 @@ def test_swap_cities_returns_list_of_same_length_as_input():
 # shift_cities tests
 def test_shift_cities_in_place():
     map_in = [city1, city2, city3]
-    map_out = shift_cities(map_in[:])
+    map_out = shift_cities(map_in)
     assert map_in == map_out
 
 

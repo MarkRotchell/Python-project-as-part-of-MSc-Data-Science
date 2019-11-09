@@ -5,16 +5,21 @@ import random
 def read_cities(file_name):
     if type(file_name) is not str:
         raise TypeError('read_cities requires a path string, ' + str(type(file_name)) + ' passed instead')
+
     infile = open(file_name, "r")
+
     lines = infile.readlines()
+
     if len(lines) == 0:
         raise EOFError('file was empty')
+
     for i, line in enumerate(lines):
         line = line.rstrip().split('\t')
         lines[i] = (line[0], line[1], float(line[2]), float(line[3]))
-    return lines
 
     infile.close()
+
+    return lines
 
 
 def print_cities(road_map):
@@ -76,7 +81,8 @@ def shift_cities(road_map):
     to the position i+1. The city at the last position moves to the position
     0. Return the new road map. 
     """
-    return None
+    road_map.insert(0, road_map.pop())
+    return road_map
 
 
 def find_best_cycle(road_map):
