@@ -18,7 +18,13 @@ def print_cities(road_map):
     Prints a list of cities, along with their locations. 
     Print only one or two digits after the decimal point.
     """
-    pass
+    # max_state_length = max(len(city[0]) for city in road_map)
+    # max_city_length = max(len(city[0]) for city in road_map)
+
+    for city in road_map:
+        state, city, lat, long = (city[i] for i in range(4))
+        print(f'{state:<20.20} {city:<20.20} {lat:>8.2f} {long:>8.2f}')
+
 
 def print_map(road_map):
     """
@@ -75,8 +81,9 @@ def main():
     cycle and prints it out.
     """
 
-    maps = read_cities('city-data.txt')
-    for i in maps:
-        print(i)
+    road_map = read_cities('city-data.txt')
+    print_cities(road_map)
+
+
 if __name__ == "__main__": #keep this in
     main()
