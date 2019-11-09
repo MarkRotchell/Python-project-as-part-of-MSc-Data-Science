@@ -75,6 +75,8 @@ def main():
     cycle and prints it out.
     """
 
-
+    maps = read_cities('city-data.txt')
+    for i in maps:
+        print(i)
 if __name__ == "__main__": #keep this in
     main()
