@@ -4,20 +4,17 @@ from random import randint as rand
 
 def read_cities(file_name):
     if type(file_name) is not str:
-        raise TypeError('read_cities requires a path string, ' + str(type(file_name)) + ' passed instead')
+        raise TypeError()
 
-    infile = open(file_name, "r")
-
-    lines = infile.readlines()
+    with open(file_name, "r") as infile:
+        lines = infile.readlines()
 
     if len(lines) == 0:
-        raise EOFError('file was empty')
+        raise EOFError()
 
     for i, line in enumerate(lines):
         line = line.rstrip().split('\t')
         lines[i] = (line[0], line[1], float(line[2]), float(line[3]))
-
-    infile.close()
 
     return lines
 
@@ -123,15 +120,32 @@ def main():
     Reads in, and prints out, the city data, then creates the "best"
     cycle and prints it out.
     """
+    while True:
+        file_path = input('Enter Path or Q to quit: ')
 
-    road_map = read_cities('city-data.txt')
+        if file_path == 'Q': break
+        try:
+            road_map = read_cities(file_path)
+        except FileNotFoundError:
+            print('File not found at path: please enter a valid path')
+        except TypeError:
+            print('Input was not a string, please enter a valid path')
+        except EOFError:
+            print('File is empty, please choose another file')
+        else:
+            print('The following cities were loaded')
 
-    print(compute_total_distance(road_map))
+            print_cities(road_map)
 
-    road_map = find_best_cycle(road_map)
+            road_map = find_best_cycle(road_map)
 
-    print(compute_total_distance(road_map))
-    print_map(road_map)
+            print()
+
+            print('Estimated optimatal cycle:')
+
+            print()
+
+            print_map(road_map)
 
 if __name__ == "__main__":  # keep this in
     main()
