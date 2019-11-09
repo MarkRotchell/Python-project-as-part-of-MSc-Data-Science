@@ -34,6 +34,8 @@ def print_cities(road_map):
         state, city, lat, long = (city[i] for i in range(4))
         print(f'{state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}')
 
+def distance(city_1, city_2):
+    return sqrt((city_2[2] - city_1[2]) ** 2 + (city_2[3] - city_1[3]) ** 2)
 
 def print_map(road_map):
     """
@@ -103,7 +105,9 @@ def main():
     """
 
     road_map = read_cities('city-data.txt')
-    print_cities(road_map)
+    for i in road_map:
+        print(i)
+    #print_cities(road_map)
 
 
 if __name__ == "__main__":  # keep this in

@@ -50,6 +50,37 @@ def test_read_cities_test_data_as_expected():
             assert actual_data[city][i + 2] == pytest.approx(expected_data[city][i + 2])
 
 
+# tests for distance
+def test_distance_calculates_as_expected_1():
+    city1 = ('Rhode Island', 'Providence', 41.82355, -71.422132)
+    city2 = ('South Carolina', 'Columbia', 34.0, -81.035)
+    assert distance(city1, city2) == pytest.approx(12.39415853)
+
+
+def test_distance_calculates_as_expected_2():
+    city1 = ('Delaware', 'Dover', 39.161921, -75.526755)
+    city2 = ('Florida', 'Tallahassee', 30.4518, -84.27277)
+    assert distance(city1, city2) == pytest.approx(12.34337823)
+
+
+def test_distance_calculates_as_expected_3():
+    city1 = ('North Carolina', 'Raleigh', 35.771, -78.638)
+    city2 = ('North Dakota', 'Bismarck', 48.813343, -100.779004)
+    assert distance(city1, city2) == pytest.approx(25.6968241)
+
+
+def test_distance_calculates_as_expected_4():
+    city1 = ('West Virginia', 'Charleston', 38.349497, -81.633294)
+    city2 = ('Wisconsin', 'Madison', 43.074722, -89.384444)
+    assert distance(city1, city2) == pytest.approx(9.077889492)
+
+
+def test_distance_calculates_as_expected_5():
+    city1 = ('Michigan', 'Lansing', 42.7335, -84.5467)
+    city2 = ('Minnesota', 'Saint Paul', 44.95, -93.094)
+    assert distance(city1, city2) == pytest.approx(8.830017528)
+
+
 # compute_total_distance tests
 def test_compute_total_distance_single_city():
     road_map = [('Michigan', 'Lansing', 42.7335, -84.5467)]
