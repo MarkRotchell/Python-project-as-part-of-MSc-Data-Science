@@ -2,66 +2,64 @@ import pytest
 from cities import *
 
 
-#read_cities tests
+# read_cities tests
 def test_read_cities_requires_string():
     with pytest.raises(TypeError):
         read_cities(1)
-
-def test_read_cities_requires_wont_take_list():
     with pytest.raises(TypeError):
         read_cities(['hello world'])
+    with pytest.raises(TypeError):
+        read_cities(float(1.0))
+    with pytest.raises(TypeError):
+        read_cities((1, 1))
+    with pytest.raises(TypeError):
+        read_cities()
+
 
 def test_read_cities_file_not_found():
     with pytest.raises(FileNotFoundError):
         read_cities('gobblydigook.notatextfile')
+        read_cities('thisfiledoes.not.exist')
+
 
 def test_read_cities_returns_list():
-    assert type(read_cities('test-city-data.txt')) == type([])
+    assert isinstance(read_cities('test-city-data.txt'), list)
+
 
 def test_read_cities_returns_list_of_tuples():
     cities = read_cities('test-city-data.txt')
     for i in cities:
-        assert type(i) is tuple
+        assert isinstance(i, tuple)
+
 
 def test_read_cities_returns_tuples_of_right_size():
     cities = read_cities('test-city-data.txt')
     for i in cities:
         assert len(i) == 4
 
+
 def test_read_cities_returns_tuples_with_members_of_right_type():
     cities = read_cities('test-city-data.txt')
-    for i in cities:
-        assert type(i[0]) is str
-        assert type(i[1]) is str
-        assert type(i[2]) is float
-        assert type(i[3]) is float
+    for city in cities:
+        for i in range(4):
+            assert isinstance(city[i], [str, float][i // 2])
+
 
 def test_read_cities_returns_list_of_right_length():
     assert len(read_cities('test-city-data.txt')) == 3
 
 
 def test_read_cities_test_data():
-    expected_data = [('Alabama', 'Montgomery', 32.361538, -86.279118), \
-                     ('Alaska', 'Juneau', 58.301935, -134.41974), \
+    expected_data = [('Alabama', 'Montgomery', 32.361538, -86.279118),
+                     ('Alaska', 'Juneau', 58.301935, -134.41974),
                      ('Arizona', 'Phoenix', 33.448457, - 112.073844)]
     actual_data = read_cities('test-city-data.txt')
-    for i in range(3):
-        assert actual_data[i][0] == expected_data[i][0]
-        assert actual_data[i][1] == expected_data[i][1]
-        assert actual_data[i][2] == pytest.approx(expected_data[i][2])
-        assert actual_data[i][3] == pytest.approx(expected_data[i][3])
+    for city in range(3):
+        for i in range(2):
+            assert actual_data[city][i] == expected_data[city][i]
+            assert actual_data[city][i+2] == pytest.approx(expected_data[city][i+2])
 
 
-def test_read_cities_bad_no_coords():
-    with pytest.raises(ValueError):
-        read_cities('test-city-data-bad-no-coords.txt')
-
-
-#TODO: test for situation that file with bad data is passed
-#      test for situation that coodirnates aren't valid lat / long
-#      test for repeated cities
-#      test for multiple cities at the same coordinates
-#      test for multiple coords for same city name
 
 
 '''
