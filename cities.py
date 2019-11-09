@@ -39,10 +39,6 @@ def print_map(road_map):
     pass
 
 
-def _dist(city_1, city_2):
-    return sqrt((city_2[2] - city_1[2]) ** 2 + (city_2[3] - city_1[3]) ** 2)
-
-
 def compute_total_distance(road_map):
     """
     Returns, as a floating point number, the sum of the distances of all 
@@ -50,8 +46,13 @@ def compute_total_distance(road_map):
     (for example) in the initial `road_map`, Wyoming connects to Alabama...
     """
     n = len(road_map)
+    dist = 0
 
-    return sum(_dist(road_map[i], road_map[(i + 1) % n]) for i in range(n))
+    for i in range(n):
+        city_1, city_2 = road_map[i], road_map[(i+1) % n]
+        dist += sqrt((city_2[2] - city_1[2]) ** 2 + (city_2[3] - city_1[3]) ** 2)
+
+    return dist
 
 
 def swap_cities(road_map, index1, index2):
@@ -65,7 +66,8 @@ def swap_cities(road_map, index1, index2):
     Allow for the possibility that `index1=index2`,
     and handle this case correctly.
     """
-    return (None, None)
+    road_map[index1], road_map[index2] = road_map[index2], road_map[index1]
+    return road_map, compute_total_distance(road_map)
 
 
 def shift_cities(road_map):
