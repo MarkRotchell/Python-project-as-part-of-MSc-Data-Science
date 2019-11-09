@@ -1,6 +1,7 @@
 from math import sqrt
 from random import randint as rand
 
+
 def read_cities(file_name):
     if type(file_name) is not str:
         raise TypeError('read_cities requires a path string, ' + str(type(file_name)) + ' passed instead')
@@ -33,7 +34,6 @@ def print_cities(road_map):
         print(f'{state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}')
 
 
-
 def distance(city_1, city_2):
     """
     Calculates the distance between two cities via pythagoras
@@ -47,7 +47,15 @@ def print_map(road_map):
     their connections, along with the cost for each connection
     and the total cost.
     """
-    pass
+    n = len(road_map)
+    for i in range(n):
+        city1, city2, = road_map[i], road_map[(i+1) % n]
+        dist = distance(city1, city2)
+        print(f'{city1[1]:>20.20} --> {city2[1]:<20.20}  {dist:>8.2f}')
+
+    dist = compute_total_distance(road_map)
+    print('                                           -------------')
+    print(f'                              Total Distance   {dist:8.2f}')
 
 
 def compute_total_distance(road_map):
@@ -92,22 +100,22 @@ def find_best_cycle(road_map):
     After `10000` swaps/shifts, return the best cycle found so far.
     Use randomly generated indices for swapping.
     """
-    best_map = road_map[:]
+    map_best = road_map[:]
 
-    best_distance = compute_total_distance(best_map)
+    dist_best = compute_total_distance(map_best)
 
-    n = len(best_map) - 1
+    n = len(map_best) - 1
 
     for i in range(10000):
 
-        candidate_map, candidate_distance = swap_cities(best_map[:], rand(0,n), rand(0,n))
+        map_cand, dist_cand = swap_cities(map_best[:], rand(0, n), rand(0, n))
 
-        if candidate_distance < best_distance:
-            best_map, best_distance = candidate_map, candidate_distance
+        if dist_cand < dist_best:
+            map_best, dist_best = map_cand, dist_cand
 
-        shift_cities(best_map)
+        shift_cities(map_best)
 
-    return best_map
+    return map_best
 
 
 def main():
@@ -123,7 +131,7 @@ def main():
     road_map = find_best_cycle(road_map)
 
     print(compute_total_distance(road_map))
-
+    print_map(road_map)
 
 if __name__ == "__main__":  # keep this in
     main()
