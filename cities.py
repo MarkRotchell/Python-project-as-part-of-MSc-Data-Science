@@ -1,3 +1,7 @@
+from math import sqrt
+import random
+
+
 def read_cities(file_name):
     if type(file_name) is not str:
         raise TypeError('read_cities requires a path string, ' + str(type(file_name)) + ' passed instead')
@@ -12,7 +16,7 @@ def read_cities(file_name):
 
     infile.close()
 
-  
+
 def print_cities(road_map):
     """
     Prints a list of cities, along with their locations. 
@@ -20,10 +24,10 @@ def print_cities(road_map):
     """
     # max_state_length = max(len(city[0]) for city in road_map)
     # max_city_length = max(len(city[0]) for city in road_map)
-
+    print('State                City                  Latitude  Longitude')
     for city in road_map:
         state, city, lat, long = (city[i] for i in range(4))
-        print(f'{state:<20.20} {city:<20.20} {lat:>8.2f} {long:>8.2f}')
+        print(f'{state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}')
 
 
 def print_map(road_map):
@@ -34,13 +38,21 @@ def print_map(road_map):
     """
     pass
 
+
+def _dist(city_1, city_2):
+    return sqrt((city_2[2] - city_1[2]) ** 2 + (city_2[3] - city_1[3]) ** 2)
+
+
 def compute_total_distance(road_map):
     """
     Returns, as a floating point number, the sum of the distances of all 
     the connections in the `road_map`. Remember that it's a cycle, so that 
     (for example) in the initial `road_map`, Wyoming connects to Alabama...
     """
-    return 0.0
+    n = len(road_map)
+
+    return sum(_dist(road_map[i], road_map[(i + 1) % n]) for i in range(n))
+
 
 def swap_cities(road_map, index1, index2):
     """
@@ -55,6 +67,7 @@ def swap_cities(road_map, index1, index2):
     """
     return (None, None)
 
+
 def shift_cities(road_map):
     """
     For every index i in the `road_map`, the city at the position i moves
@@ -62,6 +75,7 @@ def shift_cities(road_map):
     0. Return the new road map. 
     """
     return None
+
 
 def find_best_cycle(road_map):
     """
@@ -74,7 +88,6 @@ def find_best_cycle(road_map):
     return None
 
 
-
 def main():
     """
     Reads in, and prints out, the city data, then creates the "best"
@@ -85,5 +98,5 @@ def main():
     print_cities(road_map)
 
 
-if __name__ == "__main__": #keep this in
+if __name__ == "__main__":  # keep this in
     main()

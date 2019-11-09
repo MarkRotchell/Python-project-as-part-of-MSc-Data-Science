@@ -75,7 +75,7 @@ def test_compute_total_distance_calculates_as_expected_2():
                 ('Minnesota', 'Saint Paul', 44.95, -93.094),
                 ('Mississippi', 'Jackson', 32.32, -90.207),
                 ('Missouri', 'Jefferson City', 38.572954, -92.189283)]
-    assert compute_total_distance(road_map) == pytest.approx(37.0470)
+    assert compute_total_distance(road_map) == pytest.approx(37.047094902)
 
 
 def test_compute_total_distance_calculates_as_expected_3():
@@ -93,13 +93,13 @@ def test_compute_total_distance_calculates_as_expected_3():
 def test_compute_total_distance_calculates_as_expected_pole_to_pole():
     road_map = [('The Arctic', 'North Pole', 90, -180),
                 ('The Antarctic', 'South Pole', -90, 180)]
-    assert compute_total_distance(road_map) == pytest.approx(804.98)
+    assert compute_total_distance(road_map) == pytest.approx(804.984471899)
 
 
 def test_compute_total_distance_calculates_as_expected_equatorial_trip():
     road_map = [('No Where', 'No Where', 0.0, 180.0),
                 ('No Where', 'No Where', 0.0, -180.0)]
-    assert compute_total_distance(road_map) == pytest.approx(360)
+    assert compute_total_distance(road_map) == pytest.approx(720)
 
 
 def test_compute_total_distance_returns_float():
