@@ -2,18 +2,31 @@ from math import sqrt
 from random import randint
 import tkinter
 
+
 def read_cities(file_name):
+    """
+    Read in the cities from the given `file_name`, and return
+    them as a list of four-tuples:
+
+      [(state, city, latitude, longitude), ...]
+
+    Use this as your initial `road_map`, that is, the cycle
+
+      Alabama -> Alaska -> Arizona -> ... -> Wyoming -> Alabama.
+    """
     if type(file_name) is not str:
         raise TypeError()
 
     with open(file_name, "r") as infile:
         lines = infile.readlines()
 
-    if len(lines) == 0:
+    n = len(lines)
+
+    if n == 0:
         raise EOFError()
 
-    for i, line in enumerate(lines):
-        line = line.rstrip().split('\t')
+    for i in range(n):
+        line = lines[i].rstrip().split('\t')
         lines[i] = (line[0], line[1], float(line[2]), float(line[3]))
 
     return lines
@@ -115,32 +128,58 @@ def find_best_cycle(road_map):
 
 
 def visualise(road_map):
+    canvas_height = 1000
+    canvas_width = 1000
+    margin_top_bottom = 50
+    margin_left_right = 50
+    drawing_area_left_right = canvas_width - 2 * margin_left_right
+    drawing_area_top_bottom = canvas_height - 2 * margin_top_bottom
+
     lats, longs = [[city[element] for city in road_map] for element in [2, 3]]
 
-    lat_max, lat_min = max(lats), min(lats)
-    long_max, long_min = max(longs), min(longs)
+    lat_max, lat_min, long_max, long_min = max(lats), min(lats), max(longs), min(longs)
 
-    lat_range = lat_max - lat_min
-    long_range = long_max - long_min
+    lat_range, long_range = lat_max - lat_min, long_max - long_min
 
     window = tkinter.Tk()
     window.title("GUI")
 
-    canvas = tkinter.Canvas(window, width=500, height=500)
+    canvas = tkinter.Canvas(window, width=canvas_width, height=canvas_height)
     canvas.pack()
     n = len(road_map)
 
     for i in range(n):
-        y_0 = 400 * (lat_max - lats[i]) / lat_range + 50
-        x_0 = 400 * (longs[i] - long_min) / long_range + 50
-        y_1 = 400 * (lat_max - lats[(i + 1) % n]) / lat_range + 50
-        x_1 = 400 * (longs[(i + 1) % n] - long_min) / long_range + 50
+        x_0 = drawing_area_left_right * (longs[i] - long_min) / long_range + margin_left_right
+        y_0 = drawing_area_top_bottom * (lat_max - lats[i]) / lat_range + margin_top_bottom
+        x_1 = drawing_area_left_right * (longs[(i + 1) % n] - long_min) / long_range + margin_left_right
+        y_1 = drawing_area_top_bottom * (lat_max - lats[(i + 1) % n]) / lat_range + margin_top_bottom
         canvas.create_line(x_0, y_0, x_1, y_1, fill="red")
 
     for i in range(n):
-        y = 400 * (lat_max - lats[i]) / lat_range + 50
-        x = 400 * (longs[i] - long_min) / long_range + 50
+        x = drawing_area_left_right * (longs[i] - long_min) / long_range + margin_left_right
+        y = drawing_area_top_bottom * (lat_max - lats[i]) / lat_range + margin_top_bottom
         canvas.create_oval(x - 1, y - 1, x + 1, y + 1, fill='black', width=3)
+
+    '''
+    window = Tk()
+    window.title("GUI")
+    fm = Frame(window)
+    Button(fm, text='Top').pack(side=TOP, anchor='n', fill=X, expand=NO)
+    Button(fm, text='Center').pack(side=TOP, anchor='n', fill=X, expand=NO)
+    Button(fm, text='Bottom').pack(side=TOP, anchor='n', fill=X, expand=NO)
+    
+    fm.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
+    fm2 = Frame(window)
+    canvas = Canvas(fm2,width=500,height=500)
+    canvas.create_oval(1, 1, 500, 500, width=1)
+    canvas.pack()
+    
+    fm2.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
+    
+    window.mainloop()
+    '''
+
+
 
     window.mainloop()
 
@@ -152,7 +191,7 @@ def main():
     """
     while True:
         file_path = input('Enter Path or Q to quit: ')
-
+        # file_path = 'city-data.txt'
         if file_path == 'Q':
             break
 
@@ -180,6 +219,8 @@ def main():
             print()
 
             print_map(road_map)
+
+            visualise(road_map)
 
 
 if __name__ == "__main__":  # keep this in
