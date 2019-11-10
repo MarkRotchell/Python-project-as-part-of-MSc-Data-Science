@@ -1,5 +1,5 @@
 from math import sqrt
-from random import randint as rand
+from random import randint
 
 
 def read_cities(file_name):
@@ -26,8 +26,8 @@ def print_cities(road_map):
     """
 
     print('State                City                  Latitude  Longitude')
-    for node in road_map:
-        state, city, lat, long = (node[i] for i in range(4))
+    for state, city, lat, long in road_map:
+
         print(f'{state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}')
 
 
@@ -105,7 +105,7 @@ def find_best_cycle(road_map):
 
     for i in range(10000):
 
-        map_cand, dist_cand = swap_cities(map_best[:], rand(0, n), rand(0, n))
+        map_cand, dist_cand = swap_cities(map_best[:], randint(0, n), randint(0, n))
 
         if dist_cand < dist_best:
             map_best, dist_best = map_cand, dist_cand
@@ -146,6 +146,7 @@ def main():
             print()
 
             print_map(road_map)
+
 
 if __name__ == "__main__":  # keep this in
     main()
