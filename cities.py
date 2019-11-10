@@ -1,6 +1,6 @@
 from math import sqrt
 from random import randint
-
+import tkinter
 
 def read_cities(file_name):
     if type(file_name) is not str:
@@ -27,7 +27,6 @@ def print_cities(road_map):
 
     print('State                City                  Latitude  Longitude')
     for state, city, lat, long in road_map:
-
         print(f'{state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}')
 
 
@@ -46,7 +45,7 @@ def print_map(road_map):
     """
     n = len(road_map)
     for i in range(n):
-        city1, city2, = road_map[i], road_map[(i+1) % n]
+        city1, city2, = road_map[i], road_map[(i + 1) % n]
         dist = distance(city1, city2)
         print(f'{city1[1]:>20.20} --> {city2[1]:<20.20}  {dist:>8.2f}')
 
@@ -115,6 +114,37 @@ def find_best_cycle(road_map):
     return map_best
 
 
+def visualise(road_map):
+    lats, longs = [[city[element] for city in road_map] for element in [2, 3]]
+
+    lat_max, lat_min = max(lats), min(lats)
+    long_max, long_min = max(longs), min(longs)
+
+    lat_range = lat_max - lat_min
+    long_range = long_max - long_min
+
+    window = tkinter.Tk()
+    window.title("GUI")
+
+    canvas = tkinter.Canvas(window, width=500, height=500)
+    canvas.pack()
+    n = len(road_map)
+
+    for i in range(n):
+        y_0 = 400 * (lat_max - lats[i]) / lat_range + 50
+        x_0 = 400 * (longs[i] - long_min) / long_range + 50
+        y_1 = 400 * (lat_max - lats[(i + 1) % n]) / lat_range + 50
+        x_1 = 400 * (longs[(i + 1) % n] - long_min) / long_range + 50
+        canvas.create_line(x_0, y_0, x_1, y_1, fill="red")
+
+    for i in range(n):
+        y = 400 * (lat_max - lats[i]) / lat_range + 50
+        x = 400 * (longs[i] - long_min) / long_range + 50
+        canvas.create_oval(x - 1, y - 1, x + 1, y + 1, fill='black', width=3)
+
+    window.mainloop()
+
+
 def main():
     """
     Reads in, and prints out, the city data, then creates the "best"
@@ -123,7 +153,9 @@ def main():
     while True:
         file_path = input('Enter Path or Q to quit: ')
 
-        if file_path == 'Q': break
+        if file_path == 'Q':
+            break
+
         try:
             road_map = read_cities(file_path)
         except FileNotFoundError:
@@ -132,6 +164,8 @@ def main():
             print('Input was not a string, please enter a valid path')
         except EOFError:
             print('File is empty, please choose another file')
+        except:
+            print('Unknown Error Occurred Reading file, please try another file')
         else:
             print('The following cities were loaded')
 
@@ -141,7 +175,7 @@ def main():
 
             print()
 
-            print('Estimated optimatal cycle:')
+            print('Estimated optimal cycle:')
 
             print()
 
