@@ -1,6 +1,6 @@
 from math import sqrt
 from random import randint
-import tkinter
+from tkinter import *
 
 
 def read_cities(file_name):
@@ -128,8 +128,8 @@ def find_best_cycle(road_map):
 
 
 def visualise(road_map):
-    canvas_height = 1000
-    canvas_width = 1000
+    canvas_height = 500
+    canvas_width = 500
     margin_top_bottom = 50
     margin_left_right = 50
     drawing_area_left_right = canvas_width - 2 * margin_left_right
@@ -141,11 +141,18 @@ def visualise(road_map):
 
     lat_range, long_range = lat_max - lat_min, long_max - long_min
 
-    window = tkinter.Tk()
+    window = Tk()
     window.title("GUI")
+    fm = Frame(window)
+    Button(fm, text='Top').pack(side=TOP, anchor='n', fill=X, expand=NO)
+    Button(fm, text='Center').pack(side=TOP, anchor='n', fill=X, expand=NO)
+    Button(fm, text='Bottom').pack(side=TOP, anchor='n', fill=X, expand=NO)
+    fm.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
 
-    canvas = tkinter.Canvas(window, width=canvas_width, height=canvas_height)
+    fm2 = Frame(window)
+    canvas = Canvas(fm2, width=canvas_width, height=canvas_height)
     canvas.pack()
+    fm2.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
     n = len(road_map)
 
     for i in range(n):
@@ -190,8 +197,8 @@ def main():
     cycle and prints it out.
     """
     while True:
-        file_path = input('Enter Path or Q to quit: ')
-        # file_path = 'city-data.txt'
+        #file_path = input('Enter Path or Q to quit: ')
+        file_path = 'city-data.txt'
         if file_path == 'Q':
             break
 
@@ -221,7 +228,7 @@ def main():
             print_map(road_map)
 
             visualise(road_map)
-
+        break
 
 if __name__ == "__main__":  # keep this in
     main()
