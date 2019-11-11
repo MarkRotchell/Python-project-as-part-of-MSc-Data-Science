@@ -1,6 +1,7 @@
 from math import sqrt
-from random import randint
+from random import randint, shuffle
 from tkinter import *
+from functools import partial
 
 
 def read_cities(file_name):
@@ -174,9 +175,15 @@ def visualise(road_map):
 
     draw_map(road_map, canvas)
 
-    Button(fm, text='Top').pack(side=TOP, anchor='n', fill=X, expand=NO)
+    def re_route(road_map, canvas):
+        shuffle(road_map)
+        road_map = find_best_cycle(road_map)
+        draw_map(road_map, canvas)
+
+    Button(fm, text='Top', command = partial(re_route,road_map,canvas)).pack(side=TOP, anchor='n', fill=X, expand=NO)
     Button(fm, text='Center').pack(side=TOP, anchor='n', fill=X, expand=NO)
     Button(fm, text='Bottom').pack(side=TOP, anchor='n', fill=X, expand=NO)
+
     window.mainloop()
 
 
