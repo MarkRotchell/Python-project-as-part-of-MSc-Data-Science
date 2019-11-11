@@ -129,8 +129,8 @@ def find_best_cycle(road_map):
 
 
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
-    drawing_area_left_right = canvas_width - 2 * margin_left_right
-    drawing_area_top_bottom = canvas_height - 2 * margin_top_bottom
+    drawing_area_width = canvas_width - 2 * margin_left_right
+    drawing_area_height = canvas_height - 2 * margin_top_bottom
     lats, longs = [[city[element] for city in road_map] for element in [2, 3]]
 
     lat_max, lat_min, long_max, long_min = max(lats), min(lats), max(longs), min(longs)
@@ -138,9 +138,10 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
     lat_range, long_range = lat_max - lat_min, long_max - long_min
     n = len(road_map)
 
-    x = [drawing_area_left_right * (longs[i] - long_min) / long_range + margin_left_right for i in range(n)]
-    y = [drawing_area_top_bottom * (lat_max - lats[i]) / lat_range + margin_top_bottom for i in range(n)]
+    x = [drawing_area_width * (longs[i] - long_min) / long_range + margin_left_right for i in range(n)]
+    y = [drawing_area_height * (lat_max - lats[i]) / lat_range + margin_top_bottom for i in range(n)]
     return x, y
+
 
 def draw_map(road_map, canvas):
     coords_x, coords_y = canvas_coords(road_map, 500, 500, 50, 50)
@@ -154,6 +155,11 @@ def draw_map(road_map, canvas):
 
     for x, y in zip(coords_x, coords_y):
         canvas.create_oval(x - 1, y - 1, x + 1, y + 1, fill='black', width=3)
+
+def re_route(road_map, canvas):
+    shuffle(road_map)
+    road_map = find_best_cycle(road_map)
+    draw_map(road_map, canvas)
 
 def visualise(road_map):
 
@@ -175,12 +181,7 @@ def visualise(road_map):
 
     draw_map(road_map, canvas)
 
-    def re_route(road_map, canvas):
-        shuffle(road_map)
-        road_map = find_best_cycle(road_map)
-        draw_map(road_map, canvas)
-
-    Button(fm, text='Top', command = partial(re_route,road_map,canvas)).pack(side=TOP, anchor='n', fill=X, expand=NO)
+    Button(fm, text='Re Route', command = partial(re_route,road_map,canvas)).pack(side=TOP, anchor='n', fill=X, expand=NO)
     Button(fm, text='Center').pack(side=TOP, anchor='n', fill=X, expand=NO)
     Button(fm, text='Bottom').pack(side=TOP, anchor='n', fill=X, expand=NO)
 
