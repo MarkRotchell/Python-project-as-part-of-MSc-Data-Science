@@ -143,8 +143,9 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
     return x, y
 
 
-def draw_map(road_map, canvas):
-    coords_x, coords_y = canvas_coords(road_map, 500, 500, 50, 50)
+def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
+    canvas.update()
+    coords_x, coords_y = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(), 50, 50)
 
     n = len(coords_x)
 
@@ -154,34 +155,38 @@ def draw_map(road_map, canvas):
         canvas.create_line(coords_x[i], coords_y[i], coords_x[(i + 1) % n], coords_y[(i + 1) % n], fill="red")
 
     for x, y in zip(coords_x, coords_y):
-        canvas.create_oval(x - 1, y - 1, x + 1, y + 1, fill='black', width=3)
+        canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill='white', outline='black', width=1)
 
-def re_route(road_map, canvas):
+
+def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
     shuffle(road_map)
     road_map = find_best_cycle(road_map)
-    draw_map(road_map, canvas)
+    draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
+
+def get_file_name():
+    return filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
+                                     filetypes=(("text files", "*.txt"), ("all files", "*.*")))
 
 def visualise(road_map):
-
-    canvas_height = 500
-    canvas_width = 500
-    margin_top_bottom = 50
-    margin_left_right = 50
+    canvas_height, canvas_width, margin_top_bottom, margin_left_right = 500, 500, 50, 50
 
     window = Tk()
     window.title("GUI")
-    fm = Frame(window)
 
+    fm = Frame(window)
     fm.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
 
     fm2 = Frame(window)
-    canvas = Canvas(fm2, width=canvas_width, height=canvas_height)
-    canvas.pack()
     fm2.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
 
-    draw_map(road_map, canvas)
+    canvas = Canvas(fm2, width=canvas_width, height=canvas_height)
+    canvas.pack()
 
-    Button(fm, text='Re Route', command = partial(re_route,road_map,canvas)).pack(side=TOP, anchor='n', fill=X, expand=NO)
+    draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
+
+    re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom)
+    Button(fm, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
+
     Button(fm, text='Center').pack(side=TOP, anchor='n', fill=X, expand=NO)
     Button(fm, text='Bottom').pack(side=TOP, anchor='n', fill=X, expand=NO)
 
@@ -194,7 +199,7 @@ def main():
     cycle and prints it out.
     """
     while True:
-        #file_path = input('Enter Path or Q to quit: ')
+        # file_path = input('Enter Path or Q to quit: ')
         file_path = 'city-data.txt'
         if file_path == 'Q':
             break
@@ -224,12 +229,9 @@ def main():
 
             print_map(road_map)
 
-            x, y = canvas_coords(road_map, 500, 500, 50, 50)
-
-            #for x_i, y_i in zip(x, y):
-             #   print(x_i, y_i)
             visualise(road_map)
         break
+
 
 if __name__ == "__main__":  # keep this in
     main()
