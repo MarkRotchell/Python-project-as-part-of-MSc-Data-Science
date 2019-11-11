@@ -139,20 +139,14 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
 
     x = [drawing_area_left_right * (longs[i] - long_min) / long_range + margin_left_right for i in range(n)]
     y = [drawing_area_top_bottom * (lat_max - lats[i]) / lat_range + margin_top_bottom for i in range(n)]
+    return x, y
 
 def visualise(road_map):
+
     canvas_height = 500
     canvas_width = 500
     margin_top_bottom = 50
     margin_left_right = 50
-    drawing_area_left_right = canvas_width - 2 * margin_left_right
-    drawing_area_top_bottom = canvas_height - 2 * margin_top_bottom
-
-    lats, longs = [[city[element] for city in road_map] for element in [2, 3]]
-
-    lat_max, lat_min, long_max, long_min = max(lats), min(lats), max(longs), min(longs)
-
-    lat_range, long_range = lat_max - lat_min, long_max - long_min
 
     window = Tk()
     window.title("GUI")
@@ -166,40 +160,14 @@ def visualise(road_map):
     canvas = Canvas(fm2, width=canvas_width, height=canvas_height)
     canvas.pack()
     fm2.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
-    n = len(road_map)
+    coords_x, coords_y = canvas_coords(road_map, 500, 500, 50, 50)
 
+    n = len(coords_x)
     for i in range(n):
-        x_0 = drawing_area_left_right * (longs[i] - long_min) / long_range + margin_left_right
-        y_0 = drawing_area_top_bottom * (lat_max - lats[i]) / lat_range + margin_top_bottom
-        x_1 = drawing_area_left_right * (longs[(i + 1) % n] - long_min) / long_range + margin_left_right
-        y_1 = drawing_area_top_bottom * (lat_max - lats[(i + 1) % n]) / lat_range + margin_top_bottom
-        canvas.create_line(x_0, y_0, x_1, y_1, fill="red")
+        canvas.create_line(coords_x[i], coords_y[i], coords_x[(i+1)%n], coords_y[(i+1)%n], fill="red")
 
-    for i in range(n):
-        x = drawing_area_left_right * (longs[i] - long_min) / long_range + margin_left_right
-        y = drawing_area_top_bottom * (lat_max - lats[i]) / lat_range + margin_top_bottom
-        canvas.create_oval(x - 1, y - 1, x + 1, y + 1, fill='black', width=3)
-
-    '''
-    window = Tk()
-    window.title("GUI")
-    fm = Frame(window)
-    Button(fm, text='Top').pack(side=TOP, anchor='n', fill=X, expand=NO)
-    Button(fm, text='Center').pack(side=TOP, anchor='n', fill=X, expand=NO)
-    Button(fm, text='Bottom').pack(side=TOP, anchor='n', fill=X, expand=NO)
-    
-    fm.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
-    fm2 = Frame(window)
-    canvas = Canvas(fm2,width=500,height=500)
-    canvas.create_oval(1, 1, 500, 500, width=1)
-    canvas.pack()
-    
-    fm2.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
-    
-    window.mainloop()
-    '''
-
-
+    for x, y in zip(coords_x, coords_y):
+        canvas.create_oval(x-1,y-1,x+1,y+1,fill='black',  width=3)
 
     window.mainloop()
 
@@ -240,6 +208,10 @@ def main():
 
             print_map(road_map)
 
+            x, y = canvas_coords(road_map, 500, 500, 50, 50)
+
+            #for x_i, y_i in zip(x, y):
+             #   print(x_i, y_i)
             visualise(road_map)
         break
 
