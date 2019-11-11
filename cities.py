@@ -1,5 +1,6 @@
 from math import sqrt
 from random import randint, shuffle
+from tkinter import filedialog
 from tkinter import *
 from functools import partial
 
@@ -154,8 +155,9 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     for i in range(n):
         canvas.create_line(coords_x[i], coords_y[i], coords_x[(i + 1) % n], coords_y[(i + 1) % n], fill="red")
 
+    oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
     for x, y in zip(coords_x, coords_y):
-        canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill='white', outline='black', width=1)
+        canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width, fill='white', outline='black', width=1)
 
 
 def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
@@ -198,9 +200,11 @@ def main():
     Reads in, and prints out, the city data, then creates the "best"
     cycle and prints it out.
     """
+    #print(get_file_name())
+
     while True:
         # file_path = input('Enter Path or Q to quit: ')
-        file_path = 'city-data.txt'
+        file_path = 'uk-cities.txt'
         if file_path == 'Q':
             break
 
