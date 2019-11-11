@@ -127,6 +127,19 @@ def find_best_cycle(road_map):
     return map_best
 
 
+def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
+    drawing_area_left_right = canvas_width - 2 * margin_left_right
+    drawing_area_top_bottom = canvas_height - 2 * margin_top_bottom
+    lats, longs = [[city[element] for city in road_map] for element in [2, 3]]
+
+    lat_max, lat_min, long_max, long_min = max(lats), min(lats), max(longs), min(longs)
+
+    lat_range, long_range = lat_max - lat_min, long_max - long_min
+    n = len(road_map)
+
+    x = [drawing_area_left_right * (longs[i] - long_min) / long_range + margin_left_right for i in range(n)]
+    y = [drawing_area_top_bottom * (lat_max - lats[i]) / lat_range + margin_top_bottom for i in range(n)]
+
 def visualise(road_map):
     canvas_height = 500
     canvas_width = 500
