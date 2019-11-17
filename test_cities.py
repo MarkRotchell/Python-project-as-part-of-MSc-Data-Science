@@ -280,3 +280,40 @@ def test_shift_cities_returns_list_of_same_length():
 
         shift_cities(map_in)
         assert len(map_in) == n
+
+
+def test_drawing_area_returns_numeric():
+    a = drawing_area(500,50)
+    assert isinstance(a, int) or isinstance(a, float)
+
+
+def test_drawing_area_expected_result_1():
+    assert drawing_area(500, 50) == 400
+
+
+def test_drawing_area_expected_result_2():
+    assert drawing_area(50, 10) == 30
+
+
+def test_drawing_area_expected_result_3():
+    assert drawing_area(5000, 10) == 4980
+
+
+def test_drawing_area_margin_all_of_canvas():
+    assert drawing_area(50, 25) == 0
+
+
+def test_drawing_area_margin_bigger_than_canvas():
+    assert drawing_area(10, 25) == 0
+
+
+def test_drawing_area_zero_canvas():
+    assert drawing_area(0, 10) == 0
+
+
+def test_drawing_area_negative_canvas_as_zero():
+    assert drawing_area(-10, 10) == 0
+
+
+def test_drawing_area_negative_margin_as_zero():
+    assert drawing_area(100, -10) == 100

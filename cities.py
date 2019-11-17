@@ -129,9 +129,15 @@ def find_best_cycle(road_map):
     return map_best
 
 
+def drawing_area(canvas_dimension, margin):
+    """ Returns the drawable area of canvas given some dimension and the margin"""
+    return max(max(canvas_dimension, 0) - 2 * max(margin, 0), 0)
+
+
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
-    drawing_area_width = canvas_width - 2 * margin_left_right
-    drawing_area_height = canvas_height - 2 * margin_top_bottom
+    drawing_area_width = drawing_area(canvas_width, margin_left_right)
+    drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
+
     lats, longs = [[city[element] for city in road_map] for element in [2, 3]]
 
     lat_max, lat_min, long_max, long_min = max(lats), min(lats), max(longs), min(longs)
@@ -146,7 +152,8 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
 
 def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     canvas.update()
-    coords_x, coords_y = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(), 50, 50)
+    coords_x, coords_y = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(),
+                                       margin_left_right, margin_top_bottom)
 
     n = len(coords_x)
 
@@ -157,7 +164,8 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
 
     oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
     for x, y in zip(coords_x, coords_y):
-        canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width, fill='white', outline='black', width=1)
+        canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width, fill='white',
+                           outline='black', width=1)
 
 
 def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
@@ -165,9 +173,11 @@ def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
     road_map = find_best_cycle(road_map)
     draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
 
+
 def get_file_name():
     return filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
-                                     filetypes=(("text files", "*.txt"), ("all files", "*.*")))
+                                      filetypes=(("text files", "*.txt"), ("all files", "*.*")))
+
 
 def visualise(road_map):
     canvas_height, canvas_width, margin_top_bottom, margin_left_right = 500, 500, 50, 50
@@ -200,11 +210,11 @@ def main():
     Reads in, and prints out, the city data, then creates the "best"
     cycle and prints it out.
     """
-    #print(get_file_name())
+    # print(get_file_name())
 
     while True:
         # file_path = input('Enter Path or Q to quit: ')
-        file_path = 'uk-cities.txt'
+        file_path = 'city-data.txt'
         if file_path == 'Q':
             break
 
