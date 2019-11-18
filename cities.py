@@ -140,30 +140,34 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
 
     lats, longs = [[city[element] for city in road_map] for element in [2, 3]]
 
-    lat_max, lat_min, long_max, long_min = max(lats), min(lats), max(longs), min(longs)
+    lat_max, long_min = max(lats), min(longs)
 
-    lat_range, long_range = lat_max - lat_min, long_max - long_min
+    lat_range, long_range = lat_max - min(lats), max(longs) - long_min
+
     n = len(road_map)
+    coords =[]
+    for i in range(n):
+        x = drawing_area_width * (longs[i] - long_min) / long_range + margin_left_right
+        y = drawing_area_height * (lat_max - lats[i]) / lat_range + margin_top_bottom
+        coords.append((x,y))
 
-    x = [drawing_area_width * (longs[i] - long_min) / long_range + margin_left_right for i in range(n)]
-    y = [drawing_area_height * (lat_max - lats[i]) / lat_range + margin_top_bottom for i in range(n)]
-    return x, y
+    return coords
 
 
 def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     canvas.update()
-    coords_x, coords_y = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(),
+    coords = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(),
                                        margin_left_right, margin_top_bottom)
 
-    n = len(coords_x)
+    n = len(coords)
 
     canvas.delete('all')
 
     for i in range(n):
-        canvas.create_line(coords_x[i], coords_y[i], coords_x[(i + 1) % n], coords_y[(i + 1) % n], fill="red")
+        canvas.create_line(coords[i][0], coords[i][1], coords[(i + 1) % n][0], coords[(i + 1) % n][1], fill="red")
 
     oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
-    for x, y in zip(coords_x, coords_y):
+    for x, y in coords:
         canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width, fill='white',
                            outline='black', width=1)
 
