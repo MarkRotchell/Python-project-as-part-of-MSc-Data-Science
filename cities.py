@@ -1,6 +1,7 @@
 from math import sqrt
 from random import randint, shuffle
 from tkinter import filedialog
+from tkinter import Tk
 from tkinter import *
 from functools import partial
 
@@ -177,6 +178,7 @@ def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
 
 
 def get_file_name():
+    Tk().withdraw()
     return filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
                                       filetypes=(("text files", "*.txt"), ("all files", "*.*")))
 
@@ -215,8 +217,9 @@ def main():
     # print(get_file_name())
 
     while True:
-        # file_path = input('Enter Path or Q to quit: ')
-        file_path = 'city-data.txt'
+        file_path = get_file_name()
+        #input('Enter Path or Q to quit: ')
+        #file_path = 'city-data.txt'
         if file_path == 'Q':
             break
 

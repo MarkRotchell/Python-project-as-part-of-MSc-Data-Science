@@ -283,7 +283,7 @@ def test_shift_cities_returns_list_of_same_length():
 
 
 def test_drawing_area_returns_numeric():
-    a = drawing_area(500,50)
+    a = drawing_area(500, 50)
     assert isinstance(a, int) or isinstance(a, float)
 
 
@@ -317,3 +317,66 @@ def test_drawing_area_negative_canvas_as_zero():
 
 def test_drawing_area_negative_margin_as_zero():
     assert drawing_area(100, -10) == 100
+
+
+def test_canvas_coords_as_expected_1():
+    road_map = [("Kentucky", "Frankfort", 38.197274, -84.86311),
+                ("Delaware", "Dover", 39.161921, -75.526755),
+                ("Minnesota", "Saint Paul", 44.95, -93.094)]
+    expected = [(237.414, 450.0), (450.0, 392.858), (50.0, 50.0)]
+    received = canvas_coords(road_map, 500, 500, 50, 50)
+    for i in range(3):
+        assert received[i][0] == pytest.approx(expected[i][0], abs=0.01)
+        assert received[i][1] == pytest.approx(expected[i][1], abs=0.01)
+
+
+def test_canvas_coords_as_expected_2():
+    road_map = [('New York', 'Albany', 42.659829, -73.781339),
+                ('North Carolina', 'Raleigh', 35.771, -78.638),
+                ('North Dakota', 'Bismarck', 48.813343, -100.779004),
+                ('Ohio', 'Columbus', 39.962245, -83.000647),
+                ('Oklahoma', 'Oklahoma City', 35.482309, -97.534994),
+                ('Oregon', 'Salem', 44.931109, -123.029159),
+                ('Pennsylvania', 'Harrisburg', 40.269789, -76.875613),
+                ('Rhode Island', 'Providence', 41.82355, -71.422132)]
+    expected = [(431.71406386188454, 234.63726069560695),
+                (394.0706553392428, 441.33777619950564),
+                (222.45833595490788, 50.0),
+                (360.25629126049057, 315.5787390535498),
+                (247.60227613964284, 450.0),
+                (50.0, 166.48710820180952),
+                (407.7307098120572, 306.3508277002369),
+                (449.99999999999994, 259.7299579312454)]
+    received = canvas_coords(road_map, 500, 500, 50, 50)
+    for i in range(8):
+        assert received[i][0] == pytest.approx(expected[i][0], abs=0.01)
+        assert received[i][1] == pytest.approx(expected[i][1], abs=0.01)
+
+def test_canvas_coords_as_expected_3():
+    road_map = [('Alabama', 'Montgomery', 32.361538, -86.279118),
+                ('Alaska', 'Juneau', 58.301935, -134.41974),
+                ('Arizona', 'Phoenix', 33.448457, - 112.073844)]
+    expected = [(450.0, 450.0), (50.0, 50.0), (235.67185110321176, 433.2397476414876)]
+    received = canvas_coords(road_map, 500, 500, 50, 50)
+    for i in range(3):
+        assert received[i][0] == pytest.approx(expected[i][0], abs=0.01)
+        assert received[i][1] == pytest.approx(expected[i][1], abs=0.01)
+
+def test_canvas_coords_returns_list():
+    road_map = [('Alabama', 'Montgomery', 32.361538, -86.279118),
+                ('Alaska', 'Juneau', 58.301935, -134.41974),
+                ('Arizona', 'Phoenix', 33.448457, - 112.073844)]
+    assert isinstance(canvas_coords(road_map, 500, 500, 50, 50),list)
+
+def test_canvas_coords_returns_list_of_tuples():
+    road_map = [('Alabama', 'Montgomery', 32.361538, -86.279118),
+                ('Alaska', 'Juneau', 58.301935, -134.41974),
+                ('Arizona', 'Phoenix', 33.448457, - 112.073844)]
+    for item in canvas_coords(road_map, 500, 500, 50, 50):
+        assert isinstance(item, tuple)
+
+def test_canvas_coords_returns_list_of_right_length():
+    road_map = [('Alabama', 'Montgomery', 32.361538, -86.279118),
+                ('Alaska', 'Juneau', 58.301935, -134.41974),
+                ('Arizona', 'Phoenix', 33.448457, - 112.073844)]
+    assert len(canvas_coords(road_map, 500, 500, 50, 50)) == 3
