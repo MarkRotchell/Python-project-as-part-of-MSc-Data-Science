@@ -138,17 +138,15 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
     drawing_area_width = drawing_area(canvas_width, margin_left_right)
     drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
 
-    lats, longs = [[city[element] for city in road_map] for element in [2, 3]]
+    lats, longs = [[node[element] for node in road_map] for element in [2, 3]]
 
     lat_max, long_min = max(lats), min(longs)
 
-    lat_range, long_range = lat_max - min(lats), max(longs) - long_min
-
-    n = len(road_map)
     coords =[]
-    for i in range(n):
-        x = drawing_area_width * (longs[i] - long_min) / long_range + margin_left_right
-        y = drawing_area_height * (lat_max - lats[i]) / lat_range + margin_top_bottom
+
+    for i in range(len(road_map)):
+        x = drawing_area_width * (longs[i] - long_min) / (max(longs) - long_min) + margin_left_right
+        y = drawing_area_height * (lat_max - lats[i]) / (lat_max - min(lats)) + margin_top_bottom
         coords.append((x,y))
 
     return coords
