@@ -198,19 +198,19 @@ def visualise(road_map):
     window = Tk()
     window.title("GUI")
 
-    fm = Frame(window)
-    fm.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
+    control_frame = Frame(window)
+    control_frame.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
 
-    fm2 = Frame(window)
-    fm2.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
+    output_frame = Frame(window)
+    output_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
 
-    canvas = Canvas(fm2, width=canvas_width, height=canvas_height)
+    canvas = Canvas(output_frame, width=canvas_width, height=canvas_height)
     canvas.pack()
 
     draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
 
     re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom)
-    Button(fm, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
+    Button(control_frame, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
 
     window.mainloop()
 

@@ -142,19 +142,19 @@ def test_compute_total_distance_returns_float():
 
 
 # Example cities for testing on
-city1 = ("Kentucky", "Frankfort", 38.197274, -84.86311)
-city2 = ("Delaware", "Dover", 39.161921, -75.526755)
-city3 = ("Minnesota", "Saint Paul", 44.95, -93.094)
+city_1 = ("Kentucky", "Frankfort", 38.197274, -84.86311)
+city_2 = ("Delaware", "Dover", 39.161921, -75.526755)
+city_3 = ("Minnesota", "Saint Paul", 44.95, -93.094)
 
 
 # swap_cities tests
 def test_swap_cities_in_place():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     assert swap_cities(map_in, 0, 2)[0] is map_in
 
 
 def test_swap_cities_as_expected_1():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     map_out = swap_cities(map_in[:], 0, 2)[0]
 
     assert map_in[0] is map_out[2]
@@ -163,7 +163,7 @@ def test_swap_cities_as_expected_1():
 
 
 def test_swap_cities_as_expected_2():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     map_out = swap_cities(map_in[:], 2, 1)[0]
 
     assert map_in[2] is map_out[1]
@@ -172,7 +172,7 @@ def test_swap_cities_as_expected_2():
 
 
 def test_swap_cities_same_city():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     map_out = swap_cities(map_in[:], 1, 1)[0]
 
     assert map_in[0] is map_out[0]
@@ -197,37 +197,37 @@ def test_swap_cities_large_map():
 
 
 def test_swap_cities_returns_tuple():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     assert isinstance(swap_cities(map_in[:], 0, 0), tuple)
 
 
 def test_swap_cities_returns_tuple_length_2():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     assert len(swap_cities(map_in[:], 0, 0)) == 2
 
 
 def test_swap_cities_returns_list_and_float():
-    map_in = [city1, city2, city3]
-    map_out, distance = swap_cities(map_in[:], 0, 1)
+    map_in = [city_1, city_2, city_3]
+    map_out, calculated_distance = swap_cities(map_in[:], 0, 1)
     assert isinstance(map_out, list)
-    assert isinstance(distance, float)
+    assert isinstance(calculated_distance, float)
 
 
 def test_swap_cities_returns_list_of_same_length_as_input():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     map_out = swap_cities(map_in[:], 1, 1)[0]
     assert len(map_out) == len(map_in)
 
 
 # shift_cities tests
 def test_shift_cities_in_place():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     map_out = shift_cities(map_in)
     assert map_in == map_out
 
 
 def test_shift_cities_as_expected_1():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     map_out = shift_cities(map_in[:])
 
     assert map_in[0] is map_out[1]
@@ -236,26 +236,26 @@ def test_shift_cities_as_expected_1():
 
 
 def test_shift_cities_as_expected_2():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     shift_cities(map_in)
 
-    assert map_in[0] is city3
-    assert map_in[1] is city1
-    assert map_in[2] is city2
+    assert map_in[0] is city_3
+    assert map_in[1] is city_1
+    assert map_in[2] is city_2
 
 
 def test_shift_cities_two_shifts():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     shift_cities(map_in)
     shift_cities(map_in)
 
-    assert map_in[0] is city2
-    assert map_in[1] is city3
-    assert map_in[2] is city1
+    assert map_in[0] is city_2
+    assert map_in[1] is city_3
+    assert map_in[2] is city_1
 
 
 def test_shift_cities_one_city():
-    map_in = [city1]
+    map_in = [city_1]
     map_out = shift_cities(map_in[:])
     assert len(map_out) == 1
     assert map_out[0] is map_in[0]
@@ -269,7 +269,7 @@ def test_shift_cities_large_map():
 
 
 def test_shift_cities_returns_list():
-    map_in = [city1, city2, city3]
+    map_in = [city_1, city_2, city_3]
     assert isinstance(shift_cities(map_in[:]), list)
 
 
@@ -352,6 +352,7 @@ def test_canvas_coords_as_expected_2():
         assert received[i][0] == pytest.approx(expected[i][0], abs=0.01)
         assert received[i][1] == pytest.approx(expected[i][1], abs=0.01)
 
+
 def test_canvas_coords_as_expected_3():
     road_map = [('Alabama', 'Montgomery', 32.361538, -86.279118),
                 ('Alaska', 'Juneau', 58.301935, -134.41974),
@@ -362,11 +363,13 @@ def test_canvas_coords_as_expected_3():
         assert received[i][0] == pytest.approx(expected[i][0], abs=0.01)
         assert received[i][1] == pytest.approx(expected[i][1], abs=0.01)
 
+
 def test_canvas_coords_returns_list():
     road_map = [('Alabama', 'Montgomery', 32.361538, -86.279118),
                 ('Alaska', 'Juneau', 58.301935, -134.41974),
                 ('Arizona', 'Phoenix', 33.448457, - 112.073844)]
-    assert isinstance(canvas_coords(road_map, 500, 500, 50, 50),list)
+    assert isinstance(canvas_coords(road_map, 500, 500, 50, 50), list)
+
 
 def test_canvas_coords_returns_list_of_tuples():
     road_map = [('Alabama', 'Montgomery', 32.361538, -86.279118),
@@ -374,6 +377,7 @@ def test_canvas_coords_returns_list_of_tuples():
                 ('Arizona', 'Phoenix', 33.448457, - 112.073844)]
     for item in canvas_coords(road_map, 500, 500, 50, 50):
         assert isinstance(item, tuple)
+
 
 def test_canvas_coords_returns_list_of_right_length():
     road_map = [('Alabama', 'Montgomery', 32.361538, -86.279118),
