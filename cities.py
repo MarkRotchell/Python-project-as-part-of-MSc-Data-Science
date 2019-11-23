@@ -135,6 +135,7 @@ def drawing_area(canvas_dimension, margin):
 
 
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
+
     drawing_area_width = drawing_area(canvas_width, margin_left_right)
     drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
 
@@ -142,14 +143,9 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
 
     lat_max, long_min = max(lats), min(longs)
 
-    coords = []
-
-    for i in range(len(road_map)):
-        x = drawing_area_width * (longs[i] - long_min) / (max(longs) - long_min) + margin_left_right
-        y = drawing_area_height * (lat_max - lats[i]) / (lat_max - min(lats)) + margin_top_bottom
-        coords.append((x, y))
-
-    return coords
+    return [(drawing_area_width * (longs[i] - long_min) / (max(longs) - long_min) + margin_left_right,
+             drawing_area_height * (lat_max - lats[i]) / (lat_max - min(lats)) + margin_top_bottom)
+            for i in range(len(road_map))]
 
 
 def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
@@ -165,6 +161,7 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
         canvas.create_line(coords[i][0], coords[i][1], coords[(i + 1) % n][0], coords[(i + 1) % n][1], fill="red")
 
     oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
+
     for x, y in coords:
         canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width, fill='white',
                            outline='black', width=1)
@@ -195,10 +192,6 @@ def get_file_name():
     return path
 
 
-def get_cities_from_user():
-    file_path = get_file_name()
-
-
 def visualise(road_map):
     canvas_height, canvas_width, margin_top_bottom, margin_left_right = 500, 500, 50, 50
 
@@ -218,9 +211,6 @@ def visualise(road_map):
 
     re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom)
     Button(fm, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
-
-    Button(fm, text='Center').pack(side=TOP, anchor='n', fill=X, expand=NO)
-    Button(fm, text='Bottom').pack(side=TOP, anchor='n', fill=X, expand=NO)
 
     window.mainloop()
 
@@ -245,7 +235,7 @@ def main():
 
             except:
                 load_another_map = user_wants_to_load_a_different_file(
-                        'Unable to Load file given, would you like to select a different file?')
+                    'Unable to Load file given, would you like to select a different file?')
 
             else:
                 print('The following cities were loaded')
