@@ -1,7 +1,6 @@
 from math import sqrt
 from random import randint, shuffle
-from tkinter import filedialog
-from tkinter import Tk
+from tkinter import filedialog, messagebox
 from tkinter import *
 from functools import partial
 
@@ -143,12 +142,12 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
 
     lat_max, long_min = max(lats), min(longs)
 
-    coords =[]
+    coords = []
 
     for i in range(len(road_map)):
         x = drawing_area_width * (longs[i] - long_min) / (max(longs) - long_min) + margin_left_right
         y = drawing_area_height * (lat_max - lats[i]) / (lat_max - min(lats)) + margin_top_bottom
-        coords.append((x,y))
+        coords.append((x, y))
 
     return coords
 
@@ -156,7 +155,7 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
 def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     canvas.update()
     coords = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(),
-                                       margin_left_right, margin_top_bottom)
+                           margin_left_right, margin_top_bottom)
 
     n = len(coords)
 
@@ -177,10 +176,27 @@ def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
     draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
 
 
+def user_wants_to_load_a_different_file(question):
+    root = Tk()
+    root.withdraw()
+    yes_no = messagebox.askyesno(message=question,
+                                 icon='question', title='Unable to load file')
+    root.destroy()
+    return yes_no
+
+
 def get_file_name():
-    Tk().withdraw()
-    return filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
+    root = Tk()
+    root.withdraw()
+    path = filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
                                       filetypes=(("text files", "*.txt"), ("all files", "*.*")))
+    root.destroy()
+
+    return path
+
+
+def get_cities_from_user():
+    file_path = get_file_name()
 
 
 def visualise(road_map):
@@ -214,42 +230,38 @@ def main():
     Reads in, and prints out, the city data, then creates the "best"
     cycle and prints it out.
     """
-    # print(get_file_name())
+    load_another_map = True
 
-    while True:
+    while load_another_map:
         file_path = get_file_name()
-        #input('Enter Path or Q to quit: ')
-        #file_path = 'city-data.txt'
-        if file_path == 'Q':
-            break
 
-        try:
-            road_map = read_cities(file_path)
-        except FileNotFoundError:
-            print('File not found at path: please enter a valid path')
-        except TypeError:
-            print('Input was not a string, please enter a valid path')
-        except EOFError:
-            print('File is empty, please choose another file')
-        except:
-            print('Unknown Error Occurred Reading file, please try another file')
+        if not file_path:
+            load_another_map = user_wants_to_load_a_different_file('No file specified, would you like to try again?')
+
         else:
-            print('The following cities were loaded')
 
-            print_cities(road_map)
+            try:
+                road_map = read_cities(file_path)
 
-            road_map = find_best_cycle(road_map)
+            except:
+                load_another_map = user_wants_to_load_a_different_file(
+                        'Unable to Load file given, would you like to select a different file?')
 
-            print()
+            else:
+                print('The following cities were loaded')
 
-            print('Estimated optimal cycle:')
+                print_cities(road_map)
 
-            print()
+                road_map = find_best_cycle(road_map)
 
-            print_map(road_map)
+                print('\nEstimated optimal cycle:\n')
 
-            visualise(road_map)
-        break
+                print_map(road_map)
+
+                visualise(road_map)
+
+                load_another_map = user_wants_to_load_a_different_file(
+                    'Would you like to open another map?')
 
 
 if __name__ == "__main__":  # keep this in
