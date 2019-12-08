@@ -134,8 +134,17 @@ def drawing_area(canvas_dimension, margin):
     return max(max(canvas_dimension, 0) - 2 * max(margin, 0), 0)
 
 
-def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
+def rel_pos(x, x_min, x_max):
+    return (x - x_min) / (x_max - x_min)
 
+
+def canvas_coords2(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
+    drawing_area_width = drawing_area(canvas_width, margin_left_right)
+    drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
+    pass
+
+
+def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
     drawing_area_width = drawing_area(canvas_width, margin_left_right)
     drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
 
@@ -211,7 +220,9 @@ def visualise(road_map):
 
     re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom)
     Button(control_frame, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
-
+    window.lift()
+    window.attributes('-topmost', True)
+    window.after_idle(window.attributes, '-topmost', False)
     window.mainloop()
 
 
