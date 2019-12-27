@@ -8,14 +8,9 @@ from functools import partial
 def read_cities(file_name):
     """
     Read in the cities from the given `file_name`, and return
-    them as a list of four-tuples:
-
-      [(state, city, latitude, longitude), ...]
-
-    Use this as your initial `road_map`, that is, the cycle
-
-      Alabama -> Alaska -> Arizona -> ... -> Wyoming -> Alabama.
+    them as a list of four-tuples: [(state, city, latitude, longitude), ...]
     """
+
     if not isinstance(file_name, str):
         raise TypeError()
 
@@ -44,9 +39,7 @@ def read_cities(file_name):
 
 def print_cities(road_map):
     """
-    Prints a list of cities, along with their locations. 
-    Print only one or two digits after the decimal point.
-    Output function, so not unit-tested
+    Prints a list of cities, along with their locations.
     """
 
     print('State                City                  Latitude  Longitude')
@@ -56,16 +49,15 @@ def print_cities(road_map):
 
 def distance(city_1, city_2):
     """
-    Calculates the distance between two cities via pythagoras
+    Calculates the euclidian distance between two cities via pythagoras
     """
     return sqrt((city_2[2] - city_1[2]) ** 2 + (city_2[3] - city_1[3]) ** 2)
 
 
 def print_map(road_map):
     """
-    Prints, in an easily understandable format, the cities and
-    their connections, along with the cost for each connection
-    and the total cost.
+    Prints, in an easily understandable format, the cities and their connections,
+    along with the cost for each connection and the total cost.
     """
 
     total = 0
@@ -79,24 +71,15 @@ def print_map(road_map):
 
 def compute_total_distance(road_map):
     """
-    Returns, as a floating point number, the sum of the distances of all 
-    the connections in the `road_map`. Remember that it's a cycle, so that 
-    (for example) in the initial `road_map`, Wyoming connects to Alabama...
+    Returns, as a floating point number, the sum of the distances of all the connections in the `road_map`.
     """
-
     return sum(distance(city1, city2) for city1, city2 in zip(road_map, road_map[1:]+[road_map[0]]))
 
 
 def swap_cities(road_map, index1, index2):
     """
-    Take the city at location `index` in the `road_map`, and the 
-    city at location `index2`, swap their positions in the `road_map`, 
-    compute the new total distance, and return the tuple 
-
+    Swap cities at location `index` and `index2`, compute the new total distance, and return the tuple
         (new_road_map, new_total_distance)
-
-    Allow for the possibility that `index1=index2`,
-    and handle this case correctly.
     """
     road_map[index1], road_map[index2] = road_map[index2], road_map[index1]
     return road_map, compute_total_distance(road_map)
@@ -104,9 +87,8 @@ def swap_cities(road_map, index1, index2):
 
 def shift_cities(road_map):
     """
-    For every index i in the `road_map`, the city at the position i moves
-    to the position i+1. The city at the last position moves to the position
-    0. Return the new road map. 
+    For every index i in the `road_map`, the city at the position i moves to the position i+1.
+    The city at the last position moves to the position 0. Return the new road map.
     """
     road_map.insert(0, road_map.pop())
     return road_map
@@ -153,10 +135,8 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
     lats = [city[2] for city in road_map]
     longs = [city[3] for city in road_map]
 
-    lat_max = max(lats)
-    lat_min = min(lats)
-    long_max = max(longs)
-    long_min = min(longs)
+    lat_max, lat_min = max(lats),  min(lats)
+    long_max, long_min = max(longs), min(longs)
 
     x_coords = (drawing_area_width * (long - long_min) / (long_max - long_min) + margin_left_right for long in longs)
     y_coords = (drawing_area_height * (lat_max - lat) / (lat_max - lat_min) + margin_top_bottom for lat in lats)
@@ -170,15 +150,13 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     not unit-tested as it is an output function.
     """
     canvas.update()
-    coords = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(),
-                           margin_left_right, margin_top_bottom)
-
+    coords = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(), margin_left_right, margin_top_bottom)
     canvas.delete('all')
+
+    oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
 
     for city0, city1 in zip(coords, coords[1:] + [coords[0]]):
         canvas.create_line(city0[0], city0[1], city1[0], city1[1], fill="red")
-
-    oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
 
     for x, y in coords:
         canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width,
@@ -186,6 +164,9 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
 
 
 def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
+    """
+    shuffles the road_map, recalculates the route, prints and re-draws the route.
+    """
     shuffle(road_map)
 
     road_map = find_best_cycle(road_map)
@@ -198,15 +179,20 @@ def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
 
 
 def user_wants_to_load_a_different_file(question):
+    """
+    Asks user if they want to load another file, and returns answer as boolean.
+    """
     root = Tk()
     root.withdraw()
-    yes_no = messagebox.askyesno(message=question,
-                                 icon='question', title='Unable to load file')
+    yes_no = messagebox.askyesno(message=question, icon='question', title='Unable to load file')
     root.destroy()
     return yes_no
 
 
 def get_file_name():
+    """
+    Opens the file-open dialogue box to ask the user for a file
+    """
     root = Tk()
     root.withdraw()
     path = filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
@@ -247,8 +233,7 @@ def visualise(road_map):
 
 def main():
     """
-    Reads in, and prints out, the city data, then creates the "best"
-    cycle and prints it out.
+    Reads in, and prints out, the city data, then creates the "best"cycle and prints it out.
     """
     load_another_map = True
 
@@ -256,7 +241,8 @@ def main():
         file_path = get_file_name()
 
         if not file_path:
-            load_another_map = user_wants_to_load_a_different_file('No file specified, would you like to try again?')
+            load_another_map = user_wants_to_load_a_different_file(
+                'No file specified, would you like to try again?')
 
         else:
 
