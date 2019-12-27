@@ -16,20 +16,28 @@ def read_cities(file_name):
 
       Alabama -> Alaska -> Arizona -> ... -> Wyoming -> Alabama.
     """
-    if type(file_name) is not str:
+    if not isinstance(file_name, str):
         raise TypeError()
 
-    with open(file_name, "r") as infile:
-        lines = infile.readlines()
+    try:
+        infile = open(file_name, "r")
 
-    n = len(lines)
+    except FileNotFoundError:
+        raise
 
-    if n == 0:
+    line = infile.readline()
+
+    if not line:
         raise EOFError()
 
-    for i in range(n):
-        line = lines[i].rstrip().split('\t')
-        lines[i] = (line[0], line[1], float(line[2]), float(line[3]))
+    lines = []
+
+    while line:
+        line = line.rstrip().split('\t')
+        lines.append((line[0], line[1], float(line[2]), float(line[3])))
+        line = infile.readline()
+
+    infile.close()
 
     return lines
 
@@ -59,12 +67,14 @@ def print_map(road_map):
     and the total cost.
     """
     n = len(road_map)
+
     for i in range(n):
         city1, city2, = road_map[i], road_map[(i + 1) % n]
         dist = distance(city1, city2)
         print(f'{city1[1]:>20.20} --> {city2[1]:<20.20}  {dist:>8.2f}')
 
     dist = compute_total_distance(road_map)
+
     print('                                           -------------')
     print(f'                              Total Distance   {dist:8.2f}')
 
@@ -129,32 +139,26 @@ def find_best_cycle(road_map):
     return map_best
 
 
-def drawing_area(canvas_dimension, margin):
-    """ Returns the drawable area of canvas given some dimension and the margin"""
-    return max(max(canvas_dimension, 0) - 2 * max(margin, 0), 0)
-
-
-def rel_pos(x, x_min, x_max):
-    return (x - x_min) / (x_max - x_min)
-
-
-def canvas_coords2(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
-    drawing_area_width = drawing_area(canvas_width, margin_left_right)
-    drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
-    pass
+def drawing_area(canvas_size, margin):
+    """ Returns the drawable size of one dimension of the canvas given size and the margin"""
+    return max(max(canvas_size, 0) - 2 * max(margin, 0), 0)
 
 
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
     drawing_area_width = drawing_area(canvas_width, margin_left_right)
     drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
 
-    lats, longs = [[node[element] for node in road_map] for element in [2, 3]]
+    def lats(): return (city[2] for city in road_map)
 
-    lat_max, long_min = max(lats), min(longs)
+    def longs(): return (city[3] for city in road_map)
 
-    return [(drawing_area_width * (longs[i] - long_min) / (max(longs) - long_min) + margin_left_right,
-             drawing_area_height * (lat_max - lats[i]) / (lat_max - min(lats)) + margin_top_bottom)
-            for i in range(len(road_map))]
+    lat_max, lat_min = max(lats()), min(lats())
+    long_max, long_min = max(longs()), min(longs())
+
+    x_coords = (drawing_area_width * (long - long_min) / (long_max - long_min) + margin_left_right for long in longs())
+    y_coords = (drawing_area_height * (lat_max - lat) / (lat_max - lat_min) + margin_top_bottom for lat in lats())
+
+    return [(x, y) for x, y in zip(x_coords, y_coords)]
 
 
 def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
@@ -220,9 +224,7 @@ def visualise(road_map):
 
     re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom)
     Button(control_frame, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
-    window.lift()
-    window.attributes('-topmost', True)
-    window.after_idle(window.attributes, '-topmost', False)
+
     window.mainloop()
 
 
