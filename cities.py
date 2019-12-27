@@ -46,6 +46,7 @@ def print_cities(road_map):
     """
     Prints a list of cities, along with their locations. 
     Print only one or two digits after the decimal point.
+    Output function, so not unit-tested
     """
 
     print('State                City                  Latitude  Longitude')
@@ -66,17 +67,14 @@ def print_map(road_map):
     their connections, along with the cost for each connection
     and the total cost.
     """
-    n = len(road_map)
 
-    for i in range(n):
-        city1, city2, = road_map[i], road_map[(i + 1) % n]
+    total = 0
+    for city1, city2 in zip(road_map, road_map[1:] + [road_map[0]]):
         dist = distance(city1, city2)
         print(f'{city1[1]:>20.20} --> {city2[1]:<20.20}  {dist:>8.2f}')
-
-    dist = compute_total_distance(road_map)
-
+        total += dist
     print('                                           -------------')
-    print(f'                              Total Distance   {dist:8.2f}')
+    print(f'                              Total Distance   {total:8.2f}')
 
 
 def compute_total_distance(road_map):
@@ -85,8 +83,8 @@ def compute_total_distance(road_map):
     the connections in the `road_map`. Remember that it's a cycle, so that 
     (for example) in the initial `road_map`, Wyoming connects to Alabama...
     """
-    n = len(road_map)
-    return sum([distance(road_map[i], road_map[(i + 1) % n]) for i in range(n)])
+
+    return sum(distance(city1, city2) for city1, city2 in zip(road_map, road_map[1:]+[road_map[0]]))
 
 
 def swap_cities(road_map, index1, index2):
@@ -145,44 +143,57 @@ def drawing_area(canvas_size, margin):
 
 
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
+    """
+    Calculates the x and y coordinates of cities on the canvas and returns a list of tuples of the form (x,y)
+    """
+
     drawing_area_width = drawing_area(canvas_width, margin_left_right)
     drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
 
-    def lats(): return (city[2] for city in road_map)
+    lats = [city[2] for city in road_map]
+    longs = [city[3] for city in road_map]
 
-    def longs(): return (city[3] for city in road_map)
+    lat_max = max(lats)
+    lat_min = min(lats)
+    long_max = max(longs)
+    long_min = min(longs)
 
-    lat_max, lat_min = max(lats()), min(lats())
-    long_max, long_min = max(longs()), min(longs())
-
-    x_coords = (drawing_area_width * (long - long_min) / (long_max - long_min) + margin_left_right for long in longs())
-    y_coords = (drawing_area_height * (lat_max - lat) / (lat_max - lat_min) + margin_top_bottom for lat in lats())
+    x_coords = (drawing_area_width * (long - long_min) / (long_max - long_min) + margin_left_right for long in longs)
+    y_coords = (drawing_area_height * (lat_max - lat) / (lat_max - lat_min) + margin_top_bottom for lat in lats)
 
     return [(x, y) for x, y in zip(x_coords, y_coords)]
 
 
 def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
+    """
+    Fills the canvas with the route specified by the road map
+    not unit-tested as it is an output function.
+    """
     canvas.update()
     coords = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(),
                            margin_left_right, margin_top_bottom)
 
-    n = len(coords)
-
     canvas.delete('all')
 
-    for i in range(n):
-        canvas.create_line(coords[i][0], coords[i][1], coords[(i + 1) % n][0], coords[(i + 1) % n][1], fill="red")
+    for city0, city1 in zip(coords, coords[1:] + [coords[0]]):
+        canvas.create_line(city0[0], city0[1], city1[0], city1[1], fill="red")
 
     oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
 
     for x, y in coords:
-        canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width, fill='white',
-                           outline='black', width=1)
+        canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width,
+                           fill='white', outline='black', width=1)
 
 
 def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
     shuffle(road_map)
+
     road_map = find_best_cycle(road_map)
+
+    print('\nEstimated optimal cycle:\n')
+
+    print_map(road_map)
+
     draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
 
 
@@ -206,7 +217,13 @@ def get_file_name():
 
 
 def visualise(road_map):
-    canvas_height, canvas_width, margin_top_bottom, margin_left_right = 500, 500, 50, 50
+    """
+    shows the road_map visually in a Tkinter dialogue box
+    also provides a re-route button so user can get a different route if they want
+    """
+
+    canvas_height, canvas_width = 500, 500
+    margin_top_bottom, margin_left_right = 50, 50
 
     window = Tk()
     window.title("GUI")
