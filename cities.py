@@ -147,9 +147,9 @@ def gridline_spacing(min_coord, max_coord):
     return multiple * scale
 
 
-def gridline_locations(min_coord, max_coord, drawing_area, margin):
+def gridline_locations(min_coord, max_coord, drawing_area_extent, margin):
     spacing = gridline_spacing(min_coord, max_coord)
-    displayed_range = (max_coord - min_coord) * margin / drawing_area
+    displayed_range = (max_coord - min_coord) * margin / drawing_area_extent
 
     displayed_max = max_coord + displayed_range
     displayed_min = min_coord - displayed_range
@@ -161,6 +161,10 @@ def gridline_locations(min_coord, max_coord, drawing_area, margin):
     return [displayed_min + i * spacing for i in range(steps)]
 
 
+def coordinates(road_map):
+    return [city[2] for city in road_map], [city[3] for city in road_map]
+
+
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
     """
     Calculates the x and y coordinates of cities on the canvas and returns a list of tuples of the form (x,y)
@@ -169,8 +173,7 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
     drawing_area_width = drawing_area(canvas_width, margin_left_right)
     drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
 
-    lats = [city[2] for city in road_map]
-    longs = [city[3] for city in road_map]
+    lats, longs = coordinates(road_map)
 
     lat_max, lat_min = max(lats), min(lats)
     long_max, long_min = max(longs), min(longs)
