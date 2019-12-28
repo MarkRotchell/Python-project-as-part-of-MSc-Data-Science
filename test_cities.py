@@ -638,12 +638,71 @@ def test_coordinates_as_expected_2():
         assert long_received == pytest.approx(long_expected, abs=0.01)
 
 
+def test_coordinate_ranges_as_expected_1():
+    lats = [-41.485, 58.779, -68.5554, 85.7656, 20.7768, 5.9504]
+    longs = [17.5276, 151.4407, 1.0818, -164.2764, -20.0873, -14.2232]
+    expected = [-68.5554, 85.7656, -164.2764, 151.4407]
+    received = coordinate_ranges(lats, longs)
+    for extrema_expected, extrema_received in zip(expected, received):
+        assert extrema_received == pytest.approx(extrema_expected, abs=0.01)
+
+
+def test_coordinate_ranges_as_expected_2():
+    lats = [-7.8059, 84.4342, 49.3749, 18.8722]
+    longs = [115.7646, -40.435, 61.1988, -69.2588]
+    expected = [-7.8059, 84.4342, -69.2588, 115.7646]
+    received = coordinate_ranges(lats, longs)
+    for extrema_expected, extrema_received in zip(expected, received):
+        assert extrema_received == pytest.approx(extrema_expected, abs=0.01)
+
+
+def test_coordinate_ranges_as_expected_3():
+    lats = [-23.0642, 11.115, 55.5314, 51.5128, -30.6322, -60.7191, 28.4359, 79.8216]
+    longs = [113.1924, -36.8924, -25.2197, 96.5879, 146.6252, 8.9988, 61.4995, -38.4625]
+    expected = [-60.7191, 79.8216, -38.4625, 146.6252]
+    received = coordinate_ranges(lats, longs)
+    for extrema_expected, extrema_received in zip(expected, received):
+        assert extrema_received == pytest.approx(extrema_expected, abs=0.01)
+
+
+def test_coordinate_ranges_as_expected_4():
+    lats = [41.1296]
+    longs = [99.2094]
+    expected = [41.1296, 41.1296, 99.2094, 99.2094]
+    received = coordinate_ranges(lats, longs)
+    for extrema_expected, extrema_received in zip(expected, received):
+        assert extrema_received == pytest.approx(extrema_expected, abs=0.01)
+
+
+def test_coordinate_ranges_as_expected_5():
+    lats = [80.5122, -42.8356, -27.8176, 29.5528, -0.6372]
+    longs = [-26.1421, 4.5991, -68.875, 69.1392, -1.682]
+    expected = [-42.8356, 80.5122, -68.875, 69.1392]
+    received = coordinate_ranges(lats, longs)
+    for extrema_expected, extrema_received in zip(expected, received):
+        assert extrema_received == pytest.approx(extrema_expected, abs=0.01)
+
+
 def test_canvas_coords_as_expected_1():
     road_map = [("Kentucky", "Frankfort", 38.197274, -84.86311),
                 ("Delaware", "Dover", 39.161921, -75.526755),
                 ("Minnesota", "Saint Paul", 44.95, -93.094)]
     expected = [(237.414, 450.0), (450.0, 392.858), (50.0, 50.0)]
     received = canvas_coords(road_map, 500, 500, 50, 50)
+    for i in range(3):
+        assert received[i][0] == pytest.approx(expected[i][0], abs=0.01)
+        assert received[i][1] == pytest.approx(expected[i][1], abs=0.01)
+
+
+def test_coordinates_to_points_as_expected_1():
+    road_map = [("Kentucky", "Frankfort", 38.197274, -84.86311),
+                ("Delaware", "Dover", 39.161921, -75.526755),
+                ("Minnesota", "Saint Paul", 44.95, -93.094)]
+    lats, longs = coordinates(road_map)
+    lat_min, lat_max, long_min, long_max = coordinate_ranges(lats, longs)
+
+    expected = [(237.414, 450.0), (450.0, 392.858), (50.0, 50.0)]
+    received = coordinates_to_points(lats, longs, lat_min, lat_max, long_min, long_max, 500, 500, 50, 50)
     for i in range(3):
         assert received[i][0] == pytest.approx(expected[i][0], abs=0.01)
         assert received[i][1] == pytest.approx(expected[i][1], abs=0.01)

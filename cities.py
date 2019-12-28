@@ -165,6 +165,21 @@ def coordinates(road_map):
     return [city[2] for city in road_map], [city[3] for city in road_map]
 
 
+def coordinate_ranges(lats, longs):
+    return min(lats), max(lats), min(longs), max(longs)
+
+
+def coordinates_to_points(lats, longs, lat_min, lat_max, long_min, long_max, canvas_height,
+                          canvas_width, margin_top_bottom, margin_left_right):
+
+    drawing_area_width = drawing_area(canvas_width, margin_left_right)
+    drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
+    x_coords = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in longs)
+    y_coords = (latitude_to_y(lat, lat_min, lat_max, drawing_area_height, margin_top_bottom) for lat in lats)
+
+    return [(x, y) for x, y in zip(x_coords, y_coords)]
+
+
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
     """
     Calculates the x and y coordinates of cities on the canvas and returns a list of tuples of the form (x,y)
@@ -190,20 +205,18 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     not unit-tested as it is an output function.
     """
     canvas.update()
-    coords = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(), margin_left_right, margin_top_bottom)
     canvas.delete('all')
+
+    coords = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(), margin_left_right, margin_top_bottom)
 
     oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
     # temp
     drawing_area_width = drawing_area(canvas.winfo_width(), margin_left_right)
     drawing_area_height = drawing_area(canvas.winfo_height(), margin_top_bottom)
 
-    lats = [city[2] for city in road_map]
-    longs = [city[3] for city in road_map]
+    lats, longs = coordinates(road_map)
 
-    lat_max, lat_min = max(lats), min(lats)
-    long_max, long_min = max(longs), min(longs)
-    #temp
+    lat_min, lat_max, long_min, long_max = coordinate_ranges(lats, longs)
 
     for gridline in gridline_locations(lat_min, lat_max, drawing_area_height, margin_top_bottom):
         y = latitude_to_y(gridline, lat_min, lat_max, drawing_area_height, margin_top_bottom)
@@ -212,7 +225,7 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
 
     for gridline in gridline_locations(long_min, long_max, drawing_area_width, margin_left_right):
         x = longitude_to_x(gridline, long_min, long_max, drawing_area_width, margin_left_right)
-        canvas.create_line(x, 0 , x, canvas.winfo_height(), fill="lightblue1")
+        canvas.create_line(x, 0, x, canvas.winfo_height(), fill="lightblue1")
         canvas.create_text(x, 5, text=str(gridline), anchor=NW, font=('purisa', 8))
 
     for city0, city1 in zip(coords, coords[1:] + [coords[0]]):
