@@ -124,14 +124,6 @@ def drawing_area(canvas_size, margin):
     return max(max(canvas_size, 0) - 2 * max(margin, 0), 0)
 
 
-def longitude_to_x(longitude, long_min, long_max, drawing_area_width, margin_left_right):
-    return drawing_area_width * (longitude - long_min) / (long_max - long_min) + margin_left_right
-
-
-def latitude_to_y(latitude, lat_min, lat_max, drawing_area_height, margin_top_bottom):
-    return drawing_area_height * (lat_max - latitude) / (lat_max - lat_min) + margin_top_bottom
-
-
 def gridline_spacing(min_coord, max_coord):
     range_coord = max_coord - min_coord
 
@@ -169,11 +161,16 @@ def coordinate_ranges(lats, longs):
     return min(lats), max(lats), min(longs), max(longs)
 
 
-def coordinates_to_points(lats, longs, lat_min, lat_max, long_min, long_max, canvas_height,
-                          canvas_width, margin_top_bottom, margin_left_right):
+def longitude_to_x(longitude, long_min, long_max, drawing_area_width, margin_left_right):
+    return drawing_area_width * (longitude - long_min) / (long_max - long_min) + margin_left_right
 
-    drawing_area_width = drawing_area(canvas_width, margin_left_right)
-    drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
+
+def latitude_to_y(latitude, lat_min, lat_max, drawing_area_height, margin_top_bottom):
+    return drawing_area_height * (lat_max - latitude) / (lat_max - lat_min) + margin_top_bottom
+
+
+def coordinates_to_points(lats, longs, lat_min, lat_max, long_min, long_max, drawing_area_height,
+                          drawing_area_width, margin_top_bottom, margin_left_right):
     x_coords = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in longs)
     y_coords = (latitude_to_y(lat, lat_min, lat_max, drawing_area_height, margin_top_bottom) for lat in lats)
 
@@ -207,10 +204,8 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     canvas.update()
     canvas.delete('all')
 
-    coords = canvas_coords(road_map, canvas.winfo_height(), canvas.winfo_width(), margin_left_right, margin_top_bottom)
-
     oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
-    # temp
+
     drawing_area_width = drawing_area(canvas.winfo_width(), margin_left_right)
     drawing_area_height = drawing_area(canvas.winfo_height(), margin_top_bottom)
 
@@ -218,24 +213,27 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
 
     lat_min, lat_max, long_min, long_max = coordinate_ranges(lats, longs)
 
+    points = coordinates_to_points(lats, longs, lat_min, lat_max, long_min, long_max, drawing_area_height,
+                                   drawing_area_width, margin_top_bottom, margin_left_right)
+
     for gridline in gridline_locations(lat_min, lat_max, drawing_area_height, margin_top_bottom):
         y = latitude_to_y(gridline, lat_min, lat_max, drawing_area_height, margin_top_bottom)
         canvas.create_line(0, y, canvas.winfo_width(), y, fill="lightblue1")
-        canvas.create_text(0+5, y - 5, text=str(gridline), anchor=SW, font=('purisa', 8))
+        canvas.create_text(0 + 5, y - 5, text=str(gridline), anchor=SW, font=('purisa', 8))
 
     for gridline in gridline_locations(long_min, long_max, drawing_area_width, margin_left_right):
         x = longitude_to_x(gridline, long_min, long_max, drawing_area_width, margin_left_right)
         canvas.create_line(x, 0, x, canvas.winfo_height(), fill="lightblue1")
         canvas.create_text(x, 5, text=str(gridline), anchor=NW, font=('purisa', 8))
 
-    for city0, city1 in zip(coords, coords[1:] + [coords[0]]):
+    for city0, city1 in zip(points, points[1:] + [points[0]]):
         canvas.create_line(city0[0], city0[1], city1[0], city1[1], fill="red")
 
-    for x, y in coords:
+    for x, y in points:
         canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width,
                            fill='white', outline='black', width=1)
 
-    for i, (x, y) in enumerate(coords):
+    for i, (x, y) in enumerate(points):
         canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=('purisa', 8))
 
 
