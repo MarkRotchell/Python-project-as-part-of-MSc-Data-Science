@@ -324,19 +324,19 @@ def test_longitude_to_x_as_expected_1():
 
 
 def test_longitude_to_x_as_expected_2():
-    assert longitude_to_x(101.71, 95.38, 127.72, 100, 20) == pytest.approx(39.57,abs=0.1)
+    assert longitude_to_x(101.71, 95.38, 127.72, 100, 20) == pytest.approx(39.57, abs=0.1)
 
 
 def test_longitude_to_x_as_expected_3():
-    assert longitude_to_x(33.3, -42.12, 127.76, 300, 10) == pytest.approx(143.2,abs=0.1)
+    assert longitude_to_x(33.3, -42.12, 127.76, 300, 10) == pytest.approx(143.2, abs=0.1)
 
 
 def test_longitude_to_x_as_expected_4():
-    assert longitude_to_x(25.06, 22.15, 147.74, 1000, 80) == pytest.approx(103.19,abs=0.1)
+    assert longitude_to_x(25.06, 22.15, 147.74, 1000, 80) == pytest.approx(103.19, abs=0.1)
 
 
 def test_longitude_to_x_as_expected_5():
-    assert longitude_to_x(-53.08, -142.66, -0.42, 600, 200) == pytest.approx(577.86,abs=0.1)
+    assert longitude_to_x(-53.08, -142.66, -0.42, 600, 200) == pytest.approx(577.86, abs=0.1)
 
 
 def test_longitude_to_x_as_expected_6():
@@ -364,31 +364,31 @@ def test_latitude_to_y_as_expected_1():
 
 
 def test_latitude_to_y_as_expected_2():
-    assert latitude_to_y(166.93, 126.86, 171.29, 100, 20) == pytest.approx(29.81,abs=0.1)
+    assert latitude_to_y(166.93, 126.86, 171.29, 100, 20) == pytest.approx(29.81, abs=0.1)
 
 
 def test_latitude_to_y_as_expected_3():
-    assert latitude_to_y(66.17, -72.24, 122.37, 300, 10) == pytest.approx(96.63,abs=0.1)
+    assert latitude_to_y(66.17, -72.24, 122.37, 300, 10) == pytest.approx(96.63, abs=0.1)
 
 
 def test_latitude_to_y_as_expected_4():
-    assert latitude_to_y(119.61, -71.19, 167.74, 1000, 80) == pytest.approx(281.43,abs=0.1)
+    assert latitude_to_y(119.61, -71.19, 167.74, 1000, 80) == pytest.approx(281.43, abs=0.1)
 
 
 def test_latitude_to_y_as_expected_5():
-    assert latitude_to_y(-38.28, -83.33, 114.53, 600, 200) == pytest.approx(663.38,abs=0.1)
+    assert latitude_to_y(-38.28, -83.33, 114.53, 600, 200) == pytest.approx(663.38, abs=0.1)
 
 
 def test_latitude_to_y_as_expected_6():
-    assert latitude_to_y(86.35, -102.19, 172.43, 400, 50) == pytest.approx(175.38,abs=0.1)
+    assert latitude_to_y(86.35, -102.19, 172.43, 400, 50) == pytest.approx(175.38, abs=0.1)
 
 
 def test_latitude_to_y_as_expected_7():
-    assert latitude_to_y(-49.89, -55.83, -28.52, 100, 20) == pytest.approx(98.24,abs=0.1)
+    assert latitude_to_y(-49.89, -55.83, -28.52, 100, 20) == pytest.approx(98.24, abs=0.1)
 
 
 def test_latitude_to_y_as_expected_8():
-    assert latitude_to_y(25.31, -7.52, 117.59, 300, 10) == pytest.approx(231.28,abs=0.1)
+    assert latitude_to_y(25.31, -7.52, 117.59, 300, 10) == pytest.approx(231.28, abs=0.1)
 
 
 def test_gridline_spacing_as_expected_1():
@@ -429,6 +429,46 @@ def test_gridline_spacing_returns_float_1():
 
 def test_gridline_spacing_returns_float_2():
     assert isinstance(gridline_spacing(-32.44, 52.62), float)
+
+
+def test_gridline_locations_as_expected_1():
+    expected = list(range(-160, -50, 10))
+    received = gridline_locations(-157.83, -69.77, 400, 50)
+    assert len(received) == len(expected)
+    for coord_expected, coord_received in zip(expected, received):
+        assert coord_expected == pytest.approx(coord_received, abs=0.01)
+
+
+def test_gridline_locations_as_expected_2():
+    expected = [9.8, 10, 10.2, 10.4, 10.6, 10.8, 11, 11.2]
+    received = gridline_locations(10, 11, 300, 100)
+    assert len(received) == len(expected)
+    for coord_expected, coord_received in zip(expected, received):
+        assert coord_expected == pytest.approx(coord_received, abs=0.01)
+
+
+def test_gridline_locations_as_expected_3():
+    expected = [-40, -20, 0, 20, 40, 60, 80, 100]
+    received = gridline_locations(-25, 85, 300, 50)
+    assert len(received) == len(expected)
+    for coord_expected, coord_received in zip(expected, received):
+        assert coord_expected == pytest.approx(coord_received, abs=0.01)
+
+
+def test_gridline_locations_as_expected_4():
+    expected = [-56, -55, -54, -53, -52, -51, -50, -49]
+    received = gridline_locations(-55, -50, 200, 50)
+    assert len(received) == len(expected)
+    for coord_expected, coord_received in zip(expected, received):
+        assert coord_expected == pytest.approx(coord_received, abs=0.01)
+
+
+def test_gridline_locations_as_expected_5():
+    expected = [69.85, 69.855, 69.86, 69.865, 69.87, 69.875, 69.88]
+    received = gridline_locations(69.85, 69.88, 800, 50)
+    assert len(received) == len(expected)
+    for coord_expected, coord_received in zip(expected, received):
+        assert coord_expected == pytest.approx(coord_received, abs=0.01)
 
 
 def test_canvas_coords_as_expected_1():

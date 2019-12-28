@@ -73,7 +73,7 @@ def compute_total_distance(road_map):
     """
     Returns, as a floating point number, the sum of the distances of all the connections in the `road_map`.
     """
-    return sum(distance(city1, city2) for city1, city2 in zip(road_map, road_map[1:]+[road_map[0]]))
+    return sum(distance(city1, city2) for city1, city2 in zip(road_map, road_map[1:] + [road_map[0]]))
 
 
 def swap_cities(road_map, index1, index2):
@@ -147,6 +147,20 @@ def gridline_spacing(min_coord, max_coord):
     return multiple * scale
 
 
+def gridline_locations(min_coord, max_coord, drawing_area, margin):
+    spacing = gridline_spacing(min_coord, max_coord)
+    displayed_range = (max_coord - min_coord) * margin / drawing_area
+
+    displayed_max = max_coord + displayed_range
+    displayed_min = min_coord - displayed_range
+
+    displayed_max -= (displayed_max % spacing)
+    displayed_min += spacing - (displayed_min % spacing)
+    steps = round((displayed_max - displayed_min) / spacing) + 1
+
+    return [displayed_min + i * spacing for i in range(steps)]
+
+
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
     """
     Calculates the x and y coordinates of cities on the canvas and returns a list of tuples of the form (x,y)
@@ -158,7 +172,7 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
     lats = [city[2] for city in road_map]
     longs = [city[3] for city in road_map]
 
-    lat_max, lat_min = max(lats),  min(lats)
+    lat_max, lat_min = max(lats), min(lats)
     long_max, long_min = max(longs), min(longs)
 
     x_coords = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in longs)
@@ -178,8 +192,6 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
 
     oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
 
-    for x in range(0,501,50):
-        canvas.create_line(x, 0, x, 500, fill="blue")
 
     for city0, city1 in zip(coords, coords[1:] + [coords[0]]):
         canvas.create_line(city0[0], city0[1], city1[0], city1[1], fill="red")
@@ -189,7 +201,7 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
                            fill='white', outline='black', width=1)
 
     for i, (x, y) in enumerate(coords):
-        canvas.create_text(x, y-5, text=str(i+1), anchor=S, font=('purisa',8))
+        canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=('purisa', 8))
 
 
 def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
