@@ -191,7 +191,26 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     canvas.delete('all')
 
     oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
+    # temp
+    drawing_area_width = drawing_area(canvas.winfo_width(), margin_left_right)
+    drawing_area_height = drawing_area(canvas.winfo_height(), margin_top_bottom)
 
+    lats = [city[2] for city in road_map]
+    longs = [city[3] for city in road_map]
+
+    lat_max, lat_min = max(lats), min(lats)
+    long_max, long_min = max(longs), min(longs)
+    #temp
+
+    for gridline in gridline_locations(lat_min, lat_max, drawing_area_height, margin_top_bottom):
+        y = latitude_to_y(gridline, lat_min, lat_max, drawing_area_height, margin_top_bottom)
+        canvas.create_line(0, y, canvas.winfo_width(), y, fill="lightblue1")
+        canvas.create_text(0+5, y - 5, text=str(gridline), anchor=SW, font=('purisa', 8))
+
+    for gridline in gridline_locations(long_min, long_max, drawing_area_width, margin_left_right):
+        x = longitude_to_x(gridline, long_min, long_max, drawing_area_width, margin_left_right)
+        canvas.create_line(x, 0 , x, canvas.winfo_height(), fill="lightblue1")
+        canvas.create_text(x, 5, text=str(gridline), anchor=NW, font=('purisa', 8))
 
     for city0, city1 in zip(coords, coords[1:] + [coords[0]]):
         canvas.create_line(city0[0], city0[1], city1[0], city1[1], fill="red")
@@ -237,7 +256,7 @@ def visualise(road_map):
     output_frame = Frame(window)
     output_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
 
-    canvas = Canvas(output_frame, width=canvas_width, height=canvas_height)
+    canvas = Canvas(output_frame, width=canvas_width, height=canvas_height, bg='white')
     canvas.pack()
 
     draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
