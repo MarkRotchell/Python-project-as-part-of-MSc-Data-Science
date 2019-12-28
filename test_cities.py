@@ -359,6 +359,38 @@ def test_longitude_to_x_returns_float_2():
     assert isinstance(longitude_to_x(105.62, 95.25, 149.79, 600, 200), float)
 
 
+def test_latitude_to_y_as_expected_1():
+    assert latitude_to_y(92.38, 56.59, 122.15, 400, 50) == pytest.approx(231.62, abs=0.1)
+
+
+def test_latitude_to_y_as_expected_2():
+    assert latitude_to_y(166.93, 126.86, 171.29, 100, 20) == pytest.approx(29.81,abs=0.1)
+
+
+def test_latitude_to_y_as_expected_3():
+    assert latitude_to_y(66.17, -72.24, 122.37, 300, 10) == pytest.approx(96.63,abs=0.1)
+
+
+def test_latitude_to_y_as_expected_4():
+    assert latitude_to_y(119.61, -71.19, 167.74, 1000, 80) == pytest.approx(281.43,abs=0.1)
+
+
+def test_latitude_to_y_as_expected_5():
+    assert latitude_to_y(-38.28, -83.33, 114.53, 600, 200) == pytest.approx(663.38,abs=0.1)
+
+
+def test_latitude_to_y_as_expected_6():
+    assert latitude_to_y(86.35, -102.19, 172.43, 400, 50) == pytest.approx(175.38,abs=0.1)
+
+
+def test_latitude_to_y_as_expected_7():
+    assert latitude_to_y(-49.89, -55.83, -28.52, 100, 20) == pytest.approx(98.24,abs=0.1)
+
+
+def test_latitude_to_y_as_expected_8():
+    assert latitude_to_y(25.31, -7.52, 117.59, 300, 10) == pytest.approx(231.28,abs=0.1)
+
+
 def test_canvas_coords_as_expected_1():
     road_map = [("Kentucky", "Frankfort", 38.197274, -84.86311),
                 ("Delaware", "Dover", 39.161921, -75.526755),

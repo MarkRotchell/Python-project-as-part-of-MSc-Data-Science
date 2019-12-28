@@ -128,6 +128,10 @@ def longitude_to_x(longitude, long_min, long_max, drawing_area_width, margin_lef
     return drawing_area_width * (longitude - long_min) / (long_max - long_min) + margin_left_right
 
 
+def latitude_to_y(latitude, lat_min, lat_max, drawing_area_height, margin_top_bottom):
+    return drawing_area_height * (lat_max - latitude) / (lat_max - lat_min) + margin_top_bottom
+
+
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
     """
     Calculates the x and y coordinates of cities on the canvas and returns a list of tuples of the form (x,y)
@@ -143,7 +147,7 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
     long_max, long_min = max(longs), min(longs)
 
     x_coords = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in longs)
-    y_coords = (drawing_area_height * (lat_max - lat) / (lat_max - lat_min) + margin_top_bottom for lat in lats)
+    y_coords = (latitude_to_y(lat, lat_min, lat_max, drawing_area_height, margin_top_bottom) for lat in lats)
 
     return [(x, y) for x, y in zip(x_coords, y_coords)]
 
