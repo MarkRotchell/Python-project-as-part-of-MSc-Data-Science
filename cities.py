@@ -182,24 +182,28 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     Fills the canvas with the route specified by the road map
     not unit-tested as it is an output function.
     """
+    canvas.update()
+    canvas.delete('all')
 
-    drawing_area_width = drawing_area(canvas.winfo_width(), margin_left_right)
-    drawing_area_height = drawing_area(canvas.winfo_height(), margin_top_bottom)
+    canvas_width = canvas.winfo_width()
+    canvas_height = canvas.winfo_height()
+
+    drawing_area_width = drawing_area(canvas_width, margin_left_right)
+    drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
 
     lats, longs = coordinates(road_map)
 
     lat_min, lat_max, long_min, long_max = coordinate_ranges(lats, longs)
 
     lat_gridlines = gridline_coords(lat_min, lat_max, drawing_area_height, margin_top_bottom)
+
     long_gridlines = gridline_coords(long_min, long_max, drawing_area_width, margin_left_right)
 
     y_gridlines = (latitude_to_y(lat, lat_min, lat_max, drawing_area_height, margin_top_bottom) for lat in
                    lat_gridlines)
+
     x_gridlines = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in
                    long_gridlines)
-
-    canvas.update()
-    canvas.delete('all')
 
     for lat, y in zip(lat_gridlines, y_gridlines):
         canvas.create_line(0, y, canvas.winfo_width(), y, fill="lightblue1")
@@ -223,7 +227,7 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
         canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=('purisa', 8))
 
 
-def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
+def re_route(road_map, canvas, margin_left_right, margin_top_bottom, listbox):
     """
     shuffles the road_map, recalculates the route, prints and re-draws the route.
     """
@@ -237,6 +241,17 @@ def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
 
     draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
 
+    show_cities(road_map, listbox)
+
+
+def show_cities(road_map, listbox):
+    listbox.delete(0, END)
+
+    listbox.insert(0, '     State                City                  Latitude  Longitude')
+
+    for i, (state, city, lat, long) in enumerate(road_map):
+        listbox.insert(i+1, f'{i+1:<4} {state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}')
+
 
 def visualise(road_map):
     """
@@ -244,7 +259,7 @@ def visualise(road_map):
     also provides a re-route button so user can get a different route if they want
     """
 
-    canvas_height, canvas_width = 1000, 1000
+    canvas_height, canvas_width = 800, 800
     margin_top_bottom, margin_left_right = 50, 50
 
     window = Tk()
@@ -256,12 +271,25 @@ def visualise(road_map):
     output_frame = Frame(window)
     output_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
 
+    text_frame = Frame(window)
+    text_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
+
+    scrollbar = Scrollbar(text_frame)
+    scrollbar.pack(side=RIGHT, fill=Y)
+
+    listbox = Listbox(text_frame, yscrollcommand=scrollbar.set, height=20, width=70, font='TkFixedFont')
+    listbox.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
+
+    scrollbar.config(command=listbox.yview)
+
     canvas = Canvas(output_frame, width=canvas_width, height=canvas_height, bg='white')
     canvas.pack()
 
     draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
 
-    re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom)
+    show_cities(road_map, listbox)
+
+    re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom, listbox)
     Button(control_frame, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
 
     window.mainloop()
