@@ -139,7 +139,7 @@ def gridline_spacing(min_coord, max_coord):
     return multiple * scale
 
 
-def gridline_locations(min_coord, max_coord, drawing_area_extent, margin):
+def gridline_coords(min_coord, max_coord, drawing_area_extent, margin):
     spacing = gridline_spacing(min_coord, max_coord)
     displayed_range = (max_coord - min_coord) * margin / drawing_area_extent
 
@@ -177,34 +177,11 @@ def coordinates_to_points(lats, longs, lat_min, lat_max, long_min, long_max, dra
     return [(x, y) for x, y in zip(x_coords, y_coords)]
 
 
-def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
-    """
-    Calculates the x and y coordinates of cities on the canvas and returns a list of tuples of the form (x,y)
-    """
-
-    drawing_area_width = drawing_area(canvas_width, margin_left_right)
-    drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
-
-    lats, longs = coordinates(road_map)
-
-    lat_max, lat_min = max(lats), min(lats)
-    long_max, long_min = max(longs), min(longs)
-
-    x_coords = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in longs)
-    y_coords = (latitude_to_y(lat, lat_min, lat_max, drawing_area_height, margin_top_bottom) for lat in lats)
-
-    return [(x, y) for x, y in zip(x_coords, y_coords)]
-
-
 def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     """
     Fills the canvas with the route specified by the road map
     not unit-tested as it is an output function.
     """
-    canvas.update()
-    canvas.delete('all')
-
-    oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
 
     drawing_area_width = drawing_area(canvas.winfo_width(), margin_left_right)
     drawing_area_height = drawing_area(canvas.winfo_height(), margin_top_bottom)
@@ -213,27 +190,36 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
 
     lat_min, lat_max, long_min, long_max = coordinate_ranges(lats, longs)
 
+    lat_gridlines = gridline_coords(lat_min, lat_max, drawing_area_height, margin_top_bottom)
+    long_gridlines = gridline_coords(long_min, long_max, drawing_area_width, margin_left_right)
+
+    y_gridlines = (latitude_to_y(lat, lat_min, lat_max, drawing_area_height, margin_top_bottom) for lat in
+                   lat_gridlines)
+    x_gridlines = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in
+                   long_gridlines)
+
+    canvas.update()
+    canvas.delete('all')
+
+    for lat, y in zip(lat_gridlines, y_gridlines):
+        canvas.create_line(0, y, canvas.winfo_width(), y, fill="lightblue1")
+        canvas.create_text(5, y - 5, text=str(lat), anchor=SW, font=('purisa', 8))
+
+    for long, x in zip(long_gridlines, x_gridlines):
+        canvas.create_line(x, 0, x, canvas.winfo_height(), fill="lightblue1")
+        canvas.create_text(x, 5, text=str(long), anchor=NW, font=('purisa', 8))
+
     points = coordinates_to_points(lats, longs, lat_min, lat_max, long_min, long_max, drawing_area_height,
                                    drawing_area_width, margin_top_bottom, margin_left_right)
-
-    for gridline in gridline_locations(lat_min, lat_max, drawing_area_height, margin_top_bottom):
-        y = latitude_to_y(gridline, lat_min, lat_max, drawing_area_height, margin_top_bottom)
-        canvas.create_line(0, y, canvas.winfo_width(), y, fill="lightblue1")
-        canvas.create_text(0 + 5, y - 5, text=str(gridline), anchor=SW, font=('purisa', 8))
-
-    for gridline in gridline_locations(long_min, long_max, drawing_area_width, margin_left_right):
-        x = longitude_to_x(gridline, long_min, long_max, drawing_area_width, margin_left_right)
-        canvas.create_line(x, 0, x, canvas.winfo_height(), fill="lightblue1")
-        canvas.create_text(x, 5, text=str(gridline), anchor=NW, font=('purisa', 8))
 
     for city0, city1 in zip(points, points[1:] + [points[0]]):
         canvas.create_line(city0[0], city0[1], city1[0], city1[1], fill="red")
 
-    for x, y in points:
-        canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width,
-                           fill='white', outline='black', width=1)
+    oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
 
     for i, (x, y) in enumerate(points):
+        canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width,
+                           fill='white', outline='black', width=1)
         canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=('purisa', 8))
 
 

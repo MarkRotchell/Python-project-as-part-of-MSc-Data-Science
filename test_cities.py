@@ -433,7 +433,7 @@ def test_gridline_spacing_returns_float_2():
 
 def test_gridline_locations_as_expected_1():
     expected = list(range(-160, -50, 10))
-    received = gridline_locations(-157.83, -69.77, 400, 50)
+    received = gridline_coords(-157.83, -69.77, 400, 50)
     assert len(received) == len(expected)
     for coord_expected, coord_received in zip(expected, received):
         assert coord_expected == pytest.approx(coord_received, abs=0.01)
@@ -441,7 +441,7 @@ def test_gridline_locations_as_expected_1():
 
 def test_gridline_locations_as_expected_2():
     expected = [9.8, 10, 10.2, 10.4, 10.6, 10.8, 11, 11.2]
-    received = gridline_locations(10, 11, 300, 100)
+    received = gridline_coords(10, 11, 300, 100)
     assert len(received) == len(expected)
     for coord_expected, coord_received in zip(expected, received):
         assert coord_expected == pytest.approx(coord_received, abs=0.01)
@@ -449,7 +449,7 @@ def test_gridline_locations_as_expected_2():
 
 def test_gridline_locations_as_expected_3():
     expected = [-40, -20, 0, 20, 40, 60, 80, 100]
-    received = gridline_locations(-25, 85, 300, 50)
+    received = gridline_coords(-25, 85, 300, 50)
     assert len(received) == len(expected)
     for coord_expected, coord_received in zip(expected, received):
         assert coord_expected == pytest.approx(coord_received, abs=0.01)
@@ -457,7 +457,7 @@ def test_gridline_locations_as_expected_3():
 
 def test_gridline_locations_as_expected_4():
     expected = [-56, -55, -54, -53, -52, -51, -50, -49]
-    received = gridline_locations(-55, -50, 200, 50)
+    received = gridline_coords(-55, -50, 200, 50)
     assert len(received) == len(expected)
     for coord_expected, coord_received in zip(expected, received):
         assert coord_expected == pytest.approx(coord_received, abs=0.01)
@@ -465,7 +465,7 @@ def test_gridline_locations_as_expected_4():
 
 def test_gridline_locations_as_expected_5():
     expected = [69.85, 69.855, 69.86, 69.865, 69.87, 69.875, 69.88]
-    received = gridline_locations(69.85, 69.88, 800, 50)
+    received = gridline_coords(69.85, 69.88, 800, 50)
     assert len(received) == len(expected)
     for coord_expected, coord_received in zip(expected, received):
         assert coord_expected == pytest.approx(coord_received, abs=0.01)
