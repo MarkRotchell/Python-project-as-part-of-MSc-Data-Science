@@ -319,6 +319,46 @@ def test_drawing_area_negative_margin_as_zero():
     assert drawing_area(100, -10) == 100
 
 
+def test_longitude_to_x_as_expected_1():
+    assert longitude_to_x(-100, -157.83, -69.77, 400, 50) == pytest.approx(312.68, abs=0.1)
+
+
+def test_longitude_to_x_as_expected_2():
+    assert longitude_to_x(101.71, 95.38, 127.72, 100, 20) == pytest.approx(39.57,abs=0.1)
+
+
+def test_longitude_to_x_as_expected_3():
+    assert longitude_to_x(33.3, -42.12, 127.76, 300, 10) == pytest.approx(143.2,abs=0.1)
+
+
+def test_longitude_to_x_as_expected_4():
+    assert longitude_to_x(25.06, 22.15, 147.74, 1000, 80) == pytest.approx(103.19,abs=0.1)
+
+
+def test_longitude_to_x_as_expected_5():
+    assert longitude_to_x(-53.08, -142.66, -0.42, 600, 200) == pytest.approx(577.86,abs=0.1)
+
+
+def test_longitude_to_x_as_expected_6():
+    assert longitude_to_x(-146.88, -153.81, -37.01, 400, 50) == pytest.approx(73.72, abs=0.1)
+
+
+def test_longitude_to_x_as_expected_7():
+    assert longitude_to_x(28.75, 0.74, 122.11, 100, 20) == pytest.approx(43.08, abs=0.1)
+
+
+def test_longitude_to_x_as_expected_8():
+    assert longitude_to_x(147.12, 31.18, 164.38, 300, 10) == pytest.approx(271.12, abs=0.1)
+
+
+def test_longitude_to_x_returns_float_1():
+    assert isinstance(longitude_to_x(155.38, 137.58, 160.34, 1000, 80), float)
+
+
+def test_longitude_to_x_returns_float_2():
+    assert isinstance(longitude_to_x(105.62, 95.25, 149.79, 600, 200), float)
+
+
 def test_canvas_coords_as_expected_1():
     road_map = [("Kentucky", "Frankfort", 38.197274, -84.86311),
                 ("Delaware", "Dover", 39.161921, -75.526755),

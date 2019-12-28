@@ -124,6 +124,10 @@ def drawing_area(canvas_size, margin):
     return max(max(canvas_size, 0) - 2 * max(margin, 0), 0)
 
 
+def longitude_to_x(longitude, long_min, long_max, drawing_area_width, margin_left_right):
+    return drawing_area_width * (longitude - long_min) / (long_max - long_min) + margin_left_right
+
+
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):
     """
     Calculates the x and y coordinates of cities on the canvas and returns a list of tuples of the form (x,y)
@@ -138,7 +142,7 @@ def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, marg
     lat_max, lat_min = max(lats),  min(lats)
     long_max, long_min = max(longs), min(longs)
 
-    x_coords = (drawing_area_width * (long - long_min) / (long_max - long_min) + margin_left_right for long in longs)
+    x_coords = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in longs)
     y_coords = (drawing_area_height * (lat_max - lat) / (lat_max - lat_min) + margin_top_bottom for lat in lats)
 
     return [(x, y) for x, y in zip(x_coords, y_coords)]
@@ -155,12 +159,18 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
 
     oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
 
+    for x in range(0,501,50):
+        canvas.create_line(x, 0, x, 500, fill="blue")
+
     for city0, city1 in zip(coords, coords[1:] + [coords[0]]):
         canvas.create_line(city0[0], city0[1], city1[0], city1[1], fill="red")
 
     for x, y in coords:
         canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width,
                            fill='white', outline='black', width=1)
+
+    for i, (x, y) in enumerate(coords):
+        canvas.create_text(x, y-5, text=str(i+1), anchor=S, font=('purisa',8))
 
 
 def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
@@ -176,6 +186,35 @@ def re_route(road_map, canvas, margin_left_right, margin_top_bottom):
     print_map(road_map)
 
     draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
+
+
+def visualise(road_map):
+    """
+    shows the road_map visually in a Tkinter dialogue box
+    also provides a re-route button so user can get a different route if they want
+    """
+
+    canvas_height, canvas_width = 1000, 1000
+    margin_top_bottom, margin_left_right = 50, 50
+
+    window = Tk()
+    window.title("GUI")
+
+    control_frame = Frame(window)
+    control_frame.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
+
+    output_frame = Frame(window)
+    output_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
+
+    canvas = Canvas(output_frame, width=canvas_width, height=canvas_height)
+    canvas.pack()
+
+    draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
+
+    re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom)
+    Button(control_frame, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
+
+    window.mainloop()
 
 
 def user_wants_to_load_a_different_file(question):
@@ -200,35 +239,6 @@ def get_file_name():
     root.destroy()
 
     return path
-
-
-def visualise(road_map):
-    """
-    shows the road_map visually in a Tkinter dialogue box
-    also provides a re-route button so user can get a different route if they want
-    """
-
-    canvas_height, canvas_width = 500, 500
-    margin_top_bottom, margin_left_right = 50, 50
-
-    window = Tk()
-    window.title("GUI")
-
-    control_frame = Frame(window)
-    control_frame.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
-
-    output_frame = Frame(window)
-    output_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
-
-    canvas = Canvas(output_frame, width=canvas_width, height=canvas_height)
-    canvas.pack()
-
-    draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
-
-    re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom)
-    Button(control_frame, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
-
-    window.mainloop()
 
 
 def main():
