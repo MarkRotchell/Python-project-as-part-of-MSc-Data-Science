@@ -1,4 +1,4 @@
-from math import sqrt
+from math import sqrt, log10
 from random import randint, shuffle
 from tkinter import filedialog, messagebox
 from tkinter import *
@@ -130,6 +130,21 @@ def longitude_to_x(longitude, long_min, long_max, drawing_area_width, margin_lef
 
 def latitude_to_y(latitude, lat_min, lat_max, drawing_area_height, margin_top_bottom):
     return drawing_area_height * (lat_max - latitude) / (lat_max - lat_min) + margin_top_bottom
+
+
+def gridline_spacing(min_coord, max_coord):
+    range_coord = max_coord - min_coord
+
+    scale = 10 ** (log10(range_coord / 5) // 1)
+    multiple = 10 ** (log10(range_coord / 5) % 1)
+
+    if multiple < 2:
+        multiple = 1
+    elif multiple < 5:
+        multiple = 2
+    else:
+        multiple = 5
+    return multiple * scale
 
 
 def canvas_coords(road_map, canvas_height, canvas_width, margin_top_bottom, margin_left_right):

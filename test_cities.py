@@ -391,6 +391,46 @@ def test_latitude_to_y_as_expected_8():
     assert latitude_to_y(25.31, -7.52, 117.59, 300, 10) == pytest.approx(231.28,abs=0.1)
 
 
+def test_gridline_spacing_as_expected_1():
+    assert gridline_spacing(-170.88, -170.78) == pytest.approx(0.02, abs=0.1)
+
+
+def test_gridline_spacing_as_expected_2():
+    assert gridline_spacing(-166.78, -166.48) == pytest.approx(0.05, abs=0.1)
+
+
+def test_gridline_spacing_as_expected_3():
+    assert gridline_spacing(156.75, 157.37) == pytest.approx(0.1, abs=0.1)
+
+
+def test_gridline_spacing_as_expected_4():
+    assert gridline_spacing(-122.52, -120.67) == pytest.approx(0.2, abs=0.1)
+
+
+def test_gridline_spacing_as_expected_5():
+    assert gridline_spacing(35.2, 44.74) == pytest.approx(1, abs=0.1)
+
+
+def test_gridline_spacing_as_expected_6():
+    assert gridline_spacing(-12.75, 10.99) == pytest.approx(2, abs=0.1)
+
+
+def test_gridline_spacing_as_expected_7():
+    assert gridline_spacing(62.1, 111.32) == pytest.approx(5, abs=0.1)
+
+
+def test_gridline_spacing_as_expected_8():
+    assert gridline_spacing(49.18, 134.24) == pytest.approx(10, abs=0.1)
+
+
+def test_gridline_spacing_returns_float_1():
+    assert isinstance(gridline_spacing(-182.24, -158.5), float)
+
+
+def test_gridline_spacing_returns_float_2():
+    assert isinstance(gridline_spacing(-32.44, 52.62), float)
+
+
 def test_canvas_coords_as_expected_1():
     road_map = [("Kentucky", "Frankfort", 38.197274, -84.86311),
                 ("Delaware", "Dover", 39.161921, -75.526755),
