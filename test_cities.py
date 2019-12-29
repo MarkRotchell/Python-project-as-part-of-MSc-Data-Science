@@ -1,5 +1,6 @@
 import pytest
 import random
+import types
 
 from cities import *
 
@@ -798,3 +799,597 @@ def test_coordinates_to_points_as_expected_3():
     for i in range(3):
         assert received[i][0] == pytest.approx(expected[i][0], abs=0.01)
         assert received[i][1] == pytest.approx(expected[i][1], abs=0.01)
+
+
+""" Test Case 1 """
+
+
+@pytest.fixture
+def road_map_1():
+    return [('Minnesota', 'Saint Paul', 44.95, -93.094),
+            ('Mississippi', 'Jackson', 32.32, -90.207),
+            ('Missouri', 'Jefferson City', 38.572954, -92.189283),
+            ('Montana', 'Helana', 46.595805, -112.027031),
+            ('Nebraska', 'Lincoln', 40.809868, -96.675345),
+            ('Nevada', 'Carson City', 39.160949, -119.753877),
+            ('New Hampshire', 'Concord', 43.220093, -71.549127),
+            ('New Jersey', 'Trenton', 40.221741, -74.756138),
+            ('New Mexico', 'Santa Fe', 35.667231, -105.964575),
+            ('New York', 'Albany', 42.659829, -73.781339),
+            ('North Carolina', 'Raleigh', 35.771, -78.638),
+            ('North Dakota', 'Bismarck', 48.813343, -100.779004)]
+
+
+@pytest.fixture
+def length_1():
+    return 12
+
+
+@pytest.fixture
+def states_1():
+    return ['Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
+            'New Mexico', 'New York', 'North Carolina', 'North Dakota']
+
+
+@pytest.fixture
+def cities_1():
+    return ['Saint Paul', 'Jackson', 'Jefferson City', 'Helana', 'Lincoln', 'Carson City', 'Concord', 'Trenton',
+            'Santa Fe', 'Albany', 'Raleigh', 'Bismarck']
+
+
+@pytest.fixture
+def latitudes_1():
+    return [44.95, 32.32, 38.572954, 46.595805, 40.809868, 39.160949, 43.220093, 40.221741, 35.667231, 42.659829,
+            35.771, 48.813343]
+
+
+@pytest.fixture
+def longitudes_1():
+    return [-93.094, -90.207, -92.189283, -112.027031, -96.675345, -119.753877, -71.549127, -74.756138, -105.964575,
+            -73.781339, -78.638, -100.779004]
+
+
+""" Test Case 2 """
+
+
+@pytest.fixture
+def road_map_2():
+    return [('Delaware', 'Dover', 39.161921, -75.526755),
+            ('Florida', 'Tallahassee', 30.4518, -84.27277),
+            ('Georgia', 'Atlanta', 33.76, -84.39),
+            ('Hawaii', 'Honolulu', 21.30895, -157.826182),
+            ('Idaho', 'Boise', 43.613739, -116.237651),
+            ('Illinois', 'Springfield', 39.78325, -89.650373),
+            ('Indiana', 'Indianapolis', 39.790942, -86.147685)]
+
+
+@pytest.fixture
+def length_2():
+    return 7
+
+
+@pytest.fixture
+def states_2():
+    return ['Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana']
+
+
+@pytest.fixture
+def cities_2():
+    return ['Dover', 'Tallahassee', 'Atlanta', 'Honolulu', 'Boise', 'Springfield', 'Indianapolis']
+
+
+@pytest.fixture
+def latitudes_2():
+    return [39.161921, 30.4518, 33.76, 21.30895, 43.613739, 39.78325, 39.790942]
+
+
+@pytest.fixture
+def longitudes_2():
+    return [-75.526755, -84.27277, -84.39, -157.826182, -116.237651, -89.650373, -86.147685]
+
+
+""" Test Case 3 """
+
+
+@pytest.fixture
+def road_map_3():
+    return [('Montana', 'Helana', 46.595805, -112.027031)]
+
+
+@pytest.fixture
+def length_3():
+    return 1
+
+
+@pytest.fixture
+def states_3():
+    return ['Montana']
+
+
+@pytest.fixture
+def cities_3():
+    return ['Helana']
+
+
+@pytest.fixture
+def latitudes_3():
+    return [46.595805]
+
+
+@pytest.fixture
+def longitudes_3():
+    return [-112.027031]
+
+
+""" Test Case 4 """
+
+
+@pytest.fixture
+def road_map_4():
+    return [('Alabama', 'Montgomery', 32.361538, -86.279118),
+            ('Alaska', 'Juneau', 58.301935, -134.41974),
+            ('Arizona', 'Phoenix', 33.448457, -112.073844),
+            ('Arkansas', 'Little Rock', 34.736009, -92.331122),
+            ('California', 'Sacramento', 38.555605, -121.468926),
+            ('Colorado', 'Denver', 39.7391667, -104.984167),
+            ('Connecticut', 'Hartford', 41.767, -72.677),
+            ('Delaware', 'Dover', 39.161921, -75.526755),
+            ('Florida', 'Tallahassee', 30.4518, -84.27277),
+            ('Georgia', 'Atlanta', 33.76, -84.39),
+            ('Hawaii', 'Honolulu', 21.30895, -157.826182),
+            ('Idaho', 'Boise', 43.613739, -116.237651)]
+
+
+@pytest.fixture
+def length_4():
+    return 12
+
+
+@pytest.fixture
+def states_4():
+    return ['Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
+            'Hawaii', 'Idaho']
+
+
+@pytest.fixture
+def cities_4():
+    return ['Juneau', 'Phoenix', 'Little Rock', 'Sacramento', 'Denver', 'Hartford', 'Dover', 'Tallahassee', 'Atlanta',
+            'Honolulu', 'Boise']
+
+
+@pytest.fixture
+def latitudes_4():
+    return [58.301935, 33.448457, 34.736009, 38.555605, 39.7391667, 41.767, 39.161921, 30.4518, 33.76, 21.30895,
+            43.613739]
+
+
+@pytest.fixture
+def longitudes_4():
+    return [-134.41974, -112.073844, -92.331122, -121.468926, -104.984167, -72.677, -75.526755, -84.27277, -84.39,
+            -157.826182, -116.237651]
+
+
+# tests for itinerary.road_map()
+
+
+def test_itinerary_road_map_is_list_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.road_map(), list)
+
+
+def test_itinerary_road_map_is_list_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.road_map(), list)
+
+
+def test_itinerary_road_map_is_collection_of_tuples_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for element in itinerary.road_map():
+        assert isinstance(element, tuple)
+
+
+def test_itinerary_road_map_is_collection_of_tuples_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for element in itinerary.road_map():
+        assert isinstance(element, tuple)
+
+
+def test_itinerary_road_map_has_right_length_1(road_map_1, length_1):
+    itinerary = Itinerary(road_map_1)
+    assert len(itinerary.road_map()) == length_1
+
+
+def test_itinerary_road_map_has_right_length_2(road_map_2, length_2):
+    itinerary = Itinerary(road_map_2)
+    assert len(itinerary.road_map()) == length_2
+
+
+def test_itinerary_road_map_is_collection_of_collections_of_length_four_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for element in itinerary.road_map():
+        assert len(element) == 4
+
+
+def test_itinerary_road_map_is_collection_of_collections_of_length_four_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for element in itinerary.road_map():
+        assert len(element) == 4
+
+
+def test_itinerary_road_map_is_input_list_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.road_map() is road_map_1
+
+
+def test_itinerary_road_map_is_input_list_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.road_map() is road_map_2
+
+
+def test_itinerary_road_map_all_values_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for received, expected in zip(itinerary.road_map(), road_map_1):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+        assert received[2] == pytest.approx(expected[2])
+        assert received[3] == pytest.approx(expected[3])
+
+
+def test_itinerary_road_map_all_values_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for received, expected in zip(itinerary.road_map(), road_map_2):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+        assert received[2] == pytest.approx(expected[2])
+        assert received[3] == pytest.approx(expected[3])
+
+
+# tests for itinerary.states()
+
+def test_itinerary_states_is_generator_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.states(), types.GeneratorType)
+
+
+def test_itinerary_states_is_generator_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.states(), types.GeneratorType)
+
+
+def test_itinerary_states_elements_are_strings_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for state in itinerary.states():
+        assert isinstance(state, str)
+
+
+def test_itinerary_states_elements_are_strings_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for state in itinerary.states():
+        assert isinstance(state, str)
+
+
+def test_itinerary_states_expected_length_1(road_map_1, length_1):
+    itinerary = Itinerary(road_map_1)
+    assert len(list(itinerary.states())) == length_1
+
+
+def test_itinerary_states_expected_length_2(road_map_2, length_2):
+    itinerary = Itinerary(road_map_2)
+    assert len(list(itinerary.states())) == length_2
+
+
+def test_itinerary_states_expected_values_1(road_map_1, states_1):
+    itinerary = Itinerary(road_map_1)
+    for received, expected in zip(itinerary.states(), states_1):
+        assert received == expected
+
+
+def test_itinerary_states_expected_values_2(road_map_2, states_2):
+    itinerary = Itinerary(road_map_2)
+    for received, expected in zip(itinerary.states(), states_2):
+        assert received == expected
+
+
+# tests for itinerary.cities()
+
+def test_itinerary_cities_is_generator_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.cities(), types.GeneratorType)
+
+
+def test_itinerary_cities_is_generator_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.cities(), types.GeneratorType)
+
+
+def test_itinerary_cities_elements_are_strings_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for state in itinerary.cities():
+        assert isinstance(state, str)
+
+
+def test_itinerary_cities_elements_are_strings_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for state in itinerary.cities():
+        assert isinstance(state, str)
+
+
+def test_itinerary_cities_expected_length_1(road_map_1, length_1):
+    itinerary = Itinerary(road_map_1)
+    assert len(list(itinerary.cities())) == length_1
+
+
+def test_itinerary_cities_expected_length_2(road_map_2, length_2):
+    itinerary = Itinerary(road_map_2)
+    assert len(list(itinerary.cities())) == length_2
+
+
+def test_itinerary_cities_expected_values_1(road_map_1, cities_1):
+    itinerary = Itinerary(road_map_1)
+    for received, expected in zip(itinerary.cities(), cities_1):
+        assert received == expected
+
+
+def test_itinerary_cities_expected_values_2(road_map_2, cities_2):
+    itinerary = Itinerary(road_map_2)
+    for received, expected in zip(itinerary.cities(), cities_2):
+        assert received == expected
+
+
+# tests for itinerary.latitudes()
+
+def test_itinerary_latitudes_is_generator_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.latitudes(), types.GeneratorType)
+
+
+def test_itinerary_latitudes_is_generator_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.latitudes(), types.GeneratorType)
+
+
+def test_itinerary_latitudes_elements_are_floats_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for state in itinerary.latitudes():
+        assert isinstance(state, float)
+
+
+def test_itinerary_latitudes_elements_are_floats_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for state in itinerary.latitudes():
+        assert isinstance(state, float)
+
+
+def test_itinerary_latitudes_expected_length_1(road_map_1, length_1):
+    itinerary = Itinerary(road_map_1)
+    assert len(list(itinerary.latitudes())) == length_1
+
+
+def test_itinerary_latitudes_expected_length_2(road_map_2, length_2):
+    itinerary = Itinerary(road_map_2)
+    assert len(list(itinerary.latitudes())) == length_2
+
+
+def test_itinerary_latitudes_expected_values_1(road_map_1, latitudes_1):
+    itinerary = Itinerary(road_map_1)
+    for received, expected in zip(itinerary.latitudes(), latitudes_1):
+        assert received == expected
+
+
+def test_itinerary_latitudes_expected_values_2(road_map_2, latitudes_2):
+    itinerary = Itinerary(road_map_2)
+    for received, expected in zip(itinerary.latitudes(), latitudes_2):
+        assert received == expected
+
+
+# tests for itinerary.longitudes()
+
+def test_itinerary_longitudes_is_generator_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.longitudes(), types.GeneratorType)
+
+
+def test_itinerary_longitudes_is_generator_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.longitudes(), types.GeneratorType)
+
+
+def test_itinerary_longitudes_elements_are_floats_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for state in itinerary.longitudes():
+        assert isinstance(state, float)
+
+
+def test_itinerary_longitudes_elements_are_floats_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for state in itinerary.longitudes():
+        assert isinstance(state, float)
+
+
+def test_itinerary_longitudes_expected_length_1(road_map_1, length_1):
+    itinerary = Itinerary(road_map_1)
+    assert len(list(itinerary.longitudes())) == length_1
+
+
+def test_itinerary_longitudes_expected_length_2(road_map_2, length_2):
+    itinerary = Itinerary(road_map_2)
+    assert len(list(itinerary.longitudes())) == length_2
+
+
+def test_itinerary_longitudes_expected_values_1(road_map_1, longitudes_1):
+    itinerary = Itinerary(road_map_1)
+    for received, expected in zip(itinerary.longitudes(), longitudes_1):
+        assert received == expected
+
+
+def test_itinerary_longitudes_expected_values_2(road_map_2, longitudes_2):
+    itinerary = Itinerary(road_map_2)
+    for received, expected in zip(itinerary.longitudes(), longitudes_2):
+        assert received == expected
+
+
+# tests for itinerary.length()
+
+def test_itinerary_length_is_int_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.length(), int)
+
+
+def test_itinerary_length_is_int_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.length(), int)
+
+
+def test_itinerary_length_expected_value_1(road_map_1, length_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.length() == length_1
+
+
+def test_itinerary_length_expected_value_2(road_map_2, length_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.length() == length_2
+
+
+def test_itinerary_length_expected_value_3(road_map_3, length_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.length() == length_3
+
+
+def test_itinerary_length_expected_value_4(road_map_4, length_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.length() == length_4
+
+
+# tests for itinerary.latitude_max()
+
+def test_latitude_max_is_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.latitude_max(), float)
+
+
+def test_latitude_max_is_float_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.latitude_max(), float)
+
+
+def test_latitude_max_expected_value_1(road_map_1, latitudes_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.latitude_max() == pytest.approx(max(latitudes_1))
+
+
+def test_latitude_max_expected_value_2(road_map_2, latitudes_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.latitude_max() == pytest.approx(max(latitudes_2))
+    
+
+def test_latitude_max_expected_value_3(road_map_3, latitudes_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.latitude_max() == pytest.approx(max(latitudes_3))
+
+
+def test_latitude_max_expected_value_4(road_map_4, latitudes_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.latitude_max() == pytest.approx(max(latitudes_4))
+
+
+# tests for itinerary.latitude_min()
+
+def test_latitude_min_is_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.latitude_min(), float)
+
+
+def test_latitude_min_is_float_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.latitude_min(), float)
+
+
+def test_latitude_min_expected_value_1(road_map_1, latitudes_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.latitude_min() == pytest.approx(min(latitudes_1))
+
+
+def test_latitude_min_expected_value_2(road_map_2, latitudes_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.latitude_min() == pytest.approx(min(latitudes_2))
+
+
+def test_latitude_min_expected_value_3(road_map_3, latitudes_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.latitude_min() == pytest.approx(min(latitudes_3))
+
+
+def test_latitude_min_expected_value_4(road_map_4, latitudes_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.latitude_min() == pytest.approx(min(latitudes_4))
+
+
+# tests for itinerary.longitude_max()
+
+def test_longitude_max_is_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.longitude_max(), float)
+
+
+def test_longitude_max_is_float_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.longitude_max(), float)
+
+
+def test_longitude_max_expected_value_1(road_map_1, longitudes_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.longitude_max() == pytest.approx(max(longitudes_1))
+
+
+def test_longitude_max_expected_value_2(road_map_2, longitudes_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.longitude_max() == pytest.approx(max(longitudes_2))
+
+
+def test_longitude_max_expected_value_3(road_map_3, longitudes_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.longitude_max() == pytest.approx(max(longitudes_3))
+
+
+def test_longitude_max_expected_value_4(road_map_4, longitudes_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.longitude_max() == pytest.approx(max(longitudes_4))
+
+
+# tests for itinerary.longitude_min()
+
+def test_longitude_min_is_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.longitude_min(), float)
+
+
+def test_longitude_min_is_float_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.longitude_min(), float)
+
+
+def test_longitude_min_expected_value_1(road_map_1, longitudes_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.longitude_min() == pytest.approx(min(longitudes_1))
+
+
+def test_longitude_min_expected_value_2(road_map_2, longitudes_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.longitude_min() == pytest.approx(min(longitudes_2))
+
+
+def test_longitude_min_expected_value_3(road_map_3, longitudes_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.longitude_min() == pytest.approx(min(longitudes_3))
+
+
+def test_longitude_min_expected_value_4(road_map_4, longitudes_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.longitude_min() == pytest.approx(min(longitudes_4))
+
+
+
+
+
+
+

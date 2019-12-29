@@ -119,6 +119,65 @@ def find_best_cycle(road_map):
     return map_best
 
 
+class Itinerary:
+    def __init__(self, road_map):
+        self._road_map = road_map
+        self._lat_max = max(self.latitudes())
+        self._lat_min = min(self.latitudes())
+        self._long_max = max(self.longitudes())
+        self._long_min = min(self.longitudes())
+
+    def road_map(self):
+        return self._road_map
+        pass
+
+    def length(self):
+        return len(self._road_map)
+
+    def states(self):
+        return (city[0] for city in self._road_map)
+
+    def cities(self):
+        return (city[1] for city in self._road_map)
+
+    def latitudes(self):
+        return (city[2] for city in self._road_map)
+
+    def longitudes(self):
+        return (city[3] for city in self._road_map)
+
+    def latitude_max(self):
+        return self._lat_max
+
+    def latitude_min(self):
+        return self._lat_min
+
+    def longitude_max(self):
+        return self._long_max
+
+    def longitude_min(self):
+        return self._long_min
+
+    def latitude_gridline_spacing(self, min_lines=5):
+        pass
+
+    def longitude_gridline_spacing(self, min_lines=5):
+        pass
+
+    @staticmethod
+    def _gridline_spacing(self, min_coord, max_coord, min_lines=5):
+        pass
+
+    def coordinates(self):
+        pass
+
+    def cities_as_text(self):
+        pass
+
+    def route_as_text(self):
+        pass
+
+
 def drawing_area(canvas_size, margin):
     """ Returns the drawable size of one dimension of the canvas given size and the margin"""
     return max(max(canvas_size, 0) - 2 * max(margin, 0), 0)
