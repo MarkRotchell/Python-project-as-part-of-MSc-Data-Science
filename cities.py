@@ -2,7 +2,6 @@ from math import sqrt, log10
 from random import randint, shuffle
 from tkinter import filedialog, messagebox
 from tkinter import *
-from functools import partial
 from itertools import islice, chain
 
 
@@ -42,10 +41,14 @@ def print_cities(road_map):
     """
     Prints a list of cities, along with their locations.
     """
+    print(cities_as_string(road_map))
 
-    print('State                City                  Latitude  Longitude')
-    for state, city, lat, long in road_map:
-        print(f'{state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}')
+
+def cities_as_string(road_map):
+    result = '     State                City                  Latitude  Longitude\n'
+    for i, (state, city, lat, long) in enumerate(road_map):
+        result += f'{i + 1:<4} {state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}\n'
+    return result
 
 
 def distance(city_1, city_2):
@@ -60,14 +63,19 @@ def print_map(road_map):
     Prints, in an easily understandable format, the cities and their connections,
     along with the cost for each connection and the total cost.
     """
-    print('\nEstimated optimal cycle:\n')
-    total = 0
+
+    print(map_as_string(road_map))
+
+
+def map_as_string(road_map):
+    result = 'Estimated optimal cycle:\n\n'
     for city1, city2 in zip(road_map, road_map[1:] + [road_map[0]]):
         dist = distance(city1, city2)
-        print(f'{city1[1]:>20.20} --> {city2[1]:<20.20}  {dist:>8.2f}')
-        total += dist
-    print('                                           -------------')
-    print(f'                              Total Distance   {total:8.2f}')
+        result += f'{city1[1]:>20.20} --> {city2[1]:<20.20}  {dist:>8.2f}\n'
+    result += '                                           -------------\n'
+    total = compute_total_distance(road_map)
+    result += f'                              Total Distance   {total:8.2f}\n'
+    return result
 
 
 def compute_total_distance(road_map):
@@ -123,6 +131,9 @@ def find_best_cycle(road_map):
 class Itinerary:
     def __init__(self, road_map):
         self._road_map = road_map
+        self._reset_extrema()
+
+    def _reset_extrema(self):
         self._lat_max = max(self.latitudes())
         self._lat_min = min(self.latitudes())
         self._long_max = max(self.longitudes())
@@ -157,6 +168,11 @@ class Itinerary:
 
     def longitude_min(self):
         return self._long_min
+
+    def reroute(self):
+        shuffle(self._road_map)
+        self._road_map = find_best_cycle(self._road_map)
+        self._reset_extrema()
 
 
 class ItineraryDrawer:
@@ -289,88 +305,69 @@ class ItineraryDrawer:
         self.draw_connectors()
         self.draw_points()
 
-'''
-def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
-    """
-    Fills the canvas with the route specified by the road map
-    not unit-tested as it is an output function.
-    """
-    canvas.update()
-    canvas.delete('all')
 
-    it = Itinerary(road_map)
-    drawer = ItineraryDrawer(it, canvas, margin_left_right, margin_top_bottom)
-    drawer.draw_map()
-'''
+class ApplicationWindow:
+    def __init__(self, road_map, canvas_height=800, canvas_width=800,
+                 margin_top_bottom=50, margin_left_right=50):
+        self._road_map = road_map
+        self._canvas_height = canvas_height
+        self._canvas_width = canvas_width
+        self._margin_top_bottom = margin_top_bottom
+        self._margin_left_right = margin_left_right
+        self._itinerary = Itinerary(road_map)
+        self._set_up_window()
+        self._set_up_control_frame()
+        self._set_up_output_frame()
+        self._set_up_text_frame()
+        self._drawer = ItineraryDrawer(self._itinerary, self._canvas, self._margin_left_right, self._margin_top_bottom)
+
+    def _set_up_window(self):
+        self._window = Tk()
+        self._window.title("Travelling Salesman GUI")
+
+    def _set_up_control_frame(self):
+        control_frame = Frame(self._window)
+        control_frame.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
+        Button(control_frame, text='Re Route', command=self.re_route).pack(side=TOP, anchor='n', fill=X, expand=NO)
+
+    def _set_up_output_frame(self):
+        output_frame = Frame(self._window)
+        output_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
+        self._canvas = Canvas(output_frame, width=self._canvas_width, height=self._canvas_height, bg='white')
+        self._canvas.pack()
+        self._canvas.update()
+
+    def _set_up_text_frame(self):
+        text_frame = Frame(self._window)
+        text_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
+        scrollbar = Scrollbar(text_frame)
+        scrollbar.pack(side=RIGHT, fill=Y)
+        self._cities_box = Listbox(text_frame, yscrollcommand=scrollbar.set, height=20, width=70, font='TkFixedFont')
+        self._cities_box.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
 
 
-def re_route(drawer, listbox):
-    """
-    shuffles the road_map, recalculates the route, prints and re-draws the route.
-    """
-    shuffle(drawer.interary().roadmap())
+    def draw(self):
+        self._drawer.draw_map()
 
-    road_map = find_best_cycle(road_map)
+    def show_cities(self):
+        self._cities_box.delete(0, END)
+        for i, line in enumerate(cities_as_string(self._itinerary.road_map()).splitlines()):
+            self._cities_box.insert(i, line)
 
-    print_map(road_map)
+    def re_route(self):
+        self._drawer.itinerary().reroute()
+        self.draw()
+        self.show_cities()
 
-    draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
-
-    show_cities(road_map, listbox)
-
-
-def show_cities(road_map, listbox):
-    listbox.delete(0, END)
-
-    listbox.insert(0, '     State                City                  Latitude  Longitude')
-
-    for i, (state, city, lat, long) in enumerate(road_map):
-        listbox.insert(i + 1, f'{i + 1:<4} {state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}')
+    def main_loop(self):
+        self._window.mainloop()
 
 
 def visualise(road_map):
-    """
-    shows the road_map visually in a Tkinter dialogue box
-    also provides a re-route button so user can get a different route if they want
-    """
-
-    canvas_height, canvas_width = 800, 800
-    margin_top_bottom, margin_left_right = 50, 50
-
-    window = Tk()
-    window.title("GUI")
-
-    control_frame = Frame(window)
-    control_frame.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
-
-    output_frame = Frame(window)
-    output_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
-
-    text_frame = Frame(window)
-    text_frame.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
-
-    scrollbar = Scrollbar(text_frame)
-    scrollbar.pack(side=RIGHT, fill=Y)
-
-    listbox = Listbox(text_frame, yscrollcommand=scrollbar.set, height=20, width=70, font='TkFixedFont')
-    listbox.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
-
-    scrollbar.config(command=listbox.yview)
-
-    canvas = Canvas(output_frame, width=canvas_width, height=canvas_height, bg='white')
-    canvas.pack()
-
-    canvas.update()
-    it = Itinerary(road_map)
-    drawer = ItineraryDrawer(it, canvas, margin_left_right, margin_top_bottom)
-    drawer.draw_map()
-
-    show_cities(road_map, listbox)
-
-    re_route_command = partial(re_route, road_map, canvas, margin_left_right, margin_top_bottom, listbox)
-    Button(control_frame, text='Re Route', command=re_route_command).pack(side=TOP, anchor='n', fill=X, expand=NO)
-
-    window.mainloop()
+    app = ApplicationWindow(road_map)
+    app.draw()
+    app.show_cities()
+    app.main_loop()
 
 
 def user_wants_to_load_a_different_file(question):
