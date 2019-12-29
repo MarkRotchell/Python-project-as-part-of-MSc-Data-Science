@@ -130,7 +130,6 @@ class Itinerary:
 
     def road_map(self):
         return self._road_map
-        pass
 
     def length(self):
         return len(self._road_map)
@@ -212,6 +211,9 @@ class ItineraryDrawer:
 
         return (displayed_min + i * spacing for i in range(steps))
 
+    def itinerary(self):
+        return self._itinerary
+
     def points(self):
         return ((self._longitude_to_x(longitude=longitude,
                                       long_min=self._itinerary.longitude_min(),
@@ -287,7 +289,7 @@ class ItineraryDrawer:
         self.draw_connectors()
         self.draw_points()
 
-
+'''
 def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     """
     Fills the canvas with the route specified by the road map
@@ -299,13 +301,14 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     it = Itinerary(road_map)
     drawer = ItineraryDrawer(it, canvas, margin_left_right, margin_top_bottom)
     drawer.draw_map()
+'''
 
 
-def re_route(road_map, canvas, margin_left_right, margin_top_bottom, listbox):
+def re_route(drawer, listbox):
     """
     shuffles the road_map, recalculates the route, prints and re-draws the route.
     """
-    shuffle(road_map)
+    shuffle(drawer.interary().roadmap())
 
     road_map = find_best_cycle(road_map)
 
