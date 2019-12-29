@@ -60,7 +60,7 @@ def print_map(road_map):
     Prints, in an easily understandable format, the cities and their connections,
     along with the cost for each connection and the total cost.
     """
-
+    print('\nEstimated optimal cycle:\n')
     total = 0
     for city1, city2 in zip(road_map, road_map[1:] + [road_map[0]]):
         dist = distance(city1, city2)
@@ -159,21 +159,6 @@ class Itinerary:
     def longitude_min(self):
         return self._long_min
 
-    def latitude_gridline_spacing(self):
-        return gridline_spacing(self._lat_min, self._lat_max)
-
-    def longitude_gridline_spacing(self):
-        return gridline_spacing(self._long_min, self._long_max)
-
-    def map_coordinates(self):
-        pass
-
-    def cities_as_text(self):
-        pass
-
-    def route_as_text(self):
-        pass
-
 
 class ItineraryDrawer:
     def __init__(self, itinerary, canvas, margin_left_right, margin_top_bottom):
@@ -194,6 +179,39 @@ class ItineraryDrawer:
     def _latitude_to_y(latitude, lat_min, lat_max, drawing_area_height, margin_top_bottom):
         return drawing_area_height * (lat_max - latitude) / (lat_max - lat_min) + margin_top_bottom
 
+    @staticmethod
+    def gridline_spacing(min_coord, max_coord):
+        if min_coord == max_coord:
+            return 1.0
+        else:
+            min_lines = 5
+            range_coord = max_coord - min_coord
+
+            scale = 10 ** (log10(range_coord / min_lines) // 1)
+            multiple = 10 ** (log10(range_coord / min_lines) % 1)
+
+            if multiple < 2:
+                multiple = 1
+            elif multiple < 5:
+                multiple = 2
+            else:
+                multiple = 5
+            return multiple * scale
+
+    @staticmethod
+    def gridline_coords(min_coord, max_coord, drawing_area_extent, margin):
+        spacing = ItineraryDrawer.gridline_spacing(min_coord, max_coord)
+        displayed_range = (max_coord - min_coord) * margin / drawing_area_extent
+
+        displayed_max = max_coord + displayed_range
+        displayed_min = min_coord - displayed_range
+
+        displayed_max -= (displayed_max % spacing)
+        displayed_min += spacing - (displayed_min % spacing)
+        steps = round((displayed_max - displayed_min) / spacing) + 1
+
+        return (displayed_min + i * spacing for i in range(steps))
+
     def points(self):
         return ((self._longitude_to_x(longitude=longitude,
                                       long_min=self._itinerary.longitude_min(),
@@ -212,71 +230,62 @@ class ItineraryDrawer:
         p1 = chain(islice(self.points(), 1, None), self.points())
         return (((x_0, y_0), (x_1, y_1)) for (x_0, y_0), (x_1, y_1) in zip(p0, p1))
 
+    def latitude_gridlines(self):
+        return self.gridline_coords(min_coord=self._itinerary.latitude_min(),
+                                    max_coord=self._itinerary.latitude_max(),
+                                    drawing_area_extent=self._drawable_height,
+                                    margin=self._canvas_margin_top_bottom)
+
+    def longitude_gridlines(self):
+        return self.gridline_coords(min_coord=self._itinerary.longitude_min(),
+                                    max_coord=self._itinerary.longitude_max(),
+                                    drawing_area_extent=self._drawable_width,
+                                    margin=self._canvas_margin_left_right)
+
+    def x_gridlines(self):
+        return ((self._longitude_to_x(longitude=longitude,
+                                      long_min=self._itinerary.longitude_min(),
+                                      long_max=self._itinerary.longitude_max(),
+                                      drawing_area_width=self._drawable_width,
+                                      margin_left_right=self._canvas_margin_left_right),
+                 longitude)
+                for longitude in self.longitude_gridlines())
+
+    def y_gridlines(self):
+        return ((self._latitude_to_y(latitude=latitude,
+                                     lat_min=self._itinerary.latitude_min(),
+                                     lat_max=self._itinerary.latitude_max(),
+                                     drawing_area_height=self._drawable_height,
+                                     margin_top_bottom=self._canvas_margin_top_bottom),
+                 latitude)
+                for latitude in self.latitude_gridlines())
+
     def draw_connectors(self):
         for (x_0, y_0), (x_1, y_1) in self.point_pairs():
             self._canvas.create_line(x_0, y_0, x_1, y_1, fill="red")
 
+    def draw_points(self):
+        oval_width = min(self._canvas_width, self._canvas_height) / 200
+        for i, (x, y) in enumerate(self.points()):
+            self._canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width,
+                                     fill='white', outline='black', width=1)
+            self._canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=('purisa', 8))
 
-def drawing_area(canvas_size, margin):
-    """ Returns the drawable size of one dimension of the canvas given size and the margin"""
-    return max(max(canvas_size, 0) - 2 * max(margin, 0), 0)
+    def draw_gridlines(self):
+        for x, long in self.x_gridlines():
+            self._canvas.create_line(x, 0, x, self._canvas_height, fill="lightblue1")
+            self._canvas.create_text(x, 5, text=str(long), anchor=NW, font=('purisa', 8))
 
+        for y, lat in self.y_gridlines():
+            self._canvas.create_line(0, y, self._canvas_width, y, fill="lightblue1")
+            self._canvas.create_text(5, y - 5, text=str(lat), anchor=SW, font=('purisa', 8))
 
-def gridline_spacing(min_coord, max_coord):
-    if min_coord == max_coord:
-        return 1.0
-    else:
-        min_lines = 5
-        range_coord = max_coord - min_coord
-
-        scale = 10 ** (log10(range_coord / min_lines) // 1)
-        multiple = 10 ** (log10(range_coord / min_lines) % 1)
-
-        if multiple < 2:
-            multiple = 1
-        elif multiple < 5:
-            multiple = 2
-        else:
-            multiple = 5
-        return multiple * scale
-
-
-def gridline_coords(min_coord, max_coord, drawing_area_extent, margin):
-    spacing = gridline_spacing(min_coord, max_coord)
-    displayed_range = (max_coord - min_coord) * margin / drawing_area_extent
-
-    displayed_max = max_coord + displayed_range
-    displayed_min = min_coord - displayed_range
-
-    displayed_max -= (displayed_max % spacing)
-    displayed_min += spacing - (displayed_min % spacing)
-    steps = round((displayed_max - displayed_min) / spacing) + 1
-
-    return [displayed_min + i * spacing for i in range(steps)]
-
-
-def coordinates(road_map):
-    return [city[2] for city in road_map], [city[3] for city in road_map]
-
-
-def coordinate_ranges(lats, longs):
-    return min(lats), max(lats), min(longs), max(longs)
-
-
-def longitude_to_x(longitude, long_min, long_max, drawing_area_width, margin_left_right):
-    return drawing_area_width * (longitude - long_min) / (long_max - long_min) + margin_left_right
-
-
-def latitude_to_y(latitude, lat_min, lat_max, drawing_area_height, margin_top_bottom):
-    return drawing_area_height * (lat_max - latitude) / (lat_max - lat_min) + margin_top_bottom
-
-
-def coordinates_to_points(lats, longs, lat_min, lat_max, long_min, long_max, drawing_area_height,
-                          drawing_area_width, margin_top_bottom, margin_left_right):
-    x_coords = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in longs)
-    y_coords = (latitude_to_y(lat, lat_min, lat_max, drawing_area_height, margin_top_bottom) for lat in lats)
-
-    return [(x, y) for x, y in zip(x_coords, y_coords)]
+    def draw_map(self):
+        self._canvas.update()
+        self._canvas.delete("all")
+        self.draw_gridlines()
+        self.draw_connectors()
+        self.draw_points()
 
 
 def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
@@ -287,48 +296,9 @@ def draw_map(road_map, canvas, margin_left_right, margin_top_bottom):
     canvas.update()
     canvas.delete('all')
 
-    canvas_width = canvas.winfo_width()
-    canvas_height = canvas.winfo_height()
-
-    drawing_area_width = drawing_area(canvas_width, margin_left_right)
-    drawing_area_height = drawing_area(canvas_height, margin_top_bottom)
-
-    lats, longs = coordinates(road_map)
-
-    lat_min, lat_max, long_min, long_max = coordinate_ranges(lats, longs)
-
-    lat_gridlines = gridline_coords(lat_min, lat_max, drawing_area_height, margin_top_bottom)
-
-    long_gridlines = gridline_coords(long_min, long_max, drawing_area_width, margin_left_right)
-
-    y_gridlines = (latitude_to_y(lat, lat_min, lat_max, drawing_area_height, margin_top_bottom) for lat in
-                   lat_gridlines)
-
-    x_gridlines = (longitude_to_x(long, long_min, long_max, drawing_area_width, margin_left_right) for long in
-                   long_gridlines)
-
-    for lat, y in zip(lat_gridlines, y_gridlines):
-        canvas.create_line(0, y, canvas.winfo_width(), y, fill="lightblue1")
-        canvas.create_text(5, y - 5, text=str(lat), anchor=SW, font=('purisa', 8))
-
-    for long, x in zip(long_gridlines, x_gridlines):
-        canvas.create_line(x, 0, x, canvas.winfo_height(), fill="lightblue1")
-        canvas.create_text(x, 5, text=str(long), anchor=NW, font=('purisa', 8))
-
-    points = coordinates_to_points(lats, longs, lat_min, lat_max, long_min, long_max, drawing_area_height,
-                                   drawing_area_width, margin_top_bottom, margin_left_right)
-
     it = Itinerary(road_map)
     drawer = ItineraryDrawer(it, canvas, margin_left_right, margin_top_bottom)
-
-    drawer.draw_connectors()
-    
-    oval_width = min(canvas.winfo_height(), canvas.winfo_width()) / 200
-
-    for i, (x, y) in enumerate(drawer.points()):
-        canvas.create_oval(x - oval_width, y - oval_width, x + oval_width, y + oval_width,
-                           fill='white', outline='black', width=1)
-        canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=('purisa', 8))
+    drawer.draw_map()
 
 
 def re_route(road_map, canvas, margin_left_right, margin_top_bottom, listbox):
@@ -338,8 +308,6 @@ def re_route(road_map, canvas, margin_left_right, margin_top_bottom, listbox):
     shuffle(road_map)
 
     road_map = find_best_cycle(road_map)
-
-    print('\nEstimated optimal cycle:\n')
 
     print_map(road_map)
 
@@ -389,7 +357,10 @@ def visualise(road_map):
     canvas = Canvas(output_frame, width=canvas_width, height=canvas_height, bg='white')
     canvas.pack()
 
-    draw_map(road_map, canvas, margin_left_right, margin_top_bottom)
+    canvas.update()
+    it = Itinerary(road_map)
+    drawer = ItineraryDrawer(it, canvas, margin_left_right, margin_top_bottom)
+    drawer.draw_map()
 
     show_cities(road_map, listbox)
 
@@ -451,8 +422,6 @@ def main():
                 print_cities(road_map)
 
                 road_map = find_best_cycle(road_map)
-
-                print('\nEstimated optimal cycle:\n')
 
                 print_map(road_map)
 
