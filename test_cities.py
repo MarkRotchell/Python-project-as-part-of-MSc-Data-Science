@@ -1262,134 +1262,196 @@ def test_itinerary_length_expected_value_4(road_map_4, length_4):
 
 # tests for itinerary.latitude_max()
 
-def test_latitude_max_is_float_1(road_map_1):
+def test_itinerary_latitude_max_is_float_1(road_map_1):
     itinerary = Itinerary(road_map_1)
     assert isinstance(itinerary.latitude_max(), float)
 
 
-def test_latitude_max_is_float_2(road_map_2):
+def test_itinerary_latitude_max_is_float_2(road_map_2):
     itinerary = Itinerary(road_map_2)
     assert isinstance(itinerary.latitude_max(), float)
 
 
-def test_latitude_max_expected_value_1(road_map_1, latitudes_1):
+def test_itinerary_latitude_max_expected_value_1(road_map_1, latitudes_1):
     itinerary = Itinerary(road_map_1)
     assert itinerary.latitude_max() == pytest.approx(48.813343)
 
 
-def test_latitude_max_expected_value_2(road_map_2, latitudes_2):
+def test_itinerary_latitude_max_expected_value_2(road_map_2, latitudes_2):
     itinerary = Itinerary(road_map_2)
     assert itinerary.latitude_max() == pytest.approx(43.613739)
-    
 
-def test_latitude_max_expected_value_3(road_map_3, latitudes_3):
+
+def test_itinerary_latitude_max_expected_value_3(road_map_3, latitudes_3):
     itinerary = Itinerary(road_map_3)
     assert itinerary.latitude_max() == pytest.approx(46.595805)
 
 
-def test_latitude_max_expected_value_4(road_map_4, latitudes_4):
+def test_itinerary_latitude_max_expected_value_4(road_map_4, latitudes_4):
     itinerary = Itinerary(road_map_4)
     assert itinerary.latitude_max() == pytest.approx(58.301935)
 
 
 # tests for itinerary.latitude_min()
 
-def test_latitude_min_is_float_1(road_map_1):
+def test_itinerary_latitude_min_is_float_1(road_map_1):
     itinerary = Itinerary(road_map_1)
     assert isinstance(itinerary.latitude_min(), float)
 
 
-def test_latitude_min_is_float_2(road_map_2):
+def test_itinerary_latitude_min_is_float_2(road_map_2):
     itinerary = Itinerary(road_map_2)
     assert isinstance(itinerary.latitude_min(), float)
 
 
-def test_latitude_min_expected_value_1(road_map_1, latitudes_1):
+def test_itinerary_latitude_min_expected_value_1(road_map_1, latitudes_1):
     itinerary = Itinerary(road_map_1)
     assert itinerary.latitude_min() == pytest.approx(32.32)
 
 
-def test_latitude_min_expected_value_2(road_map_2, latitudes_2):
+def test_itinerary_latitude_min_expected_value_2(road_map_2, latitudes_2):
     itinerary = Itinerary(road_map_2)
     assert itinerary.latitude_min() == pytest.approx(21.30895)
 
 
-def test_latitude_min_expected_value_3(road_map_3, latitudes_3):
+def test_itinerary_latitude_min_expected_value_3(road_map_3, latitudes_3):
     itinerary = Itinerary(road_map_3)
     assert itinerary.latitude_min() == pytest.approx(46.595805)
 
 
-def test_latitude_min_expected_value_4(road_map_4, latitudes_4):
+def test_itinerary_latitude_min_expected_value_4(road_map_4, latitudes_4):
     itinerary = Itinerary(road_map_4)
     assert itinerary.latitude_min() == pytest.approx(21.30895)
 
 
 # tests for itinerary.longitude_max()
 
-def test_longitude_max_is_float_1(road_map_1):
+def test_itinerary_longitude_max_is_float_1(road_map_1):
     itinerary = Itinerary(road_map_1)
     assert isinstance(itinerary.longitude_max(), float)
 
 
-def test_longitude_max_is_float_2(road_map_2):
+def test_itinerary_longitude_max_is_float_2(road_map_2):
     itinerary = Itinerary(road_map_2)
     assert isinstance(itinerary.longitude_max(), float)
 
 
-def test_longitude_max_expected_value_1(road_map_1, longitudes_1):
+def test_itinerary_longitude_max_expected_value_1(road_map_1, longitudes_1):
     itinerary = Itinerary(road_map_1)
     assert itinerary.longitude_max() == pytest.approx(-71.549127)
 
 
-def test_longitude_max_expected_value_2(road_map_2, longitudes_2):
+def test_itinerary_longitude_max_expected_value_2(road_map_2, longitudes_2):
     itinerary = Itinerary(road_map_2)
     assert itinerary.longitude_max() == pytest.approx(-75.526755)
 
 
-def test_longitude_max_expected_value_3(road_map_3, longitudes_3):
+def test_itinerary_longitude_max_expected_value_3(road_map_3, longitudes_3):
     itinerary = Itinerary(road_map_3)
     assert itinerary.longitude_max() == pytest.approx(-112.027031)
 
 
-def test_longitude_max_expected_value_4(road_map_4, longitudes_4):
+def test_itinerary_longitude_max_expected_value_4(road_map_4, longitudes_4):
     itinerary = Itinerary(road_map_4)
     assert itinerary.longitude_max() == pytest.approx(-72.677)
 
 
 # tests for itinerary.longitude_min()
 
-def test_longitude_min_is_float_1(road_map_1):
+def test_itinerary_longitude_min_is_float_1(road_map_1):
     itinerary = Itinerary(road_map_1)
     assert isinstance(itinerary.longitude_min(), float)
 
 
-def test_longitude_min_is_float_2(road_map_2):
+def test_itinerary_longitude_min_is_float_2(road_map_2):
     itinerary = Itinerary(road_map_2)
     assert isinstance(itinerary.longitude_min(), float)
 
 
-def test_longitude_min_expected_value_1(road_map_1, longitudes_1):
+def test_itinerary_longitude_min_expected_value_1(road_map_1, longitudes_1):
     itinerary = Itinerary(road_map_1)
     assert itinerary.longitude_min() == pytest.approx(-119.753877)
 
 
-def test_longitude_min_expected_value_2(road_map_2, longitudes_2):
+def test_itinerary_longitude_min_expected_value_2(road_map_2, longitudes_2):
     itinerary = Itinerary(road_map_2)
     assert itinerary.longitude_min() == pytest.approx(-157.826182)
 
 
-def test_longitude_min_expected_value_3(road_map_3, longitudes_3):
+def test_itinerary_longitude_min_expected_value_3(road_map_3, longitudes_3):
     itinerary = Itinerary(road_map_3)
     assert itinerary.longitude_min() == pytest.approx(-112.027031)
 
 
-def test_longitude_min_expected_value_4(road_map_4, longitudes_4):
+def test_itinerary_longitude_min_expected_value_4(road_map_4, longitudes_4):
     itinerary = Itinerary(road_map_4)
     assert itinerary.longitude_min() == pytest.approx(-157.826182)
 
 
 
 
+# tests for itinerary.latitude_gridline_spacing()
 
 
+def test_itinerary_latitude_gridline_spacing_returns_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.latitude_gridline_spacing(), float)
+
+
+def test_itinerary_latitude_gridline_spacing_returns_float_for_one_city(road_map_3):
+    itinerary = Itinerary(road_map_3)
+    assert isinstance(itinerary.latitude_gridline_spacing(), float)
+
+
+def test_itinerary_latitude_gridline_spacing_expected_value_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.latitude_gridline_spacing() == pytest.approx(2.0)
+
+
+def test_itinerary_latitude_gridline_spacing_expected_value_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.latitude_gridline_spacing() == pytest.approx(2.0)
+
+
+def test_itinerary_latitude_gridline_spacing_expected_value_3(road_map_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.latitude_gridline_spacing() == pytest.approx(1.0)
+
+
+def test_itinerary_latitude_gridline_spacing_expected_value_4(road_map_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.latitude_gridline_spacing() == pytest.approx(5.0)
+
+
+# tests for itinerary.longitude_gridline_spacing()
+
+
+def test_itinerary_longitude_gridline_spacing_returns_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.longitude_gridline_spacing(), float)
+
+
+def test_itinerary_longitude_gridline_spacing_returns_float_for_one_city(road_map_3):
+    itinerary = Itinerary(road_map_3)
+    assert isinstance(itinerary.longitude_gridline_spacing(), float)
+
+
+def test_itinerary_longitude_gridline_spacing_expected_value_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.longitude_gridline_spacing() == pytest.approx(5.0)
+
+
+def test_itinerary_longitude_gridline_spacing_expected_value_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.longitude_gridline_spacing() == pytest.approx(10.0)
+
+
+def test_itinerary_longitude_gridline_spacing_expected_value_3(road_map_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.longitude_gridline_spacing() == pytest.approx(1.0)
+
+
+def test_itinerary_longitude_gridline_spacing_expected_value_4(road_map_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.longitude_gridline_spacing() == pytest.approx(10.0)
 
