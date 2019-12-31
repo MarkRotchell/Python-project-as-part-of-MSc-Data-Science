@@ -345,7 +345,6 @@ class ApplicationWindow:
         self._cities_box = Listbox(text_frame, yscrollcommand=scrollbar.set, height=20, width=70, font='TkFixedFont')
         self._cities_box.pack(side=LEFT, padx=10, pady=10, anchor='nw', fill=X, expand=YES)
 
-
     def draw(self):
         self._drawer.draw_map()
 
@@ -360,6 +359,8 @@ class ApplicationWindow:
         self.show_cities()
 
     def main_loop(self):
+        self._window.attributes('-topmost', 1)
+        self._window.attributes('-topmost', 0)
         self._window.mainloop()
 
 
