@@ -277,17 +277,31 @@ class TravellingSalesman:
     def __init__(self, road_map):
         self.itinerary = Itinerary(road_map=road_map)
         self.drawer = ItineraryDrawer(drawable_size_px=700, margin_px=50, min_grid_lines=5)
-        self.window = Tk()
-        self.control_frame = Frame(master=self.window)
-        self.open_button = Button(master=self.control_frame, text='Open', command=self.open)
-        self.re_route_button = Button(master=self.control_frame, text='Re-route', command=self.reroute)
-        self.canvas = Canvas(master=self.window, bg='white')
 
-        self.control_frame.grid(column=0, row=0, sticky=N)
-        self.open_button.grid(column=0, row=0, sticky=N + E + W)
-        self.re_route_button.grid(column=0, row=1, sticky=N + E + W)
-        self.canvas.grid(column=1, row=0, sticky=N)
-        self.canvas.config(height=700, width=700)
+        self._window = Tk()
+        self._control_frame = Frame(master=self._window)
+        self._open_button = Button(master=self._control_frame, text='Open', command=self.open)
+        self._re_route_button = Button(master=self._control_frame, text='Re-route', command=self.reroute)
+        self._control_frame.grid(column=0, row=0, sticky=N)
+        self._open_button.grid(column=0, row=0, sticky=N + E + W)
+        self._re_route_button.grid(column=0, row=1, sticky=N + E + W)
+
+        self.canvas = Canvas(master=self._window, bg='white')
+        self.canvas.grid(column=1, row=0, rowspan=2, sticky=N)
+
+        self._cities_scroll_bar = Scrollbar(master=self._window, orient=VERTICAL)
+        self._cities_list_box = Listbox(master=self._window, height=20, width=70, font='TkFixedFont')
+        self._cities_scroll_bar.config(command=self._cities_list_box.yview)
+        self._cities_list_box.config(yscrollcommand=self._cities_scroll_bar.set)
+        self._cities_list_box.grid(column=2, row=0, sticky=N + E + S + W)
+        self._cities_scroll_bar.grid(column=3, row=0, sticky=N + E + S + W)
+
+        self._route_scroll_bar = Scrollbar(master=self._window, orient=VERTICAL)
+        self._route_list_box = Listbox(master=self._window, height=20, width=70, font='TkFixedFont')
+        self._route_scroll_bar.config(command=self._route_list_box.yview)
+        self._route_list_box.config(yscrollcommand=self._route_scroll_bar.set)
+        self._route_list_box.grid(column=2, row=1, sticky=N + E + S + W)
+        self._route_scroll_bar.grid(column=3, row=1, sticky=N + E + S + W)
 
     def draw(self):
         self.drawer.draw(self.itinerary,self.canvas)
@@ -295,6 +309,17 @@ class TravellingSalesman:
     def reroute(self):
         self.itinerary.reroute()
         self.draw()
+        self.fill_text()
+
+    def fill_text(self):
+        self._cities_list_box.delete(0, END)
+        self._route_list_box.delete(0, END)
+
+        for i, line in enumerate(cities_as_string(self.itinerary.road_map()).splitlines()):
+            self._cities_list_box.insert(i, line)
+
+        for i, line in enumerate(map_as_string(self.itinerary.road_map()).splitlines()):
+            self._route_list_box.insert(i, line)
 
     def open(self):
         path = filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
@@ -310,15 +335,16 @@ class TravellingSalesman:
                 self.draw()
 
     def mainloop(self):
-        self.window.attributes('-topmost', 1)
-        self.window.attributes('-topmost', 0)
-        self.window.mainloop()
+        self._window.attributes('-topmost', 1)
+        self._window.attributes('-topmost', 0)
+        self._window.mainloop()
 
 
 def visualise(road_map):
 
     app = TravellingSalesman(road_map)
     app.draw()
+    app.fill_text()
     app.mainloop()
 
 
