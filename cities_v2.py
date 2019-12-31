@@ -169,6 +169,11 @@ class Itinerary:
     def longitude_min(self):
         return self._long_min
 
+    def reroute(self):
+        shuffle(self._road_map)
+        self._road_map = find_best_cycle(self._road_map)
+        self._reset_extrema()
+
 class ItineraryDrawer:
     def __init__(self, drawable_size_px=700, margin_px=50, min_grid_lines=5):
         self._drawable_size_px = drawable_size_px
@@ -268,25 +273,53 @@ class ItineraryDrawer:
 
 
 
+class TravellingSalesman:
+    def __init__(self, road_map):
+        self.itinerary = Itinerary(road_map=road_map)
+        self.drawer = ItineraryDrawer(drawable_size_px=700, margin_px=50, min_grid_lines=5)
+        self.window = Tk()
+        self.control_frame = Frame(master=self.window)
+        self.open_button = Button(master=self.control_frame, text='Open', command=self.open)
+        self.re_route_button = Button(master=self.control_frame, text='Re-route', command=self.reroute)
+        self.canvas = Canvas(master=self.window, bg='white')
+
+        self.control_frame.grid(column=0, row=0, sticky=N)
+        self.open_button.grid(column=0, row=0, sticky=N + E + W)
+        self.re_route_button.grid(column=0, row=1, sticky=N + E + W)
+        self.canvas.grid(column=1, row=0, sticky=N)
+        self.canvas.config(height=700, width=700)
+
+    def draw(self):
+        self.drawer.draw(self.itinerary,self.canvas)
+
+    def reroute(self):
+        self.itinerary.reroute()
+        self.draw()
+
+    def open(self):
+        path = filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
+                                          filetypes=(("text files", "*.txt"), ("all files", "*.*")))
+        if path:
+            try:
+                road_map = read_cities(path)
+                road_map = find_best_cycle(road_map)
+            except:
+                messagebox.showinfo("Warning", "Unable to load selected file")
+            else:
+                self.itinerary = Itinerary(road_map=road_map)
+                self.draw()
+
+    def mainloop(self):
+        self.window.attributes('-topmost', 1)
+        self.window.attributes('-topmost', 0)
+        self.window.mainloop()
+
+
 def visualise(road_map):
-    window = Tk()
-    control_frame = Frame(master=window)
-    open_button = Button(master=control_frame, text='Open')
-    re_route_button = Button(master=control_frame, text ='Re-route')
-    canvas = Canvas(master=window, bg='white')
 
-    control_frame.grid(column=0,row=0,sticky=N)
-    open_button.grid(column=0,row=0,sticky=N+E+W)
-    re_route_button.grid(column=0,row=1,sticky=N+E+W)
-    canvas.grid(column=1,row=0,sticky=N)
-    canvas.config(height=700, width=700)
-
-    drawer = ItineraryDrawer()
-    drawer.draw(Itinerary(road_map),canvas)
-
-
-
-    window.mainloop()
+    app = TravellingSalesman(road_map)
+    app.draw()
+    app.mainloop()
 
 
 def user_wants_to_load_a_different_file(question):
