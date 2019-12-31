@@ -130,8 +130,8 @@ def find_best_cycle(road_map):
 
 class Itinerary:
     def __init__(self, road_map):
-        self._road_map = road_map
-        self._reset_extrema()
+        self.road_map = road_map
+        # self._reset_extrema()
 
     def _reset_extrema(self):
         self._lat_max = max(self.latitudes())
@@ -139,17 +139,14 @@ class Itinerary:
         self._long_max = max(self.longitudes())
         self._long_min = min(self.longitudes())
 
+    @property
     def road_map(self):
         return self._road_map
 
-    def length(self):
-        return len(self._road_map)
-
-    def states(self):
-        return (city[0] for city in self._road_map)
-
-    def cities(self):
-        return (city[1] for city in self._road_map)
+    @road_map.setter
+    def road_map(self, road_map):
+        self._road_map = road_map
+        self._reset_extrema()
 
     def latitudes(self):
         return (city[2] for city in self._road_map)
@@ -174,37 +171,54 @@ class Itinerary:
         self._road_map = find_best_cycle(self._road_map)
         self._reset_extrema()
 
+    def coordinates(self):
+        return ((latitude, longitude) for latitude, longitude in zip(self.latitudes(), self.longitudes()))
+
+    def legs(self):
+        starts = self.coordinates()
+        destinations = self.coordinates()
+        # pop first element of destinations and add to the back
+        destinations = chain(destinations, [next(destinations)])
+        return ((start, destination) for start, destination in zip(starts, destinations))
+
+
 class ItineraryDrawer:
     def __init__(self, drawable_size_px=700, margin_px=50, min_grid_lines=5):
-        self._drawable_size_px = drawable_size_px
-        self._margin_px = margin_px
-        self._min_grid_lines = min_grid_lines
+        self.drawable_size_px = drawable_size_px
+        self.margin_px = margin_px
+        self.min_grid_lines = min_grid_lines
+
+    def _lat_to_y(self, latitude, px_per_deg, lat_max):
+        return (lat_max - latitude) * px_per_deg + self.margin_px
+
+    def _long_to_x(self, longitude, px_per_deg, long_min):
+        return (longitude - long_min) * px_per_deg + self.margin_px
 
     def _points(self, itinerary, px_per_deg, lat_max, long_min):
-        x_coords = ((longitude-long_min) * px_per_deg + self._margin_px for longitude in itinerary.longitudes())
-        y_coords = ((lat_max-latitude) * px_per_deg + self._margin_px for latitude in itinerary.latitudes())
-        return ((x,y) for x, y in zip(x_coords, y_coords))
+        return ((self._long_to_x(longitude, px_per_deg, long_min),
+                 self._lat_to_y(latitude, px_per_deg, lat_max))
+                for latitude, longitude in itinerary.coordinates())
 
     def _point_pairs(self, itinerary, px_per_deg, lat_max, long_min):
-        p0 = self._points(itinerary, px_per_deg, lat_max, long_min)
-        p1 = self._points(itinerary, px_per_deg, lat_max, long_min)
-        #pop first element of p1 and add to the back
-        p1=chain(p1,[next(p1)])
-        return (((x_0, y_0), (x_1, y_1)) for (x_0, y_0), (x_1, y_1) in zip(p0, p1))
+        return (((self._long_to_x(long_0, px_per_deg, long_min),
+                  self._lat_to_y(lat_0, px_per_deg, lat_max)),
+                 (self._long_to_x(long_1, px_per_deg, long_min),
+                  self._lat_to_y(lat_1, px_per_deg, lat_max)))
+                for (lat_0, long_0), (lat_1, long_1) in itinerary.legs())
 
     def _canvas_dimensions(self, lat_range, long_range):
         if lat_range > long_range:
-            canvas_height_px = self._drawable_size_px + 2*self._margin_px
-            canvas_width_px = self._drawable_size_px * long_range / lat_range + 2*self._margin_px
+            canvas_height_px = self.drawable_size_px + 2 * self.margin_px
+            canvas_width_px = self.drawable_size_px * long_range / lat_range + 2 * self.margin_px
         else:
-            canvas_width_px = self._drawable_size_px + 2*self._margin_px
-            canvas_height_px = self._drawable_size_px * lat_range / long_range +2*self._margin_px
+            canvas_width_px = self.drawable_size_px + 2 * self.margin_px
+            canvas_height_px = self.drawable_size_px * lat_range / long_range + 2 * self.margin_px
 
         return canvas_width_px, canvas_height_px
 
     def _grid_line_spacing(self, max_range):
-        scale = 10 ** (log10(max_range / self._min_grid_lines) // 1)
-        multiple = 10 ** (log10(max_range / self._min_grid_lines) % 1)
+        scale = 10 ** (log10(max_range / self.min_grid_lines) // 1)
+        multiple = 10 ** (log10(max_range / self.min_grid_lines) % 1)
 
         if multiple < 2:
             grid_line_spacing_deg = scale * 1
@@ -215,21 +229,13 @@ class ItineraryDrawer:
 
         return grid_line_spacing_deg
 
-    def _lat_gridlines(self, grid_line_spacing, lat_min, lat_max, px_per_deg):
-        margin_deg = self._margin_px / px_per_deg
-        deg = grid_line_spacing * (1 + (lat_min - margin_deg) // grid_line_spacing)
-        while deg < lat_max + margin_deg:
-            y = (lat_max - deg) * px_per_deg + self._margin_px
-            yield deg, y
+    def _grid_lines(self, grid_line_spacing, deg_min, deg_max, px_per_deg, converter, ref_point):
+        margin_deg = self.margin_px / px_per_deg
+        deg = grid_line_spacing * (1 + (deg_min - margin_deg) // grid_line_spacing)
+        while deg < deg_max + margin_deg:
+            yield deg, converter(deg, px_per_deg, ref_point)
             deg += grid_line_spacing
 
-    def _long_gridlines(self, grid_line_spacing, long_min, long_max, px_per_deg):
-        margin_deg = self._margin_px / px_per_deg
-        deg = grid_line_spacing * (1 + (long_min - margin_deg) // grid_line_spacing)
-        while deg < long_max + margin_deg:
-            x = (deg - long_min) * px_per_deg + self._margin_px
-            yield deg, x
-            deg += grid_line_spacing
 
     def draw(self, itinerary, canvas):
         canvas.update()
@@ -243,24 +249,22 @@ class ItineraryDrawer:
 
         ''' resize canvas '''
 
-        canvas_width_px, canvas_height_px =  self._canvas_dimensions(lat_range, long_range)
+        canvas_width_px, canvas_height_px = self._canvas_dimensions(lat_range, long_range)
         canvas.config(width=canvas_width_px, height=canvas_height_px)
 
         ''' draw gridlines '''
 
         max_range = max(lat_range, long_range)
-        px_per_deg = self._drawable_size_px / max_range
+        px_per_deg = self.drawable_size_px / max_range
         grid_line_spacing = self._grid_line_spacing(max_range)
 
-        for deg, y in self._lat_gridlines(grid_line_spacing, lat_min, lat_max, px_per_deg):
+        for deg, y in self._grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg, self._lat_to_y, lat_max):
             canvas.create_line(0, y, canvas_width_px, y, fill="lightblue1")
-            canvas.create_text(5, y - 5, text=str(round(deg,1)), anchor=SW, font=('purisa', 8))
+            canvas.create_text(5, y - 5, text=str(round(deg, 1)), anchor=SW, font=('purisa', 8))
 
-
-        for deg, x in self._long_gridlines(grid_line_spacing, long_min, long_max, px_per_deg):
+        for deg, x in self._grid_lines(grid_line_spacing, long_min, long_max, px_per_deg, self._long_to_x, long_min):
             canvas.create_line(x, 0, x, canvas_height_px, fill="lightblue1")
-            canvas.create_text(x, 5, text=str(round(deg,1)), anchor=NW, font=('purisa', 8))
-
+            canvas.create_text(x, 5, text=str(round(deg, 1)), anchor=NW, font=('purisa', 8))
 
         ''' draw route cities '''
 
@@ -270,7 +274,6 @@ class ItineraryDrawer:
         for i, (x, y) in enumerate(self._points(itinerary, px_per_deg, lat_max, long_min)):
             canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill='white', outline='black', width=1)
             canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=('purisa', 8))
-
 
 
 class TravellingSalesman:
@@ -286,8 +289,8 @@ class TravellingSalesman:
         self._open_button.grid(column=0, row=0, sticky=N + E + W)
         self._re_route_button.grid(column=0, row=1, sticky=N + E + W)
 
-        self.canvas = Canvas(master=self._window, bg='white')
-        self.canvas.grid(column=1, row=0, rowspan=2, sticky=N)
+        self._canvas = Canvas(master=self._window, bg='white')
+        self._canvas.grid(column=1, row=0, rowspan=2, sticky=N)
 
         self._cities_scroll_bar = Scrollbar(master=self._window, orient=VERTICAL)
         self._cities_list_box = Listbox(master=self._window, height=20, width=70, font='TkFixedFont')
@@ -304,26 +307,25 @@ class TravellingSalesman:
         self._route_scroll_bar.grid(column=3, row=1, sticky=N + E + S + W)
 
     def draw(self):
-        self.drawer.draw(self.itinerary,self.canvas)
+        self.drawer.draw(self.itinerary, self._canvas)
+
+    def fill_text(self):
+        self._cities_list_box.delete(0, END)
+        self._route_list_box.delete(0, END)
+
+        for i, line in enumerate(cities_as_string(self.itinerary.road_map).splitlines()):
+            self._cities_list_box.insert(i, line)
+
+        for i, line in enumerate(map_as_string(self.itinerary.road_map).splitlines()):
+            self._route_list_box.insert(i, line)
 
     def reroute(self):
         self.itinerary.reroute()
         self.draw()
         self.fill_text()
 
-    def fill_text(self):
-        self._cities_list_box.delete(0, END)
-        self._route_list_box.delete(0, END)
-
-        for i, line in enumerate(cities_as_string(self.itinerary.road_map()).splitlines()):
-            self._cities_list_box.insert(i, line)
-
-        for i, line in enumerate(map_as_string(self.itinerary.road_map()).splitlines()):
-            self._route_list_box.insert(i, line)
-
     def open(self):
-        path = filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
-                                          filetypes=(("text files", "*.txt"), ("all files", "*.*")))
+        path = open_map_dialogue_box()
         if path:
             try:
                 road_map = read_cities(path)
@@ -334,18 +336,17 @@ class TravellingSalesman:
                 self.itinerary = Itinerary(road_map=road_map)
                 self.draw()
 
-    def mainloop(self):
+    def launch(self):
+        self.draw()
+        self.fill_text()
         self._window.attributes('-topmost', 1)
         self._window.attributes('-topmost', 0)
         self._window.mainloop()
 
 
 def visualise(road_map):
-
     app = TravellingSalesman(road_map)
-    app.draw()
-    app.fill_text()
-    app.mainloop()
+    app.launch()
 
 
 def user_wants_to_load_a_different_file(question):
@@ -359,16 +360,19 @@ def user_wants_to_load_a_different_file(question):
     return yes_no
 
 
+def open_map_dialogue_box():
+    return filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
+                                      filetypes=(("text files", "*.txt"), ("all files", "*.*")))
+
+
 def get_file_name():
     """
     Opens the file-open dialogue box to ask the user for a file
     """
     root = Tk()
     root.withdraw()
-    path = filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
-                                      filetypes=(("text files", "*.txt"), ("all files", "*.*")))
+    path = open_map_dialogue_box()
     root.destroy()
-
     return path
 
 
@@ -380,8 +384,8 @@ def main():
     load_another_map = True
 
     while load_another_map:
-        # file_path = get_file_name()
-        file_path = 'city-data.txt'
+        file_path = get_file_name()
+        # file_path = 'city-data.txt'
         if not file_path:
             load_another_map = user_wants_to_load_a_different_file(
                 'No file specified, would you like to try again?')
