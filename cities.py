@@ -236,7 +236,6 @@ class ItineraryDrawer:
             yield deg, converter(deg, px_per_deg, ref_point)
             deg += grid_line_spacing
 
-
     def draw(self, itinerary, canvas):
         canvas.update()
         canvas.delete('all')
