@@ -170,51 +170,79 @@ class Itinerary:
         return self._long_min
 
 class ItineraryDrawer:
-    def __init__(self, drawable_area=700, margin=50, min_grid_lines=5):
-        self._drawable_area = drawable_area
-        self._margin = margin
+    def __init__(self, drawable_size_px=700, margin_px=50, min_grid_lines=5):
+        self._drawable_size_px = drawable_size_px
+        self._margin_px = margin_px
         self._min_grid_lines = min_grid_lines
 
     def points(self, itinerary, pixels_per_degree, lat_max, long_min):
-        x_coords = ((longitude-long_min)*pixels_per_degree + self._margin for longitude in itinerary.longitudes())
-        y_coords = ((lat_max-latitude)*pixels_per_degree + self._margin for latitude in itinerary.latitudes())
+        x_coords = ((longitude-long_min) * pixels_per_degree + self._margin_px for longitude in itinerary.longitudes())
+        y_coords = ((lat_max-latitude) * pixels_per_degree + self._margin_px for latitude in itinerary.latitudes())
         return ((x,y) for x, y in zip(x_coords, y_coords))
 
 
     def draw(self, itinerary, canvas):
         canvas.update()
         canvas.delete('all')
-        lat_max = itinerary.latitude_max()
-        long_min = itinerary.longitude_min()
+        lat_min, lat_max = itinerary.latitude_min(), itinerary.latitude_max()
+        long_min, long_max = itinerary.longitude_min(), itinerary.longitude_max()
 
         lat_range = lat_max - itinerary.latitude_min()
         long_range = itinerary.longitude_max() - long_min
-        max_range = max(lat_range, long_range)
+        max_range_deg = max(lat_range, long_range)
 
         if lat_range > long_range:
-            height = self._drawable_area
-            width = self._drawable_area * long_range / lat_range
+            canvas_height_px = self._drawable_size_px + 2*self._margin_px
+            canvas_width_px = self._drawable_size_px * long_range / lat_range + 2*self._margin_px
         else:
-            width = self._drawable_area
-            height = self._drawable_area * lat_range / long_range
+            canvas_width_px = self._drawable_size_px + 2*self._margin_px
+            canvas_height_px = self._drawable_size_px * lat_range / long_range +2*self._margin_px
 
-        pixels_per_degree = self._drawable_area / max_range
+        px_per_deg = self._drawable_size_px / max_range_deg
 
-        canvas.config(width=width+2*self._margin, height=height+2*self._margin)
-
-        scale = 10 ** (log10(max_range / min_lines) // 1)
-        multiple = 10 ** (log10(max_range / min_lines) % 1)
+        canvas.config(width=canvas_width_px, height=canvas_height_px)
+        ''' gridlines '''
+        scale = 10 ** (log10(max_range_deg / self._min_grid_lines) // 1)
+        multiple = 10 ** (log10(max_range_deg / self._min_grid_lines) % 1)
 
         if multiple < 2:
-            spacing = scale = 1
+            grid_line_spacing_deg = scale * 1
         elif multiple < 5:
-            spacing = scale = 2
+            grid_line_spacing_deg = scale * 2
         else:
-            spacing = scale = 5
+            grid_line_spacing_deg = scale * 5
 
-        min_shown_lat = min_lat
+        margin_deg = self._margin_px / px_per_deg
 
-        for x, y in self.points(itinerary, pixels_per_degree, lat_max, long_min):
+        lat_min_displayed, lat_max_displayed = lat_min - margin_deg, lat_max + margin_deg
+        long_min_displayed, long_max_displayed = long_min - margin_deg, long_max + margin_deg
+
+        first_lat_grid_line = lat_min_displayed + grid_line_spacing_deg - lat_min_displayed % grid_line_spacing_deg
+        first_long_grid_line = long_min_displayed + grid_line_spacing_deg - long_min_displayed % grid_line_spacing_deg
+
+        lat_grid_lines_deg = (first_lat_grid_line + i * grid_line_spacing_deg for i in range(self._min_grid_lines*3)
+                              if first_lat_grid_line + i * grid_line_spacing_deg < lat_max_displayed)
+
+        long_grid_lines_deg = (first_long_grid_line + i * grid_line_spacing_deg for i in range(self._min_grid_lines*3)
+                               if first_long_grid_line + i * grid_line_spacing_deg < long_max_displayed)
+
+
+        lat_grid_lines_px = ((lat_max-latitude) * px_per_deg + self._margin_px for latitude in lat_grid_lines_deg)
+        long_grid_lines_px = ((longitude-long_min) * px_per_deg + self._margin_px for longitude in long_grid_lines_deg)
+
+        for lat in lat_grid_lines_deg:
+            y = (lat_max - lat) * px_per_deg + self._margin_px
+            canvas.create_line(0, y, canvas_width_px, y, fill="lightblue1")
+            canvas.create_text(5, y - 5, text=str(lat), anchor=SW, font=('purisa', 8))
+
+        for long in long_grid_lines_deg:
+            x = (long-long_min) * px_per_deg + self._margin_px
+            canvas.create_line(x, 0, x, canvas_height_px, fill="lightblue1")
+            canvas.create_text(x, 5, text=str(long), anchor=NW, font=('purisa', 8))
+
+        ''' cities '''
+
+        for x, y in self.points(itinerary, px_per_deg, lat_max, long_min):
             canvas.create_oval(x - 2, y - 2, x + 2, y + 2,
                                  fill='white', outline='black', width=1)
 
