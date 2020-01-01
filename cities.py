@@ -2,7 +2,7 @@ from math import sqrt, log10
 from random import randint, shuffle
 from tkinter import filedialog, messagebox
 from tkinter import *
-from itertools import islice, chain
+from itertools import chain
 
 
 def read_cities(file_name):
@@ -265,10 +265,12 @@ class ItineraryDrawer:
             canvas.create_line(x, 0, x, canvas_height_px, fill="lightblue1")
             canvas.create_text(x, 5, text=str(round(deg, 1)), anchor=NW, font=('purisa', 8))
 
-        ''' draw route cities '''
+        ''' draw legs '''
 
         for (x_0, y_0), (x_1, y_1) in self._point_pairs(itinerary, px_per_deg, lat_max, long_min):
             canvas.create_line(x_0, y_0, x_1, y_1, fill="red")
+
+        ''' draw cities '''
 
         for i, (x, y) in enumerate(self._points(itinerary, px_per_deg, lat_max, long_min)):
             canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill='white', outline='black', width=1)

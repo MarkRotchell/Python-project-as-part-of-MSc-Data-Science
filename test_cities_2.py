@@ -1,4 +1,5 @@
 import pytest
+import types
 
 from cities import *
 
@@ -53,14 +54,14 @@ def road_map_2():
     return [('Mauritania', 'Nouakchott', -20.1, 57.3),
             ('Mayotte', 'Mamoudzou', -12.48, 45.14),
             ('Mexico', 'Mexico', 19.2, -99.1),
-            ('Micronesia (Federated States of)', 'Palikir', 6.55, 158),
+            ('Micronesia (Federated States of)', 'Palikir', 6.55, 158.0),
             ('Moldova, Republic of', 'Chisinau', 47.02, 28.5),
             ('Mozambique', 'Maputo', -25.58, 32.32),
             ('Myanmar', 'Yangon', 16.45, 96.2),
             ('Namibia', 'Windhoek', -22.35, 17.04),
             ('Nepal', 'Kathmandu', 27.45, 85.2),
             ('Netherlands', 'Amsterdam', 52.23, 4.54),
-            ('Netherlands Antilles', 'Willemstad', 12.05, -69),
+            ('Netherlands Antilles', 'Willemstad', 12.05, -69.0),
             ('New Caledonia', 'Noumea', -22.17, 166.3),
             ('New Zealand', 'Wellington', -41.19, 174.4),
             ('Nicaragua', 'Managua', 12.06, -86.2),
@@ -75,25 +76,26 @@ def length_2():
 
 @pytest.fixture
 def states_2():
-    return ['Mayotte', 'Mexico', 'Micronesia (Federated States of)', 'Moldova, Republic of', 'Mozambique', 'Myanmar',
-            'Namibia', 'Nepal', 'Netherlands', 'Netherlands Antilles', 'New Caledonia', 'New Zealand', 'Nicaragua',
-            'Niger', 'Nigeria']
+    return ['Mauritania', 'Mayotte', 'Mexico', 'Micronesia (Federated States of)', 'Moldova, Republic of', 'Mozambique',
+            'Myanmar', 'Namibia', 'Nepal', 'Netherlands', 'Netherlands Antilles', 'New Caledonia', 'New Zealand',
+            'Nicaragua', 'Niger', 'Nigeria']
 
 
 @pytest.fixture
 def cities_2():
-    return ['Mamoudzou', 'Mexico', 'Palikir', 'Chisinau', 'Maputo', 'Yangon', 'Windhoek', 'Kathmandu', 'Amsterdam',
-            'Willemstad', 'Noumea', 'Wellington', 'Managua', 'Niamey', 'Abuja']
+    return ['Nouakchott', 'Mamoudzou', 'Mexico', 'Palikir', 'Chisinau', 'Maputo', 'Yangon', 'Windhoek', 'Kathmandu',
+            'Amsterdam', 'Willemstad', 'Noumea', 'Wellington', 'Managua', 'Niamey', 'Abuja']
 
 
 @pytest.fixture
 def latitudes_2():
-    return [-12.48, 19.2, 6.55, 47.02, -25.58, 16.45, -22.35, 27.45, 52.23, 12.05, -22.17, -41.19, 12.06, 13.27, 9.05]
+    return [-20.1, -12.48, 19.2, 6.55, 47.02, -25.58, 16.45, -22.35, 27.45, 52.23, 12.05, -22.17, -41.19, 12.06, 13.27,
+            9.05]
 
 
 @pytest.fixture
 def longitudes_2():
-    return [45.14, -99.1, 158, 28.5, 32.32, 96.2, 17.04, 85.2, 4.54, -69, 166.3, 174.4, -86.2, 2.06, 7.32]
+    return [57.3, 45.14, -99.1, 158.0, 28.5, 32.32, 96.2, 17.04, 85.2, 4.54, -69.0, 166.3, 174.4, -86.2, 2.06, 7.32]
 
 
 @pytest.fixture
@@ -857,3 +859,529 @@ def test_shift_cities_as_expected_3(road_map_3):
 
 def test_shift_cities_single_city(road_map_5):
     assert road_map_5[0] == shift_cities(road_map_5)[0]
+
+
+'''
+################################## 
+
+itinerary.road_map                           
+
+################################## 
+'''
+
+
+def test_itinerary_road_map_is_list_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.road_map, list)
+
+
+def test_itinerary_road_map_is_list_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.road_map, list)
+
+
+def test_itinerary_road_map_is_collection_of_tuples_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for element in itinerary.road_map:
+        assert isinstance(element, tuple)
+
+
+def test_itinerary_road_map_is_collection_of_tuples_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for element in itinerary.road_map:
+        assert isinstance(element, tuple)
+
+
+def test_itinerary_road_map_has_right_length_1(road_map_1, length_1):
+    itinerary = Itinerary(road_map_1)
+    assert len(itinerary.road_map) == length_1
+
+
+def test_itinerary_road_map_has_right_length_2(road_map_2, length_2):
+    itinerary = Itinerary(road_map_2)
+    assert len(itinerary.road_map) == length_2
+
+
+def test_itinerary_road_map_is_collection_of_collections_of_length_four_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for element in itinerary.road_map:
+        assert len(element) == 4
+
+
+def test_itinerary_road_map_is_collection_of_collections_of_length_four_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for element in itinerary.road_map:
+        assert len(element) == 4
+
+
+def test_itinerary_road_map_is_input_list_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.road_map is road_map_1
+
+
+def test_itinerary_road_map_is_input_list_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.road_map is road_map_2
+
+
+def test_itinerary_road_map_all_values_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for received, expected in zip(itinerary.road_map, road_map_1):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+        assert received[2] == pytest.approx(expected[2])
+        assert received[3] == pytest.approx(expected[3])
+
+
+def test_itinerary_road_map_all_values_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for received, expected in zip(itinerary.road_map, road_map_2):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+        assert received[2] == pytest.approx(expected[2])
+        assert received[3] == pytest.approx(expected[3])
+
+
+def test_itinerary_road_map_setter_changes_road_map_1(road_map_1, road_map_2):
+    itinerary = Itinerary(road_map_1)
+    itinerary.road_map = road_map_2
+    assert itinerary.road_map is road_map_2
+
+
+def test_itinerary_road_map_setter_changes_road_map_2(road_map_3, road_map_4):
+    itinerary = Itinerary(road_map_3)
+    itinerary.road_map = road_map_4
+    assert itinerary.road_map is road_map_4
+
+
+'''
+################################## 
+
+itinerary.latitudes()                           
+
+################################## 
+'''
+
+
+def test_itinerary_latitudes_is_generator_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.latitudes(), types.GeneratorType)
+
+
+def test_itinerary_latitudes_is_generator_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.latitudes(), types.GeneratorType)
+
+
+def test_itinerary_latitudes_elements_are_floats_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for state in itinerary.latitudes():
+        assert isinstance(state, float)
+
+
+def test_itinerary_latitudes_elements_are_floats_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for state in itinerary.latitudes():
+        assert isinstance(state, float)
+
+
+def test_itinerary_latitudes_expected_length_1(road_map_1, length_1):
+    itinerary = Itinerary(road_map_1)
+    assert len(list(itinerary.latitudes())) == length_1
+
+
+def test_itinerary_latitudes_expected_length_2(road_map_2, length_2):
+    itinerary = Itinerary(road_map_2)
+    assert len(list(itinerary.latitudes())) == length_2
+
+
+def test_itinerary_latitudes_expected_values_1(road_map_1, latitudes_1):
+    itinerary = Itinerary(road_map_1)
+    for received, expected in zip(itinerary.latitudes(), latitudes_1):
+        assert received == expected
+
+
+def test_itinerary_latitudes_expected_values_2(road_map_2, latitudes_2):
+    itinerary = Itinerary(road_map_2)
+    for received, expected in zip(itinerary.latitudes(), latitudes_2):
+        assert received == expected
+
+
+'''
+################################## 
+
+itinerary.longitudes()                           
+
+################################## 
+'''
+
+
+def test_itinerary_longitudes_is_generator_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.longitudes(), types.GeneratorType)
+
+
+def test_itinerary_longitudes_is_generator_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.longitudes(), types.GeneratorType)
+
+
+def test_itinerary_longitudes_elements_are_floats_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    for state in itinerary.longitudes():
+        assert isinstance(state, float)
+
+
+def test_itinerary_longitudes_elements_are_floats_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    for state in itinerary.longitudes():
+        assert isinstance(state, float)
+
+
+def test_itinerary_longitudes_expected_length_1(road_map_1, length_1):
+    itinerary = Itinerary(road_map_1)
+    assert len(list(itinerary.longitudes())) == length_1
+
+
+def test_itinerary_longitudes_expected_length_2(road_map_2, length_2):
+    itinerary = Itinerary(road_map_2)
+    assert len(list(itinerary.longitudes())) == length_2
+
+
+def test_itinerary_longitudes_expected_values_1(road_map_1, longitudes_1):
+    itinerary = Itinerary(road_map_1)
+    for received, expected in zip(itinerary.longitudes(), longitudes_1):
+        assert received == expected
+
+
+def test_itinerary_longitudes_expected_values_2(road_map_2, longitudes_2):
+    itinerary = Itinerary(road_map_2)
+    for received, expected in zip(itinerary.longitudes(), longitudes_2):
+        assert received == expected
+
+
+'''
+################################## 
+
+itinerary.latitude_max()                           
+
+################################## 
+'''
+
+
+def test_itinerary_latitude_max_is_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.latitude_max(), float)
+
+
+def test_itinerary_latitude_max_is_float_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.latitude_max(), float)
+
+
+def test_itinerary_latitude_max_expected_value_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.latitude_max() == pytest.approx(48.813343)
+
+
+def test_itinerary_latitude_max_expected_value_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.latitude_max() == pytest.approx(52.23)
+
+
+def test_itinerary_latitude_max_expected_value_3(road_map_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.latitude_max() == pytest.approx(51.6)
+
+
+def test_itinerary_latitude_max_expected_value_4(road_map_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.latitude_max() == pytest.approx(57.477772)
+
+
+def test_itinerary_latitude_max_expected_value_5(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    assert itinerary.latitude_max() == pytest.approx(51.521728)
+
+
+def test_itinerary_latitude_max_correct_after_updated_road_map(road_map_1, road_map_2):
+    itinerary = Itinerary(road_map_1)
+    itinerary.road_map = road_map_2
+    assert itinerary.latitude_max() == pytest.approx(52.23)
+
+
+'''
+################################## 
+
+itinerary.latitude_min()                           
+
+################################## 
+'''
+
+
+def test_itinerary_latitude_min_is_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.latitude_min(), float)
+
+
+def test_itinerary_latitude_min_is_float_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.latitude_min(), float)
+
+
+def test_itinerary_latitude_min_expected_value_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.latitude_min() == pytest.approx(32.32)
+
+
+def test_itinerary_latitude_min_expected_value_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.latitude_min() == pytest.approx(-41.19)
+
+
+def test_itinerary_latitude_min_expected_value_3(road_map_3, ):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.latitude_min() == pytest.approx(51.4927)
+
+
+def test_itinerary_latitude_min_expected_value_4(road_map_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.latitude_min() == pytest.approx(51.063202)
+
+
+def test_itinerary_latitude_min_expected_value_5(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    assert itinerary.latitude_min() == pytest.approx(51.521728)
+
+
+def test_itinerary_latitude_min_correct_after_updated_road_map(road_map_1, road_map_2):
+    itinerary = Itinerary(road_map_1)
+    itinerary.road_map = road_map_2
+    assert itinerary.latitude_min() == pytest.approx(-41.19)
+
+
+'''
+################################## 
+
+itinerary.longitude_max()                           
+
+################################## 
+'''
+
+
+def test_itinerary_longitude_max_is_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.longitude_max(), float)
+
+
+def test_itinerary_longitude_max_is_float_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.longitude_max(), float)
+
+
+def test_itinerary_longitude_max_expected_value_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.longitude_max() == pytest.approx(-71.549127)
+
+
+def test_itinerary_longitude_max_expected_value_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.longitude_max() == pytest.approx(174.4)
+
+
+def test_itinerary_longitude_max_expected_value_3(road_map_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.longitude_max() == pytest.approx(0.1837)
+
+
+def test_itinerary_longitude_max_expected_value_4(road_map_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.longitude_max() == pytest.approx(-0.09214)
+
+
+def test_itinerary_longitude_max_expected_value_5(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    assert itinerary.longitude_max() == pytest.approx(-0.129338)
+
+
+def test_itinerary_longitude_max_correct_after_updated_road_map(road_map_1, road_map_2):
+    itinerary = Itinerary(road_map_1)
+    itinerary.road_map = road_map_2
+    assert itinerary.longitude_max() == pytest.approx(174.4)
+
+
+'''
+################################## 
+
+itinerary.longitude_min()                           
+
+################################## 
+'''
+
+
+def test_itinerary_longitude_min_is_float_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.longitude_min(), float)
+
+
+def test_itinerary_longitude_min_is_float_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert isinstance(itinerary.longitude_min(), float)
+
+
+def test_itinerary_longitude_min_expected_value_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert itinerary.longitude_min() == pytest.approx(-119.753877)
+
+
+def test_itinerary_longitude_min_expected_value_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert itinerary.longitude_min() == pytest.approx(-99.1)
+
+
+def test_itinerary_longitude_min_expected_value_3(road_map_3):
+    itinerary = Itinerary(road_map_3)
+    assert itinerary.longitude_min() == pytest.approx(-0.476)
+
+
+def test_itinerary_longitude_min_expected_value_4(road_map_4):
+    itinerary = Itinerary(road_map_4)
+    assert itinerary.longitude_min() == pytest.approx(-7.3074)
+
+
+def test_itinerary_longitude_min_expected_value_5(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    assert itinerary.longitude_min() == pytest.approx(-0.129338)
+
+
+def test_itinerary_longitude_min_correct_after_updated_road_map(road_map_1, road_map_2):
+    itinerary = Itinerary(road_map_1)
+    itinerary.road_map = road_map_2
+    assert itinerary.longitude_min() == pytest.approx(-99.1)
+
+
+'''
+################################## 
+
+itinerary.coordinates()                           
+
+################################## 
+'''
+
+
+def test_itinerary_coordinates_returns_generator(road_map_1):
+    assert isinstance(Itinerary(road_map_1).coordinates(), types.GeneratorType)
+
+
+def test_itinerary_coordinates_generates_tuples(road_map_1):
+    for element in Itinerary(road_map_1).coordinates():
+        assert isinstance(element, tuple)
+
+
+def test_itinerary_coordinates_generates_correct_number_of_tuples(road_map_1, length_1):
+    assert len(list(Itinerary(road_map_1).coordinates())) == length_1
+
+
+def test_itinerary_coordinates_generates_pairs(road_map_1):
+    for element in Itinerary(road_map_1).coordinates():
+        assert len(element) == 2
+
+
+def test_itinerary_coordinates_generates_pairs_of_floats(road_map_1):
+    for element in Itinerary(road_map_1).coordinates():
+        assert isinstance(element[0], float)
+        assert isinstance(element[1], float)
+
+
+def test_itinerary_coordinates_as_expected_1(road_map_1):
+    expected_coords = [(44.95, -93.094),
+                       (32.32, -90.207),
+                       (38.572954, -92.189283),
+                       (46.595805, -112.027031),
+                       (40.809868, -96.675345),
+                       (39.160949, -119.753877),
+                       (43.220093, -71.549127),
+                       (40.221741, -74.756138),
+                       (35.667231, -105.964575),
+                       (42.659829, -73.781339),
+                       (35.771, -78.638),
+                       (48.813343, -100.779004)]
+    for (lat_received, long_received), (lat_expected, long_expected) in zip(Itinerary(road_map_1).coordinates(),
+                                                                            expected_coords):
+        assert lat_received == pytest.approx(lat_expected)
+        assert long_received == pytest.approx(long_expected)
+
+
+def test_itinerary_coordinates_as_expected_2(road_map_2):
+    expected_coords = [(-20.1, 57.3),
+                       (-12.48, 45.14),
+                       (19.2, -99.1),
+                       (6.55, 158.0),
+                       (47.02, 28.5),
+                       (-25.58, 32.32),
+                       (16.45, 96.2),
+                       (-22.35, 17.04),
+                       (27.45, 85.2),
+                       (52.23, 4.54),
+                       (12.05, -69.0),
+                       (-22.17, 166.3),
+                       (-41.19, 174.4),
+                       (12.06, -86.2),
+                       (13.27, 2.06),
+                       (9.05, 7.32)]
+    for (lat_received, long_received), (lat_expected, long_expected) in zip(Itinerary(road_map_2).coordinates(),
+                                                                            expected_coords):
+        assert lat_received == pytest.approx(lat_expected)
+        assert long_received == pytest.approx(long_expected)
+
+
+def test_itinerary_coordinates_as_expected_3(road_map_3):
+    expected_coords = [(51.545, -0.0553),
+                       (51.4927, -0.2339),
+                       (51.6, -0.1119),
+                       (51.5898, -0.3346),
+                       (51.5812, 0.1837),
+                       (51.5441, -0.476)]
+    for (lat_received, long_received), (lat_expected, long_expected) in zip(Itinerary(road_map_3).coordinates(),
+                                                                            expected_coords):
+        assert lat_received == pytest.approx(lat_expected)
+        assert long_received == pytest.approx(long_expected)
+
+
+def test_itinerary_coordinates_as_expected_4(road_map_4):
+    expected_coords = [(51.209, -2.647),
+                       (51.515457, -0.09214),
+                       (51.063202, -1.308),
+                       (52.59137, -2.110748),
+                       (52.192001, -2.22),
+                       (53.958332, -1.080278),
+                       (57.149651, -2.099075),
+                       (56.462002, -2.9707),
+                       (55.953251, -3.188267),
+                       (55.860916, -4.251433),
+                       (57.477772, -4.224721),
+                       (56.396999, -3.437),
+                       (56.1166, -3.9369),
+                       (53.228, -4.128),
+                       (51.481583, -3.17909),
+                       (51.58333, -2.98333),
+                       (53.2667, -3.45),
+                       (51.882, -5.269),
+                       (51.621441, -3.943646),
+                       (54.35, -6.6667),
+                       (54.607868, -5.926437),
+                       (54.5234, -6.03527),
+                       (54.175999, -6.349),
+                       (54.9958, -7.3074)]
+    for (lat_received, long_received), (lat_expected, long_expected) in zip(Itinerary(road_map_4).coordinates(),
+                                                                            expected_coords):
+        assert lat_received == pytest.approx(lat_expected)
+        assert long_received == pytest.approx(long_expected)
+
+
+def test_itinerary_coordinates_as_expected_5(road_map_5):
+    expected_coords = [(51.521728, -0.129338)]
+    for (lat_received, long_received), (lat_expected, long_expected) in zip(Itinerary(road_map_5).coordinates(),
+                                                                            expected_coords):
+        assert lat_received == pytest.approx(lat_expected)
+        assert long_received == pytest.approx(long_expected)
