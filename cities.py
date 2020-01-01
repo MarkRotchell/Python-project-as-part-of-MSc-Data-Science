@@ -188,6 +188,30 @@ class ItineraryDrawer:
         self.margin_px = margin_px
         self.min_grid_lines = min_grid_lines
 
+    @property
+    def drawable_size_px(self):
+        return self._drawable_size_px
+
+    @drawable_size_px.setter
+    def drawable_size_px(self, drawable_size_px):
+        self._drawable_size_px = max(0, int(round(drawable_size_px)))
+
+    @property
+    def margin_px(self):
+        return self._margin_px
+
+    @margin_px.setter
+    def margin_px(self, margin_px):
+        self._margin_px = max(0, int(round(margin_px)))
+
+    @property
+    def min_grid_lines(self):
+        return self._min_grid_lines
+
+    @min_grid_lines.setter
+    def min_grid_lines(self, min_grid_lines):
+        self._min_grid_lines = max(1, int(round(min_grid_lines)))
+
     def _lat_to_y(self, latitude, px_per_deg, lat_max):
         return (lat_max - latitude) * px_per_deg + self.margin_px
 
