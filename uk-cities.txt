@@ -1,85 +1,69 @@
-UK	York	53.958332	-1.080278
-UK	Worcester	52.192001	-2.22
-UK	Winchester	51.063202	-1.308
-UK	Wells	51.209	-2.647
-UK	Wakefield	53.68	-1.49
-UK	Truro	50.259998	-5.051
-UK	Sunderland	54.906101	-1.38113
-UK	Sheffield	53.383331	-1.466667
-UK	Salford	53.483002	-2.2931
-UK	St. Davids	51.882	-5.269
-UK	St.Albans	51.755001	-0.336
-UK	Ripon	54.138	-1.524
-UK	Portsmouth	50.805832	-1.087222
-UK	Perth	56.396999	-3.437
-UK	Nottingham	52.950001	-1.15
-UK	Newry	54.175999	-6.349
-UK	Newcastle upon Tyne	54.966667	-1.6
-UK	Liverpool	53.400002	-2.983333
-UK	Lincoln	53.234444	-0.538611
-UK	Lichfield	52.683498	-1.82653
-UK	Leicester	52.633331	-1.133333
-UK	Lancaster	54.047001	-2.801
-UK	Hereford	52.056499	-2.716
-UK	Gloucester	51.864445	-2.244444
-UK	Glasgow	55.860916	-4.251433
-UK	Exeter	50.716667	-3.533333
-UK	Ely	52.398056	0.262222
-UK	Durham	54.7761	-1.5733
-UK	Dundee	56.462002	-2.9707
-UK	Derry	54.9958	-7.3074
-UK	Derby	52.916668	-1.466667
-UK	Coventry	52.408054	-1.510556
-UK	Chichester	50.836498	-0.7792
-UK	Chester	53.189999	-2.89
-UK	Chelmsford	51.736099	0.4798
-UK	Carlisle	54.890999	-2.944
-UK	Canterbury	51.279999	1.08
-UK	Cambridge	52.205276	0.119167
-UK	Brighton & Hove	50.827778	-0.152778
-UK	Bradford	53.799999	-1.75
-UK	Bath	51.380001	-2.36
-UK	Peterborough	52.573921	-0.25083
-UK	Elgin	57.653484	-3.335724
-UK	Stoke-on-Trent	53.002666	-2.179404
-UK	Solihull	52.412811	-1.778197
-UK	Cardiff	51.481583	-3.17909
-UK	Eastbourne	50.768036	0.290472
-UK	Oxford	51.752022	-1.257677
-UK	London	51.509865	-0.118092
-UK	Swindon	51.568535	-1.772232
-UK	Gravesend	51.441883	0.370759
-UK	Northampton	52.240479	-0.902656
-UK	Rugby	52.370876	-1.265032
-UK	Sutton Coldfield	52.570385	-1.824042
-UK	Harlow	51.772938	0.10231
-UK	Aberdeen	57.149651	-2.099075
-UK	Swansea	51.621441	-3.943646
-UK	Chesterfield	53.235046	-1.421629
-UK	Londonderry	55.006763	-7.318268
-UK	Salisbury	51.068787	-1.794472
-UK	Manchester	53.483959	-2.244644
-UK	Bristol	51.454514	-2.58791
-UK	Wolverhampton	52.59137	-2.110748
-UK	Preston	53.765762	-2.692337
-UK	Bournemouth	50.720806	-1.904755
-UK	Doncaster	53.52282	-1.128462
-UK	Ayr	55.458565	-4.629179
-UK	Hastings	50.854259	0.573453
-UK	Bedford	52.136436	-0.460739
-UK	Basildon	51.572376	0.470009
-UK	Chippenham	51.458057	-2.116074
-UK	Birmingham	52.489471	-1.898575
-UK	Folkestone	51.081398	1.169456
-UK	Edinburgh	55.953251	-3.188267
-UK	Southampton	50.909698	-1.404351
-UK	Belfast	54.607868	-5.926437
-UK	Uckfield	50.967941	0.085831
-UK	Worthing	50.825024	-0.383835
-UK	Leeds	53.801277	-1.548567
-UK	Kendal	54.328506	-2.74387
-UK	Hull	53.747372	-0.338653
-UK	Plymouth	50.376289	-4.143841
-UK	Haverhill	52.080875	0.444517
-UK	Frankton	52.328415	-1.377561
-UK	Inverness	57.477772	-4.224721
+England	Bath	51.380001	-2.36
+England	Birmingham	52.489471	-1.898575
+England	Bradford	53.799999	-1.75
+England	Brighton & Hove	50.827778	-0.152778
+England	Bristol	51.454514	-2.58791
+England	Cambridge	52.205276	0.119167
+England	Canterbury	51.279999	1.08
+England	Carlisle	54.890999	-2.944
+England	Chelmsford	51.736099	0.4798
+England	Chester	53.189999	-2.89
+England	Chichester	50.836498	-0.7792
+England	Coventry	52.408054	-1.510556
+England	Derby	52.916668	-1.466667
+England	Durham	54.7761	-1.5733
+England	Ely	52.398056	0.262222
+England	Exeter	50.716667	-3.533333
+England	Gloucester	51.864445	-2.244444
+England	Hereford	52.056499	-2.716
+England	Kingston upon Hull	53.744333	-0.3325
+England	Lancaster	54.047001	-2.801
+England	Leeds	53.801277	-1.548567
+England	Leicester	52.633331	-1.133333
+England	Lichfield	52.683498	-1.82653
+England	Lincoln	53.234444	-0.538611
+England	Liverpool	53.400002	-2.983333
+England	London	51.509865	-0.118092
+England	Manchester	53.483959	-2.244644
+England	Newcastle upon Tyne	54.966667	-1.6
+England	Norwich	52.6333	1.3
+England	Nottingham	52.950001	-1.15
+England	Oxford	51.752022	-1.257677
+England	Peterborough	52.573921	-0.25083
+England	Plymouth	50.376289	-4.143841
+England	Portsmouth	50.805832	-1.087222
+England	Preston	53.765762	-2.692337
+England	Ripon	54.138	-1.524
+England	Salford	53.483002	-2.2931
+England	Salisbury	51.068787	-1.794472
+England	Sheffield	53.383331	-1.466667
+England	Southampton	50.909698	-1.404351
+England	St. Albans	51.755001	-0.336
+England	Stoke-on-Trent	53.002666	-2.179404
+England	Sunderland	54.906101	-1.38113
+England	Truro	50.259998	-5.051
+England	Wakefield	53.68	-1.49
+England	Wells	51.209	-2.647
+England	Westminster	51.515457	-0.09214
+England	Winchester	51.063202	-1.308
+England	Wolverhampton	52.59137	-2.110748
+England	Worcester	52.192001	-2.22
+England	York	53.958332	-1.080278
+Scotland	Aberdeen	57.149651	-2.099075
+Scotland	Dundee	56.462002	-2.9707
+Scotland	Edinburgh	55.953251	-3.188267
+Scotland	Glasgow	55.860916	-4.251433
+Scotland	Inverness	57.477772	-4.224721
+Scotland	Perth	56.396999	-3.437
+Scotland	Stirling	56.1166	-3.9369
+Wales	Bangor	53.228	-4.128
+Wales	Cardiff	51.481583	-3.17909
+Wales	Newport	51.58333	-2.98333
+Wales	St. Asaph	53.2667	-3.45
+Wales	St. Davids	51.882	-5.269
+Wales	Swansea	51.621441	-3.943646
+Northern Ireland	Armagh	54.35	-6.6667
+Northern Ireland	Belfast	54.607868	-5.926437
+Northern Ireland	Lisburn	54.5234	-6.03527
+Northern Ireland	Newry	54.175999	-6.349
+Northern Ireland	Derry	54.9958	-7.3074

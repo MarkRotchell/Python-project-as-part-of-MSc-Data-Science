@@ -383,8 +383,8 @@ def main():
     load_another_map = True
 
     while load_another_map:
-        file_path = get_file_name()
-        # file_path = 'city-data.txt'
+        # file_path = get_file_name()
+        file_path = 'uk-cities.txt'
         if not file_path:
             load_another_map = user_wants_to_load_a_different_file(
                 'No file specified, would you like to try again?')
