@@ -213,10 +213,10 @@ class ItineraryDrawer:
         self._min_grid_lines = max(1, int(round(min_grid_lines)))
 
     def _lat_to_y(self, latitude, px_per_deg, lat_max):
-        return (lat_max - latitude) * px_per_deg + self.margin_px
+        return int(round((lat_max - latitude) * px_per_deg + self.margin_px))
 
     def _long_to_x(self, longitude, px_per_deg, long_min):
-        return (longitude - long_min) * px_per_deg + self.margin_px
+        return int(round((longitude - long_min) * px_per_deg + self.margin_px))
 
     def _points(self, itinerary, px_per_deg, lat_max, long_min):
         return ((self._long_to_x(longitude, px_per_deg, long_min),
@@ -232,11 +232,11 @@ class ItineraryDrawer:
 
     def _canvas_dimensions(self, lat_range, long_range):
         if lat_range > long_range:
-            canvas_height_px = self.drawable_size_px + 2 * self.margin_px
-            canvas_width_px = self.drawable_size_px * long_range / lat_range + 2 * self.margin_px
+            canvas_height_px = int(self.drawable_size_px + 2 * self.margin_px)
+            canvas_width_px = int(self.drawable_size_px * long_range / lat_range + 2 * self.margin_px)
         else:
-            canvas_width_px = self.drawable_size_px + 2 * self.margin_px
-            canvas_height_px = self.drawable_size_px * lat_range / long_range + 2 * self.margin_px
+            canvas_width_px = int(self.drawable_size_px + 2 * self.margin_px)
+            canvas_height_px = int(self.drawable_size_px * lat_range / long_range + 2 * self.margin_px)
 
         return canvas_width_px, canvas_height_px
 
@@ -304,7 +304,7 @@ class ItineraryDrawer:
 class TravellingSalesman:
     def __init__(self, road_map):
         self.itinerary = Itinerary(road_map=road_map)
-        self.drawer = ItineraryDrawer(drawable_size_px=700, margin_px=50, min_grid_lines=5)
+        self.drawer = ItineraryDrawer()
 
         self._window = Tk()
         self._control_frame = Frame(master=self._window)

@@ -1541,8 +1541,10 @@ ItineraryDrawer() constructor and associated properties
 ################################## 
 '''
 
+
 def test_ItineraryDrawer_default_constructor_type():
     assert isinstance(ItineraryDrawer(), ItineraryDrawer)
+
 
 def test_ItineraryDrawer_default_constructor_parameters():
     drawer = ItineraryDrawer()
@@ -1550,11 +1552,13 @@ def test_ItineraryDrawer_default_constructor_parameters():
     assert drawer.margin_px == 50
     assert drawer.min_grid_lines == 5
 
+
 def test_ItineraryDrawer_constructor_parameters_1():
     drawer = ItineraryDrawer(drawable_size_px=500, margin_px=100, min_grid_lines=10)
     assert drawer.drawable_size_px == 500
     assert drawer.margin_px == 100
     assert drawer.min_grid_lines == 10
+
 
 def test_ItineraryDrawer_constructor_parameters_2():
     drawer = ItineraryDrawer(drawable_size_px=500, margin_px=10, min_grid_lines=7)
@@ -1562,58 +1566,29 @@ def test_ItineraryDrawer_constructor_parameters_2():
     assert drawer.margin_px == 10
     assert drawer.min_grid_lines == 7
 
-def test_ItineraryDrawer_constructor_parameters_3():
+
+def test_ItineraryDrawer_constructor_parameters_converts_floats_to_ints():
     drawer = ItineraryDrawer(drawable_size_px=100.1, margin_px=0.25, min_grid_lines=2.7)
     assert drawer.drawable_size_px == 100
     assert drawer.margin_px == 0
     assert drawer.min_grid_lines == 3
 
-def test_ItineraryDrawer_constructor_parameters_4():
+
+def test_ItineraryDrawer_constructor_floors_at_one_gridline():
     drawer = ItineraryDrawer(drawable_size_px=9999, margin_px=300, min_grid_lines=-9)
     assert drawer.drawable_size_px == 9999
     assert drawer.margin_px == 300
     assert drawer.min_grid_lines == 1
 
-def test_ItineraryDrawer_constructor_parameters_5():
-    drawer = ItineraryDrawer(drawable_size_px=12, margin_px=-3, min_grid_lines=1)
-    assert drawer.drawable_size_px == 12
+
+def test_ItineraryDrawer_constructor_floors_at_zero_pixels():
+    drawer = ItineraryDrawer(drawable_size_px=-12, margin_px=-3, min_grid_lines=1)
+    assert drawer.drawable_size_px == 0
     assert drawer.margin_px == 0
     assert drawer.min_grid_lines == 1
 
+
 def test_ItineraryDrawer_parameters_setters_1():
-    drawer = ItineraryDrawer()
-
-    drawer.drawable_size_px = 10.3
-    drawer.margin_px = 20.1
-    drawer.min_grid_lines = 7.88
-
-    assert drawer.drawable_size_px == 10
-    assert drawer.margin_px == 20
-    assert drawer.min_grid_lines == 8
-
-def test_ItineraryDrawer_parameters_setters_2():
-    drawer = ItineraryDrawer()
-
-    drawer.drawable_size_px = 100
-    drawer.margin_px = 10
-    drawer.min_grid_lines = 0
-
-    assert drawer.drawable_size_px == 100
-    assert drawer.margin_px == 10
-    assert drawer.min_grid_lines == 1
-
-def test_ItineraryDrawer_parameters_setters_3():
-    drawer = ItineraryDrawer()
-
-    drawer.drawable_size_px = 888.88
-    drawer.margin_px = 88.8
-    drawer.min_grid_lines = 2.222
-
-    assert drawer.drawable_size_px == 889
-    assert drawer.margin_px == 89
-    assert drawer.min_grid_lines == 2
-
-def test_ItineraryDrawer_parameters_setters_4():
     drawer = ItineraryDrawer()
 
     drawer.drawable_size_px = 60
@@ -1624,7 +1599,8 @@ def test_ItineraryDrawer_parameters_setters_4():
     assert drawer.margin_px == 10
     assert drawer.min_grid_lines == 1
 
-def test_ItineraryDrawer_parameters_setters_5():
+
+def test_ItineraryDrawer_parameters_setters_2():
     drawer = ItineraryDrawer()
 
     drawer.drawable_size_px = 1254
@@ -1635,3 +1611,116 @@ def test_ItineraryDrawer_parameters_setters_5():
     assert drawer.margin_px == 200
     assert drawer.min_grid_lines == 80
 
+
+def test_ItineraryDrawer_parameters_setters_converts_floats_to_ints():
+    drawer = ItineraryDrawer()
+
+    drawer.drawable_size_px = 10.3
+    drawer.margin_px = 20.1
+    drawer.min_grid_lines = 7.88
+
+    assert drawer.drawable_size_px == 10
+    assert drawer.margin_px == 20
+    assert drawer.min_grid_lines == 8
+
+
+def test_ItineraryDrawer_parameters_setters_floors_at_one_gridline():
+    drawer = ItineraryDrawer()
+
+    drawer.drawable_size_px = 100
+    drawer.margin_px = 10
+    drawer.min_grid_lines = 0
+
+    assert drawer.drawable_size_px == 100
+    assert drawer.margin_px == 10
+    assert drawer.min_grid_lines == 1
+
+
+def test_ItineraryDrawer_parameters_setters_floors_at_zero_pixels():
+    drawer = ItineraryDrawer()
+
+    drawer.drawable_size_px = -888.88
+    drawer.margin_px = -88.8
+    drawer.min_grid_lines = 10
+
+    assert drawer.drawable_size_px == 0
+    assert drawer.margin_px == 0
+    assert drawer.min_grid_lines == 10
+
+
+'''
+################################## 
+
+ItineraryDrawer._lat_to_y                        
+
+################################## 
+'''
+
+
+def test_ItineraryDrawer_lat_to_y_returns_int():
+    drawer = ItineraryDrawer()
+    assert isinstance(drawer._lat_to_y(80.1, 12.8, 81.3), int)
+
+
+def test_ItineraryDrawer_lat_to_y_as_expected_1():
+    drawer = ItineraryDrawer()
+    assert drawer._lat_to_y(80.1, 12.8, 81.3) == 65
+
+
+def test_ItineraryDrawer_lat_to_y_as_expected_2():
+    drawer = ItineraryDrawer()
+    assert drawer._lat_to_y(-10.3, 2.5, -1.2) == 73
+
+
+def test_ItineraryDrawer_lat_to_y_as_expected_3():
+    drawer = ItineraryDrawer()
+    assert drawer._lat_to_y(0.01, 10, 1.0) == 60
+
+
+def test_ItineraryDrawer_lat_to_y_as_expected_4():
+    drawer = ItineraryDrawer(margin_px=5)
+    assert drawer._lat_to_y(0.01, 20, 1.0) == 25
+
+
+def test_ItineraryDrawer_lat_to_y_as_expected_5():
+    drawer = ItineraryDrawer(margin_px=20)
+    assert drawer._lat_to_y(-70, 0.01, 21.4) == 21
+
+
+'''
+################################## 
+
+ItineraryDrawer._long_to_x                        
+
+################################## 
+'''
+
+
+def test_ItineraryDrawer_long_to_x_returns_int():
+    drawer = ItineraryDrawer()
+    assert isinstance(drawer._long_to_x(80.1, 12.8, 61.3), int)
+
+
+def test_ItineraryDrawer_long_to_x_as_expected_1():
+    drawer = ItineraryDrawer()
+    assert drawer._long_to_x(80.1, 12.8, 61.3) == 291
+
+
+def test_ItineraryDrawer_long_to_x_as_expected_2():
+    drawer = ItineraryDrawer()
+    assert drawer._long_to_x(-10.3, 2.5, -20.2) == 75
+
+
+def test_ItineraryDrawer_long_to_x_as_expected_3():
+    drawer = ItineraryDrawer()
+    assert drawer._long_to_x(0.01, 10, -0.05) == 51
+
+
+def test_ItineraryDrawer_long_to_x_as_expected_4():
+    drawer = ItineraryDrawer(margin_px=5)
+    assert drawer._long_to_x(0.01, 2000, -0.01) == 45
+
+
+def test_ItineraryDrawer_long_to_x_as_expected_5():
+    drawer = ItineraryDrawer(margin_px=20)
+    assert drawer._long_to_x(70, 10, 21.4) == 506
