@@ -29,7 +29,7 @@ def read_cities(file_name):
 
     while line:
         line = line.rstrip().split('\t')
-        lines.append((line[0], line[1], float(line[2]), float(line[3])))
+        lines.append((str(line[0]), str(line[1]), float(line[2]), float(line[3])))
         line = infile.readline()
 
     infile.close()
