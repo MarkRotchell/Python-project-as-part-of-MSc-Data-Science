@@ -232,11 +232,11 @@ class ItineraryDrawer:
 
     def _canvas_dimensions(self, lat_range, long_range):
         if lat_range > long_range:
-            canvas_height_px = int(self.drawable_size_px + 2 * self.margin_px)
-            canvas_width_px = int(self.drawable_size_px * long_range / lat_range + 2 * self.margin_px)
+            canvas_height_px = int(round(self.drawable_size_px + 2 * self.margin_px))
+            canvas_width_px = int(round(self.drawable_size_px * long_range / lat_range + 2 * self.margin_px))
         else:
-            canvas_width_px = int(self.drawable_size_px + 2 * self.margin_px)
-            canvas_height_px = int(self.drawable_size_px * lat_range / long_range + 2 * self.margin_px)
+            canvas_width_px = int(round(self.drawable_size_px + 2 * self.margin_px))
+            canvas_height_px = int(round(self.drawable_size_px * lat_range / long_range + 2 * self.margin_px))
 
         return canvas_width_px, canvas_height_px
 

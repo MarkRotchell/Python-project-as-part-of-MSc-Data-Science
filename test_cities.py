@@ -1969,3 +1969,37 @@ def test_itinerarydrawer_point_pairs_as_expected_5(road_map_5):
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
+
+'''
+################################## 
+
+ItineraryDrawer._canvas_dimensions                   
+
+################################## 
+'''
+
+def test_itinerarydrawer_canvas_dimensions_returns_tuple():
+    assert isinstance(ItineraryDrawer()._canvas_dimensions(1, 1),tuple)
+
+def test_itinerarydrawer_canvas_dimensions_returns_pair():
+    assert len(ItineraryDrawer()._canvas_dimensions(1, 1)) == 2
+
+def test_itinerarydrawer_canvas_dimensions_returns_pair_of_ints():
+    width, height = ItineraryDrawer()._canvas_dimensions(1, 1)
+    assert isinstance(width, int)
+    assert isinstance(height, int)
+
+def test_itinerarydrawer_canvas_dimensions_as_expected_1():
+    assert ItineraryDrawer()._canvas_dimensions(2, 8) == (800, 275)
+
+def test_itinerarydrawer_canvas_dimensions_as_expected_2():
+    assert ItineraryDrawer()._canvas_dimensions(0.5, 0.45) == (730, 800)
+
+def test_itinerarydrawer_canvas_dimensions_as_expected_3():
+    assert ItineraryDrawer(margin_px=100)._canvas_dimensions(10, 15) == (900, 667)
+
+def test_itinerarydrawer_canvas_dimensions_as_expected_4():
+    assert ItineraryDrawer(margin_px=100, drawable_size_px=300)._canvas_dimensions(15, 10) == (400, 500)
+
+def test_itinerarydrawer_canvas_dimensions_as_expected_5():
+    assert ItineraryDrawer(drawable_size_px=5000)._canvas_dimensions(90, 40) == (2322, 5100)
