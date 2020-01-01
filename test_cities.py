@@ -2003,3 +2003,29 @@ def test_itinerarydrawer_canvas_dimensions_as_expected_4():
 
 def test_itinerarydrawer_canvas_dimensions_as_expected_5():
     assert ItineraryDrawer(drawable_size_px=5000)._canvas_dimensions(90, 40) == (2322, 5100)
+
+'''
+################################## 
+
+ItineraryDrawer._grid_line_spacing                   
+
+################################## 
+'''
+
+def test_itinerarydrawer_grid_line_spacing_returns_float():
+    assert isinstance(ItineraryDrawer()._grid_line_spacing(50.348), float)
+
+def test_itinerarydrawer_grid_line_spacing_as_expected_1():
+    assert ItineraryDrawer(min_grid_lines=5)._grid_line_spacing(9.378038916) == 1.0
+
+def test_itinerarydrawer_grid_line_spacing_as_expected_2():
+    assert ItineraryDrawer(min_grid_lines=5)._grid_line_spacing(0.143559727) == 0.02
+
+def test_itinerarydrawer_grid_line_spacing_as_expected_3():
+    assert ItineraryDrawer(min_grid_lines=5)._grid_line_spacing(2.333729165) == 0.2
+
+def test_itinerarydrawer_grid_line_spacing_as_expected_4():
+    assert ItineraryDrawer(min_grid_lines=5)._grid_line_spacing(37.32188954) == 5
+
+def test_itinerarydrawer_grid_line_spacing_as_expected_5():
+    assert ItineraryDrawer(min_grid_lines=5)._grid_line_spacing(0.896424405) == 0.1
