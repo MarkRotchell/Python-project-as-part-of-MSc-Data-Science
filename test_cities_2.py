@@ -693,15 +693,6 @@ swap_cities
 '''
 
 
-def test_swap_cities_in_place(road_map_1):
-    assert swap_cities(road_map_1, 0, 3)[0] is road_map_1
-
-
-def test_swap_cities_same_index(road_map_1):
-    for city_in, city_out in zip(road_map_1, swap_cities(road_map_1[:], 4, 4)[0]):
-        assert city_in is city_out
-
-
 def test_swap_cities_returns_tuple(road_map_1):
     assert isinstance(swap_cities(road_map_1, 1, 4), tuple)
 
@@ -716,9 +707,24 @@ def test_swap_cities_returns_list_as_first_element(road_map_1):
     assert isinstance(result[1], float)
 
 
+def test_swap_cities_returns_collection_of_tuples_as_first_element(road_map_1):
+    result = swap_cities(road_map_1, 4, 1)
+    for element in result[0]:
+        assert isinstance(element, tuple)
+
+
 def test_swap_cities_returns_float_as_second_element(road_map_1):
     result = swap_cities(road_map_1, 2, 3)
     assert isinstance(result[1], float)
+
+
+def test_swap_cities_in_place(road_map_1):
+    assert swap_cities(road_map_1, 0, 3)[0] is road_map_1
+
+
+def test_swap_cities_same_index(road_map_1):
+    for city_in, city_out in zip(road_map_1, swap_cities(road_map_1[:], 4, 4)[0]):
+        assert city_in is city_out
 
 
 def test_swap_cities_swaps_correct_cities_1(road_map_1):
@@ -759,9 +765,95 @@ def test_swap_cities_swaps_correct_cities_2(road_map_2):
         assert received == expected
 
 
+def test_swap_cities_swaps_correct_cities_3(road_map_3):
+    expected_map = [('London', 'Hackney', 51.545, -0.0553),
+                    ('London', 'Haringey', 51.6, -0.1119),
+                    ('London', 'Hammersmith and Fulham', 51.4927, -0.2339),
+                    ('London', 'Harrow', 51.5898, -0.3346),
+                    ('London', 'Havering', 51.5812, 0.1837),
+                    ('London', 'Hillingdon', 51.5441, -0.476)]
+    for received, expected in zip(swap_cities(road_map_3, 1, 2)[0], expected_map):
+        assert received == expected
+
+
 def test_swap_cities_correct_distance_1(road_map_3):
     assert swap_cities(road_map_3, 0, 4)[1] == pytest.approx(2.17659411)
 
 
 def test_swap_cities_correct_distance_2(road_map_4):
     assert swap_cities(road_map_4, 1, 5)[1] == pytest.approx(45.6783272)
+
+
+'''
+################################## 
+
+shift_cities                           
+
+################################## 
+'''
+
+
+def test_shift_cities_returns_list(road_map_1):
+    assert isinstance(shift_cities(road_map_1), list)
+
+
+def test_shift_cities_returns_collection_of_tuples(road_map_2):
+    for element in shift_cities(road_map_2):
+        assert isinstance(element, tuple)
+
+
+def test_shift_cities_in_place(road_map_3):
+    assert road_map_3 is shift_cities(road_map_3)
+
+
+def test_shift_cities_as_expected_1(road_map_1):
+    expected_map = [('North Dakota', 'Bismarck', 48.813343, -100.779004),
+                    ('Minnesota', 'Saint Paul', 44.95, -93.094),
+                    ('Mississippi', 'Jackson', 32.32, -90.207),
+                    ('Missouri', 'Jefferson City', 38.572954, -92.189283),
+                    ('Montana', 'Helana', 46.595805, -112.027031),
+                    ('Nebraska', 'Lincoln', 40.809868, -96.675345),
+                    ('Nevada', 'Carson City', 39.160949, -119.753877),
+                    ('New Hampshire', 'Concord', 43.220093, -71.549127),
+                    ('New Jersey', 'Trenton', 40.221741, -74.756138),
+                    ('New Mexico', 'Santa Fe', 35.667231, -105.964575),
+                    ('New York', 'Albany', 42.659829, -73.781339),
+                    ('North Carolina', 'Raleigh', 35.771, -78.638)]
+    for received, expected in zip(shift_cities(road_map_1), expected_map):
+        assert received == expected
+
+
+def test_shift_cities_as_expected_2(road_map_2):
+    expected_map = [('Nigeria', 'Abuja', 9.05, 7.32),
+                    ('Mauritania', 'Nouakchott', -20.1, 57.3),
+                    ('Mayotte', 'Mamoudzou', -12.48, 45.14),
+                    ('Mexico', 'Mexico', 19.2, -99.1),
+                    ('Micronesia (Federated States of)', 'Palikir', 6.55, 158),
+                    ('Moldova, Republic of', 'Chisinau', 47.02, 28.5),
+                    ('Mozambique', 'Maputo', -25.58, 32.32),
+                    ('Myanmar', 'Yangon', 16.45, 96.2),
+                    ('Namibia', 'Windhoek', -22.35, 17.04),
+                    ('Nepal', 'Kathmandu', 27.45, 85.2),
+                    ('Netherlands', 'Amsterdam', 52.23, 4.54),
+                    ('Netherlands Antilles', 'Willemstad', 12.05, -69),
+                    ('New Caledonia', 'Noumea', -22.17, 166.3),
+                    ('New Zealand', 'Wellington', -41.19, 174.4),
+                    ('Nicaragua', 'Managua', 12.06, -86.2),
+                    ('Niger', 'Niamey', 13.27, 2.06)]
+    for received, expected in zip(shift_cities(road_map_2), expected_map):
+        assert received == expected
+
+
+def test_shift_cities_as_expected_3(road_map_3):
+    expected_map = [('London', 'Hillingdon', 51.5441, -0.476),
+                    ('London', 'Hackney', 51.545, -0.0553),
+                    ('London', 'Hammersmith and Fulham', 51.4927, -0.2339),
+                    ('London', 'Haringey', 51.6, -0.1119),
+                    ('London', 'Harrow', 51.5898, -0.3346),
+                    ('London', 'Havering', 51.5812, 0.1837)]
+    for received, expected in zip(shift_cities(road_map_3), expected_map):
+        assert received == expected
+
+
+def test_shift_cities_single_city(road_map_5):
+    assert road_map_5[0] == shift_cities(road_map_5)[0]
