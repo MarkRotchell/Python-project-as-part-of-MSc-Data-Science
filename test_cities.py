@@ -1542,53 +1542,53 @@ ItineraryDrawer() constructor and associated properties
 '''
 
 
-def test_ItineraryDrawer_default_constructor_type():
+def test_itinerarydrawer_default_constructor_type():
     assert isinstance(ItineraryDrawer(), ItineraryDrawer)
 
 
-def test_ItineraryDrawer_default_constructor_parameters():
+def test_itinerarydrawer_default_constructor_parameters():
     drawer = ItineraryDrawer()
     assert drawer.drawable_size_px == 700
     assert drawer.margin_px == 50
     assert drawer.min_grid_lines == 5
 
 
-def test_ItineraryDrawer_constructor_parameters_1():
+def test_itinerarydrawer_constructor_parameters_1():
     drawer = ItineraryDrawer(drawable_size_px=500, margin_px=100, min_grid_lines=10)
     assert drawer.drawable_size_px == 500
     assert drawer.margin_px == 100
     assert drawer.min_grid_lines == 10
 
 
-def test_ItineraryDrawer_constructor_parameters_2():
+def test_itinerarydrawer_constructor_parameters_2():
     drawer = ItineraryDrawer(drawable_size_px=500, margin_px=10, min_grid_lines=7)
     assert drawer.drawable_size_px == 500
     assert drawer.margin_px == 10
     assert drawer.min_grid_lines == 7
 
 
-def test_ItineraryDrawer_constructor_parameters_converts_floats_to_ints():
+def test_itinerarydrawer_constructor_parameters_converts_floats_to_ints():
     drawer = ItineraryDrawer(drawable_size_px=100.1, margin_px=0.25, min_grid_lines=2.7)
     assert drawer.drawable_size_px == 100
     assert drawer.margin_px == 0
     assert drawer.min_grid_lines == 3
 
 
-def test_ItineraryDrawer_constructor_floors_at_one_gridline():
+def test_itinerarydrawer_constructor_floors_at_one_gridline():
     drawer = ItineraryDrawer(drawable_size_px=9999, margin_px=300, min_grid_lines=-9)
     assert drawer.drawable_size_px == 9999
     assert drawer.margin_px == 300
     assert drawer.min_grid_lines == 1
 
 
-def test_ItineraryDrawer_constructor_floors_at_zero_pixels():
+def test_itinerarydrawer_constructor_floors_at_zero_pixels():
     drawer = ItineraryDrawer(drawable_size_px=-12, margin_px=-3, min_grid_lines=1)
     assert drawer.drawable_size_px == 0
     assert drawer.margin_px == 0
     assert drawer.min_grid_lines == 1
 
 
-def test_ItineraryDrawer_parameters_setters_1():
+def test_itinerarydrawer_parameters_setters_1():
     drawer = ItineraryDrawer()
 
     drawer.drawable_size_px = 60
@@ -1600,7 +1600,7 @@ def test_ItineraryDrawer_parameters_setters_1():
     assert drawer.min_grid_lines == 1
 
 
-def test_ItineraryDrawer_parameters_setters_2():
+def test_itinerarydrawer_parameters_setters_2():
     drawer = ItineraryDrawer()
 
     drawer.drawable_size_px = 1254
@@ -1612,7 +1612,7 @@ def test_ItineraryDrawer_parameters_setters_2():
     assert drawer.min_grid_lines == 80
 
 
-def test_ItineraryDrawer_parameters_setters_converts_floats_to_ints():
+def test_itinerarydrawer_parameters_setters_converts_floats_to_ints():
     drawer = ItineraryDrawer()
 
     drawer.drawable_size_px = 10.3
@@ -1624,7 +1624,7 @@ def test_ItineraryDrawer_parameters_setters_converts_floats_to_ints():
     assert drawer.min_grid_lines == 8
 
 
-def test_ItineraryDrawer_parameters_setters_floors_at_one_gridline():
+def test_itinerarydrawer_parameters_setters_floors_at_one_gridline():
     drawer = ItineraryDrawer()
 
     drawer.drawable_size_px = 100
@@ -1636,7 +1636,7 @@ def test_ItineraryDrawer_parameters_setters_floors_at_one_gridline():
     assert drawer.min_grid_lines == 1
 
 
-def test_ItineraryDrawer_parameters_setters_floors_at_zero_pixels():
+def test_itinerarydrawer_parameters_setters_floors_at_zero_pixels():
     drawer = ItineraryDrawer()
 
     drawer.drawable_size_px = -888.88
@@ -1657,32 +1657,32 @@ ItineraryDrawer._lat_to_y
 '''
 
 
-def test_ItineraryDrawer_lat_to_y_returns_int():
+def test_itinerarydrawer_lat_to_y_returns_int():
     drawer = ItineraryDrawer()
     assert isinstance(drawer._lat_to_y(80.1, 12.8, 81.3), int)
 
 
-def test_ItineraryDrawer_lat_to_y_as_expected_1():
+def test_itinerarydrawer_lat_to_y_as_expected_1():
     drawer = ItineraryDrawer()
     assert drawer._lat_to_y(80.1, 12.8, 81.3) == 65
 
 
-def test_ItineraryDrawer_lat_to_y_as_expected_2():
+def test_itinerarydrawer_lat_to_y_as_expected_2():
     drawer = ItineraryDrawer()
     assert drawer._lat_to_y(-10.3, 2.5, -1.2) == 73
 
 
-def test_ItineraryDrawer_lat_to_y_as_expected_3():
+def test_itinerarydrawer_lat_to_y_as_expected_3():
     drawer = ItineraryDrawer()
     assert drawer._lat_to_y(0.01, 10, 1.0) == 60
 
 
-def test_ItineraryDrawer_lat_to_y_as_expected_4():
+def test_itinerarydrawer_lat_to_y_as_expected_4():
     drawer = ItineraryDrawer(margin_px=5)
     assert drawer._lat_to_y(0.01, 20, 1.0) == 25
 
 
-def test_ItineraryDrawer_lat_to_y_as_expected_5():
+def test_itinerarydrawer_lat_to_y_as_expected_5():
     drawer = ItineraryDrawer(margin_px=20)
     assert drawer._lat_to_y(-70, 0.01, 21.4) == 21
 
@@ -1696,31 +1696,276 @@ ItineraryDrawer._long_to_x
 '''
 
 
-def test_ItineraryDrawer_long_to_x_returns_int():
+def test_itinerarydrawer_long_to_x_returns_int():
     drawer = ItineraryDrawer()
     assert isinstance(drawer._long_to_x(80.1, 12.8, 61.3), int)
 
 
-def test_ItineraryDrawer_long_to_x_as_expected_1():
+def test_itinerarydrawer_long_to_x_as_expected_1():
     drawer = ItineraryDrawer()
     assert drawer._long_to_x(80.1, 12.8, 61.3) == 291
 
 
-def test_ItineraryDrawer_long_to_x_as_expected_2():
+def test_itinerarydrawer_long_to_x_as_expected_2():
     drawer = ItineraryDrawer()
     assert drawer._long_to_x(-10.3, 2.5, -20.2) == 75
 
 
-def test_ItineraryDrawer_long_to_x_as_expected_3():
+def test_itinerarydrawer_long_to_x_as_expected_3():
     drawer = ItineraryDrawer()
     assert drawer._long_to_x(0.01, 10, -0.05) == 51
 
 
-def test_ItineraryDrawer_long_to_x_as_expected_4():
+def test_itinerarydrawer_long_to_x_as_expected_4():
     drawer = ItineraryDrawer(margin_px=5)
     assert drawer._long_to_x(0.01, 2000, -0.01) == 45
 
 
-def test_ItineraryDrawer_long_to_x_as_expected_5():
+def test_itinerarydrawer_long_to_x_as_expected_5():
     drawer = ItineraryDrawer(margin_px=20)
     assert drawer._long_to_x(70, 10, 21.4) == 506
+
+
+'''
+################################## 
+
+ItineraryDrawer._points                        
+
+################################## 
+'''
+
+
+def test_itinerarydrawer_points_returns_generator(road_map_1):
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    assert isinstance(received_points, types.GeneratorType)
+
+
+def test_itinerarydrawer_points_generates_tuples(road_map_1):
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    for element in drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+        assert isinstance(element, tuple)
+
+
+def test_itinerarydrawer_points_generates_pairs(road_map_1):
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    for element in drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+        assert len(element) == 2
+
+
+def test_itinerarydrawer_points_generates_pairs_of_ints(road_map_1):
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    for element in drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+        assert isinstance(element[0], int)
+        assert isinstance(element[1], int)
+
+
+def test_itinerarydrawer_points_as_expected_1(road_map_1):
+    expected_points = [(317, 89), (345, 215), (326, 152), (127, 72), (281, 130), (50, 147), (532, 106), (500, 136),
+                       (188, 181), (510, 112), (461, 180), (240, 50)]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+def test_itinerarydrawer_points_as_expected_2(road_map_2):
+    expected_points = [(1614, 773), (1492, 697), (50, 380), (2621, 507), (1326, 102), (1364, 828), (2003, 408),
+                       (1211, 796), (1893, 298), (1086, 50), (351, 452), (2704, 794), (2785, 984), (179, 452),
+                       (1062, 440), (1114, 482)]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_2)
+    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+def test_itinerarydrawer_points_as_expected_3(road_map_3):
+    expected_points = [(54, 51), (52, 51), (54, 50), (51, 50), (57, 50), (50, 51)]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_3)
+    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+def test_itinerarydrawer_points_as_expected_4(road_map_4):
+    expected_points = [(97, 113), (122, 110), (110, 114), (102, 99), (101, 103), (112, 85), (102, 53), (93, 60),
+                       (91, 65), (81, 66), (81, 50), (89, 61), (84, 64), (82, 92), (91, 110), (93, 109), (89, 92),
+                       (70, 106), (84, 109), (56, 81), (64, 79), (63, 80), (60, 83), (50, 75)]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_4)
+    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+def test_itinerarydrawer_points_as_expected_5(road_map_5):
+    expected_points = [(50, 50)]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_5)
+    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+'''
+################################## 
+
+ItineraryDrawer._points_pairs                   
+
+################################## 
+'''
+
+
+def test_itinerarydrawer_point_pairs_returns_generator(road_map_1):
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    assert isinstance(received_points, types.GeneratorType)
+
+
+def test_itinerarydrawer_point_pairs_generates_tuples(road_map_1):
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    for element in drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+        assert isinstance(element, tuple)
+
+
+def test_itinerarydrawer_point_pairs_generates_pairs(road_map_1):
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    for element in drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+        assert len(element) == 2
+
+
+def test_itinerarydrawer_point_pairs_generates_pairs_of_tuples(road_map_1):
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    for element in drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+        assert isinstance(element[0], tuple)
+        assert isinstance(element[1], tuple)
+
+
+def test_itinerarydrawer_point_pairs_generates_pairs_of_pairs_of_ints(road_map_1):
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    for element in drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+        assert isinstance(element[0][0], int)
+        assert isinstance(element[0][1], int)
+        assert isinstance(element[1][0], int)
+        assert isinstance(element[1][1], int)
+
+
+def test_itinerarydrawer_point_pairs_as_expected_1(road_map_1):
+    expected_points = [((317, 89), (345, 215)),
+                       ((345, 215), (326, 152)),
+                       ((326, 152), (127, 72)),
+                       ((127, 72), (281, 130)),
+                       ((281, 130), (50, 147)),
+                       ((50, 147), (532, 106)),
+                       ((532, 106), (500, 136)),
+                       ((500, 136), (188, 181)),
+                       ((188, 181), (510, 112)),
+                       ((510, 112), (461, 180)),
+                       ((461, 180), (240, 50)),
+                       ((240, 50), (317, 89))]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_1)
+    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+def test_itinerarydrawer_point_pairs_as_expected_2(road_map_2):
+    expected_points = [((1614, 773), (1492, 697)),
+                       ((1492, 697), (50, 380)),
+                       ((50, 380), (2621, 507)),
+                       ((2621, 507), (1326, 102)),
+                       ((1326, 102), (1364, 828)),
+                       ((1364, 828), (2003, 408)),
+                       ((2003, 408), (1211, 796)),
+                       ((1211, 796), (1893, 298)),
+                       ((1893, 298), (1086, 50)),
+                       ((1086, 50), (351, 452)),
+                       ((351, 452), (2704, 794)),
+                       ((2704, 794), (2785, 984)),
+                       ((2785, 984), (179, 452)),
+                       ((179, 452), (1062, 440)),
+                       ((1062, 440), (1114, 482)),
+                       ((1114, 482), (1614, 773))]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_2)
+    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+def test_itinerarydrawer_point_pairs_as_expected_3(road_map_3):
+    expected_points = [((54, 51), (52, 51)),
+                       ((52, 51), (54, 50)),
+                       ((54, 50), (51, 50)),
+                       ((51, 50), (57, 50)),
+                       ((57, 50), (50, 51)),
+                       ((50, 51), (54, 51))]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_3)
+    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+def test_itinerarydrawer_point_pairs_as_expected_4(road_map_4):
+    expected_points = [((97, 113), (122, 110)),
+                       ((122, 110), (110, 114)),
+                       ((110, 114), (102, 99)),
+                       ((102, 99), (101, 103)),
+                       ((101, 103), (112, 85)),
+                       ((112, 85), (102, 53)),
+                       ((102, 53), (93, 60)),
+                       ((93, 60), (91, 65)),
+                       ((91, 65), (81, 66)),
+                       ((81, 66), (81, 50)),
+                       ((81, 50), (89, 61)),
+                       ((89, 61), (84, 64)),
+                       ((84, 64), (82, 92)),
+                       ((82, 92), (91, 110)),
+                       ((91, 110), (93, 109)),
+                       ((93, 109), (89, 92)),
+                       ((89, 92), (70, 106)),
+                       ((70, 106), (84, 109)),
+                       ((84, 109), (56, 81)),
+                       ((56, 81), (64, 79)),
+                       ((64, 79), (63, 80)),
+                       ((63, 80), (60, 83)),
+                       ((60, 83), (50, 75)),
+                       ((50, 75), (97, 113))]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_4)
+    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+def test_itinerarydrawer_point_pairs_as_expected_5(road_map_5):
+    expected_points = [((50, 50), (50, 50))]
+    drawer = ItineraryDrawer()
+    itinerary = Itinerary(road_map_5)
+    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
