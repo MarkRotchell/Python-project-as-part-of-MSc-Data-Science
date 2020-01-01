@@ -864,7 +864,7 @@ def test_shift_cities_single_city(road_map_5):
 '''
 ################################## 
 
-itinerary.road_map                           
+Itinerary() constructor and .road_map property                           
 
 ################################## 
 '''
@@ -1531,3 +1531,107 @@ def test_itinerary_legs_as_expected_5(road_map_5):
         assert received[0][1] == pytest.approx(expected[0][1])
         assert received[1][0] == pytest.approx(expected[1][0])
         assert received[1][1] == pytest.approx(expected[1][1])
+
+
+'''
+################################## 
+
+ItineraryDrawer() constructor and associated properties                          
+
+################################## 
+'''
+
+def test_ItineraryDrawer_default_constructor_type():
+    assert isinstance(ItineraryDrawer(), ItineraryDrawer)
+
+def test_ItineraryDrawer_default_constructor_parameters():
+    drawer = ItineraryDrawer()
+    assert drawer.drawable_size_px == 700
+    assert drawer.margin_px == 50
+    assert drawer.min_grid_lines == 5
+
+def test_ItineraryDrawer_constructor_parameters_1():
+    drawer = ItineraryDrawer(drawable_size_px=500, margin_px=100, min_grid_lines=10)
+    assert drawer.drawable_size_px == 500
+    assert drawer.margin_px == 100
+    assert drawer.min_grid_lines == 10
+
+def test_ItineraryDrawer_constructor_parameters_2():
+    drawer = ItineraryDrawer(drawable_size_px=500, margin_px=10, min_grid_lines=7)
+    assert drawer.drawable_size_px == 500
+    assert drawer.margin_px == 10
+    assert drawer.min_grid_lines == 7
+
+def test_ItineraryDrawer_constructor_parameters_3():
+    drawer = ItineraryDrawer(drawable_size_px=100, margin_px=0, min_grid_lines=2)
+    assert drawer.drawable_size_px == 100
+    assert drawer.margin_px == 0
+    assert drawer.min_grid_lines == 2
+
+def test_ItineraryDrawer_constructor_parameters_4():
+    drawer = ItineraryDrawer(drawable_size_px=9999, margin_px=300, min_grid_lines=9)
+    assert drawer.drawable_size_px == 9999
+    assert drawer.margin_px == 300
+    assert drawer.min_grid_lines == 9
+
+def test_ItineraryDrawer_constructor_parameters_5():
+    drawer = ItineraryDrawer(drawable_size_px=12, margin_px=3, min_grid_lines=1)
+    assert drawer.drawable_size_px == 12
+    assert drawer.margin_px == 3
+    assert drawer.min_grid_lines == 1
+
+def test_ItineraryDrawer_parameters_setters_1():
+    drawer = ItineraryDrawer()
+
+    drawer.drawable_size_px = 930
+    drawer.margin_px = 20
+    drawer.min_grid_lines = 8
+
+    assert drawer.drawable_size_px == 930
+    assert drawer.margin_px == 20
+    assert drawer.min_grid_lines == 8
+
+def test_ItineraryDrawer_parameters_setters_2():
+    drawer = ItineraryDrawer()
+
+    drawer.drawable_size_px = 100
+    drawer.margin_px = 10
+    drawer.min_grid_lines = 0
+
+    assert drawer.drawable_size_px == 100
+    assert drawer.margin_px == 10
+    assert drawer.min_grid_lines == 0
+
+def test_ItineraryDrawer_parameters_setters_3():
+    drawer = ItineraryDrawer()
+
+    drawer.drawable_size_px = 888
+    drawer.margin_px = 88
+    drawer.min_grid_lines = 2
+
+    assert drawer.drawable_size_px == 888
+    assert drawer.margin_px == 88
+    assert drawer.min_grid_lines == 2
+
+def test_ItineraryDrawer_parameters_setters_4():
+    drawer = ItineraryDrawer()
+
+    drawer.drawable_size_px = 60
+    drawer.margin_px = 10
+    drawer.min_grid_lines = 1
+
+    assert drawer.drawable_size_px == 60
+    assert drawer.margin_px == 10
+    assert drawer.min_grid_lines == 1
+
+def test_ItineraryDrawer_parameters_setters_5():
+    drawer = ItineraryDrawer()
+
+    drawer.drawable_size_px = 1254
+    drawer.margin_px = 200
+    drawer.min_grid_lines = 80
+
+    assert drawer.drawable_size_px == 1254
+    assert drawer.margin_px == 200
+    assert drawer.min_grid_lines == 80
+
