@@ -401,6 +401,7 @@ def test_cities_as_string_as_expected_1(road_map_1):
 12   North Dakota         Bismarck                 48.81    -100.78
 '''
 
+
 def test_cities_as_string_as_expected_2(road_map_2):
     assert cities_as_string(road_map_2) == '''     State                City                  Latitude  Longitude
 1    Mauritania           Nouakchott              -20.10      57.30
@@ -420,6 +421,7 @@ def test_cities_as_string_as_expected_2(road_map_2):
 15   Niger                Niamey                   13.27       2.06
 16   Nigeria              Abuja                     9.05       7.32
 '''
+
 
 def test_cities_as_string_as_expected_3(road_map_3):
     assert cities_as_string(road_map_3) == '''     State                City                  Latitude  Longitude
@@ -460,10 +462,12 @@ def test_cities_as_string_as_expected_4(road_map_4):
 24   Northern Ireland     Derry                    55.00      -7.31
 '''
 
+
 def test_cities_as_string_as_expected_5(road_map_5):
     assert cities_as_string(road_map_5) == '''     State                City                  Latitude  Longitude
 1    Paradise             Birkbeck                 51.52      -0.13
 '''
+
 
 '''
 ################################## 
@@ -519,6 +523,118 @@ def test_distance_returns_float_2():
 '''
 ################################## 
 
+map_as_string                           
+
+################################## 
+'''
+
+
+def test_map_as_string_returns_string(road_map_1):
+    assert isinstance(map_as_string(road_map_1), str)
+
+
+def test_map_as_string_as_expected_1(road_map_1):
+    assert map_as_string(road_map_1) == '''Estimated optimal cycle:
+
+          Saint Paul --> Jackson                  12.96
+             Jackson --> Jefferson City            6.56
+      Jefferson City --> Helana                   21.40
+              Helana --> Lincoln                  16.41
+             Lincoln --> Carson City              23.14
+         Carson City --> Concord                  48.38
+             Concord --> Trenton                   4.39
+             Trenton --> Santa Fe                 31.54
+            Santa Fe --> Albany                   32.93
+              Albany --> Raleigh                   8.43
+             Raleigh --> Bismarck                 25.70
+            Bismarck --> Saint Paul                8.60
+                                           -------------
+                              Total Distance     240.42
+'''
+
+
+def test_map_as_string_as_expected_2(road_map_2):
+    assert map_as_string(road_map_2) == '''Estimated optimal cycle:
+
+          Nouakchott --> Mamoudzou                14.35
+           Mamoudzou --> Mexico                  147.68
+              Mexico --> Palikir                 257.41
+             Palikir --> Chisinau                135.68
+            Chisinau --> Maputo                   72.70
+              Maputo --> Yangon                   76.47
+              Yangon --> Windhoek                 88.16
+            Windhoek --> Kathmandu                84.41
+           Kathmandu --> Amsterdam                84.38
+           Amsterdam --> Willemstad               83.80
+          Willemstad --> Noumea                  237.78
+              Noumea --> Wellington               20.67
+          Wellington --> Managua                 265.98
+             Managua --> Niamey                   88.27
+              Niamey --> Abuja                     6.74
+               Abuja --> Nouakchott               57.86
+                                           -------------
+                              Total Distance    1722.34
+'''
+
+
+def test_map_as_string_as_expected_3(road_map_3):
+    assert map_as_string(road_map_3) == '''Estimated optimal cycle:
+
+             Hackney --> Hammersmith and Fulh      0.19
+Hammersmith and Fulh --> Haringey                  0.16
+            Haringey --> Harrow                    0.22
+              Harrow --> Havering                  0.52
+            Havering --> Hillingdon                0.66
+          Hillingdon --> Hackney                   0.42
+                                           -------------
+                              Total Distance       2.17
+'''
+
+
+def test_map_as_string_as_expected_4(road_map_4):
+    assert map_as_string(road_map_4) == '''Estimated optimal cycle:
+
+               Wells --> Westminster               2.57
+         Westminster --> Winchester                1.30
+          Winchester --> Wolverhampton             1.73
+       Wolverhampton --> Worcester                 0.41
+           Worcester --> York                      2.10
+                York --> Aberdeen                  3.35
+            Aberdeen --> Dundee                    1.11
+              Dundee --> Edinburgh                 0.55
+           Edinburgh --> Glasgow                   1.07
+             Glasgow --> Inverness                 1.62
+           Inverness --> Perth                     1.34
+               Perth --> Stirling                  0.57
+            Stirling --> Bangor                    2.89
+              Bangor --> Cardiff                   1.99
+             Cardiff --> Newport                   0.22
+             Newport --> St. Asaph                 1.75
+           St. Asaph --> St. Davids                2.29
+          St. Davids --> Swansea                   1.35
+             Swansea --> Armagh                    3.85
+              Armagh --> Belfast                   0.78
+             Belfast --> Lisburn                   0.14
+             Lisburn --> Newry                     0.47
+               Newry --> Derry                     1.26
+               Derry --> Wells                     6.00
+                                           -------------
+                              Total Distance      40.72
+'''
+
+
+def test_map_as_string_as_expected_5(road_map_5):
+    assert map_as_string(road_map_5) == '''Estimated optimal cycle:
+
+            Birkbeck --> Birkbeck                  0.00
+                                           -------------
+                              Total Distance       0.00
+'''
+
+
+'''
+################################## 
+
 compute_total_distance                           
 
 ################################## 
@@ -566,3 +682,86 @@ def test_compute_total_distance_calculates_as_expected_equatorial_trip():
 
 def test_compute_total_distance_returns_float(road_map_1):
     assert isinstance(compute_total_distance(road_map_1), float)
+
+
+'''
+################################## 
+
+swap_cities                           
+
+################################## 
+'''
+
+
+def test_swap_cities_in_place(road_map_1):
+    assert swap_cities(road_map_1, 0, 3)[0] is road_map_1
+
+
+def test_swap_cities_same_index(road_map_1):
+    for city_in, city_out in zip(road_map_1, swap_cities(road_map_1[:], 4, 4)[0]):
+        assert city_in is city_out
+
+
+def test_swap_cities_returns_tuple(road_map_1):
+    assert isinstance(swap_cities(road_map_1, 1, 4), tuple)
+
+
+def test_swap_cities_returns_two_tuple(road_map_1):
+    assert len(swap_cities(road_map_1, 2, 6)) == 2
+
+
+def test_swap_cities_returns_list_as_first_element(road_map_1):
+    result = swap_cities(road_map_1, 4, 1)
+    assert isinstance(result[0], list)
+    assert isinstance(result[1], float)
+
+
+def test_swap_cities_returns_float_as_second_element(road_map_1):
+    result = swap_cities(road_map_1, 2, 3)
+    assert isinstance(result[1], float)
+
+
+def test_swap_cities_swaps_correct_cities_1(road_map_1):
+    expected_map = [('Minnesota', 'Saint Paul', 44.95, -93.094),
+                    ('North Carolina', 'Raleigh', 35.771, -78.638),
+                    ('Missouri', 'Jefferson City', 38.572954, -92.189283),
+                    ('Montana', 'Helana', 46.595805, -112.027031),
+                    ('Nebraska', 'Lincoln', 40.809868, -96.675345),
+                    ('Nevada', 'Carson City', 39.160949, -119.753877),
+                    ('New Hampshire', 'Concord', 43.220093, -71.549127),
+                    ('New Jersey', 'Trenton', 40.221741, -74.756138),
+                    ('New Mexico', 'Santa Fe', 35.667231, -105.964575),
+                    ('New York', 'Albany', 42.659829, -73.781339),
+                    ('Mississippi', 'Jackson', 32.32, -90.207),
+                    ('North Dakota', 'Bismarck', 48.813343, -100.779004)]
+    for received, expected in zip(swap_cities(road_map_1, 1, 10)[0], expected_map):
+        assert received == expected
+
+
+def test_swap_cities_swaps_correct_cities_2(road_map_2):
+    expected_map = [('Mauritania', 'Nouakchott', -20.1, 57.3),
+                    ('Mayotte', 'Mamoudzou', -12.48, 45.14),
+                    ('Mexico', 'Mexico', 19.2, -99.1),
+                    ('Micronesia (Federated States of)', 'Palikir', 6.55, 158),
+                    ('Moldova, Republic of', 'Chisinau', 47.02, 28.5),
+                    ('Nepal', 'Kathmandu', 27.45, 85.2),
+                    ('Myanmar', 'Yangon', 16.45, 96.2),
+                    ('Namibia', 'Windhoek', -22.35, 17.04),
+                    ('Mozambique', 'Maputo', -25.58, 32.32),
+                    ('Netherlands', 'Amsterdam', 52.23, 4.54),
+                    ('Netherlands Antilles', 'Willemstad', 12.05, -69),
+                    ('New Caledonia', 'Noumea', -22.17, 166.3),
+                    ('New Zealand', 'Wellington', -41.19, 174.4),
+                    ('Nicaragua', 'Managua', 12.06, -86.2),
+                    ('Niger', 'Niamey', 13.27, 2.06),
+                    ('Nigeria', 'Abuja', 9.05, 7.32)]
+    for received, expected in zip(swap_cities(road_map_2, 5, 8)[0], expected_map):
+        assert received == expected
+
+
+def test_swap_cities_correct_distance_1(road_map_3):
+    assert swap_cities(road_map_3, 0, 4)[1] == pytest.approx(2.17659411)
+
+
+def test_swap_cities_correct_distance_2(road_map_4):
+    assert swap_cities(road_map_4, 1, 5)[1] == pytest.approx(45.6783272)
