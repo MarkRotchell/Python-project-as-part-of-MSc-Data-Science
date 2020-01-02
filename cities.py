@@ -15,7 +15,7 @@ def read_cities(file_name):
         raise TypeError()
 
     try:
-        infile = open(file_name, "r")
+        infile = open(file=file_name, mode="r")
 
     except FileNotFoundError:
         raise
@@ -28,7 +28,7 @@ def read_cities(file_name):
     lines = []
 
     while line:
-        line = line.rstrip().split('\t')
+        line = line.rstrip().split(sep='\t')
         lines.append((str(line[0]), str(line[1]), float(line[2]), float(line[3])))
         line = infile.readline()
 
@@ -41,7 +41,7 @@ def print_cities(road_map):
     """
     Prints a list of cities, along with their locations.
     """
-    print(cities_as_string(road_map))
+    print(cities_as_string(road_map=road_map))
 
 
 def cities_as_string(road_map):
@@ -64,7 +64,7 @@ def print_map(road_map):
     along with the cost for each connection and the total cost.
     """
 
-    print(map_as_string(road_map))
+    print(map_as_string(road_map=road_map))
 
 
 def map_as_string(road_map):
@@ -73,7 +73,7 @@ def map_as_string(road_map):
         dist = distance(city1, city2)
         result += f'{city1[1]:>20.20} --> {city2[1]:<20.20}  {dist:>8.2f}\n'
     result += '                                           -------------\n'
-    total = compute_total_distance(road_map)
+    total = compute_total_distance(road_map=road_map)
     result += f'                              Total Distance   {total:8.2f}\n'
     return result
 
@@ -91,7 +91,7 @@ def swap_cities(road_map, index1, index2):
         (new_road_map, new_total_distance)
     """
     road_map[index1], road_map[index2] = road_map[index2], road_map[index1]
-    return road_map, compute_total_distance(road_map)
+    return road_map, compute_total_distance(road_map=road_map)
 
 
 def shift_cities(road_map):
@@ -112,18 +112,18 @@ def find_best_cycle(road_map):
     """
     map_best = road_map[:]
 
-    dist_best = compute_total_distance(map_best)
+    dist_best = compute_total_distance(road_map=map_best)
 
     n = len(map_best) - 1
 
     for i in range(10000):
 
-        map_cand, dist_cand = swap_cities(map_best[:], randint(0, n), randint(0, n))
+        map_cand, dist_cand = swap_cities(road_map=map_best[:], index1=randint(0, n), index2=randint(0, n))
 
         if dist_cand < dist_best:
             map_best, dist_best = map_cand, dist_cand
 
-        shift_cities(map_best)
+        shift_cities(road_map=map_best)
 
     return map_best
 
@@ -263,12 +263,11 @@ class ItineraryDrawer:
         margin_deg = self.margin_px / px_per_deg
         first_line = grid_line_spacing * (1 + (deg_min - margin_deg) // grid_line_spacing)
         for i in range(self.min_grid_lines * 3):
-            grid_line = first_line + i*grid_line_spacing
+            grid_line = first_line + i * grid_line_spacing
             if grid_line > deg_max + margin_deg:
                 break
             else:
                 yield grid_line, converter(grid_line, px_per_deg, ref_point)
-
 
     def _lat_grid_lines(self, grid_line_spacing, lat_min, lat_max, px_per_deg):
         return self._grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg, self._lat_to_y, lat_max)
@@ -292,12 +291,11 @@ class ItineraryDrawer:
             # deal with case where all points are same
             max_range = 1
             long_range += 1
-            lat_range +=1
+            lat_range += 1
             lat_min -= 0.5
             lat_max += 0.5
             long_min -= 0.5
             long_max += 0.5
-
 
         px_per_deg = self.drawable_size_px / max_range
 
@@ -313,11 +311,11 @@ class ItineraryDrawer:
 
         for deg, y in self._lat_grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg):
             canvas.create_line(0, y, canvas_width_px, y, fill="lightblue1")
-            canvas.create_text(5, y - 5, text=format(deg,f'.{rounding}f'), anchor=SW, font=('purisa', 8))
+            canvas.create_text(5, y - 5, text=format(deg, f'.{rounding}f'), anchor=SW, font=('purisa', 8))
 
         for deg, x in self._long_grid_lines(grid_line_spacing, long_min, long_max, px_per_deg):
             canvas.create_line(x, 0, x, canvas_height_px, fill="lightblue1")
-            canvas.create_text(x, 5, text=format(deg,f'.{rounding}f'), anchor=NW, font=('purisa', 8))
+            canvas.create_text(x, 5, text=format(deg, f'.{rounding}f'), anchor=NW, font=('purisa', 8))
 
         ''' draw legs '''
 
@@ -385,7 +383,7 @@ class TravellingSalesman:
             try:
                 road_map = read_cities(path)
                 road_map = find_best_cycle(road_map)
-            except:
+            except Exception:
                 messagebox.showinfo("Warning", "Unable to load selected file")
             else:
                 self.itinerary = Itinerary(road_map=road_map)
@@ -451,7 +449,7 @@ def main():
             try:
                 road_map = read_cities(file_path)
 
-            except:
+            except Exception:
                 load_another_map = user_wants_to_load_a_different_file(
                     'Unable to Load file given, would you like to select a different file?')
 
@@ -461,7 +459,6 @@ def main():
                 print_cities(road_map)
 
                 road_map = find_best_cycle(road_map)
-
                 print_map(road_map)
 
                 visualise(road_map)
