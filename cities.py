@@ -133,6 +133,9 @@ class Itinerary:
         self.road_map = road_map
         # self._reset_extrema()
 
+    def __len__(self):
+        return len(self.road_map)
+
     def _reset_extrema(self):
         self._lat_max = max(self.latitudes())
         self._lat_min = min(self.latitudes())
@@ -231,7 +234,10 @@ class ItineraryDrawer:
                 for (lat_0, long_0), (lat_1, long_1) in itinerary.legs())
 
     def _canvas_dimensions(self, lat_range, long_range):
-        if lat_range > long_range:
+        if lat_range == long_range:
+            canvas_height_px = self.drawable_size_px + 2 * self.margin_px
+            canvas_width_px = self.drawable_size_px + 2 * self.margin_px
+        elif lat_range > long_range:
             canvas_height_px = int(round(self.drawable_size_px + 2 * self.margin_px))
             canvas_width_px = int(round(self.drawable_size_px * long_range / lat_range + 2 * self.margin_px))
         else:
@@ -260,6 +266,12 @@ class ItineraryDrawer:
             yield deg, converter(deg, px_per_deg, ref_point)
             deg += grid_line_spacing
 
+    def _lat_grid_lines(self, grid_line_spacing, lat_min, lat_max, px_per_deg):
+        return self._grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg, self._lat_to_y, lat_max)
+
+    def _long_grid_lines(self, grid_line_spacing, long_min, long_max, px_per_deg):
+        return self._grid_lines(grid_line_spacing, long_min, long_max, px_per_deg, self._long_to_x, long_min)
+
     def draw(self, itinerary, canvas):
         canvas.update()
         canvas.delete('all')
@@ -270,6 +282,13 @@ class ItineraryDrawer:
         long_min, long_max = itinerary.longitude_min(), itinerary.longitude_max()
         lat_range, long_range = lat_max - lat_min, long_max - long_min
 
+        max_range = max(lat_range, long_range)
+
+        if max_range == 0:
+            max_range = 1
+
+        px_per_deg = self.drawable_size_px / max_range
+
         ''' resize canvas '''
 
         canvas_width_px, canvas_height_px = self._canvas_dimensions(lat_range, long_range)
@@ -277,17 +296,15 @@ class ItineraryDrawer:
 
         ''' draw gridlines '''
 
-        max_range = max(lat_range, long_range)
-        px_per_deg = self.drawable_size_px / max_range
         grid_line_spacing = self._grid_line_spacing(max_range)
 
-        for deg, y in self._grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg, self._lat_to_y, lat_max):
+        for deg, y in self._lat_grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg):
             canvas.create_line(0, y, canvas_width_px, y, fill="lightblue1")
-            canvas.create_text(5, y - 5, text=str(round(deg, 1)), anchor=SW, font=('purisa', 8))
+            canvas.create_text(5, y - 5, text=str(round(deg, 10)), anchor=SW, font=('purisa', 8))
 
-        for deg, x in self._grid_lines(grid_line_spacing, long_min, long_max, px_per_deg, self._long_to_x, long_min):
+        for deg, x in self._long_grid_lines(grid_line_spacing, long_min, long_max, px_per_deg):
             canvas.create_line(x, 0, x, canvas_height_px, fill="lightblue1")
-            canvas.create_text(x, 5, text=str(round(deg, 1)), anchor=NW, font=('purisa', 8))
+            canvas.create_text(x, 5, text=str(round(deg, 10)), anchor=NW, font=('purisa', 8))
 
         ''' draw legs '''
 
@@ -360,6 +377,7 @@ class TravellingSalesman:
             else:
                 self.itinerary = Itinerary(road_map=road_map)
                 self.draw()
+                self.fill_text()
 
     def launch(self):
         self.draw()
