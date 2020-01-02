@@ -73,7 +73,7 @@ def compute_total_distance(road_map):
     """
     Returns, as a floating point number, the sum of the distances of all the connections in the `road_map`.
     """
-    return sum(distance(city1, city2) for city1, city2 in zip(road_map, road_map[1:] + [road_map[0]]))
+    return sum(distance(city_1=city1, city_2=city2) for city1, city2 in zip(road_map, road_map[1:] + [road_map[0]]))
 
 
 def swap_cities(road_map, index1, index2):
@@ -96,10 +96,8 @@ def shift_cities(road_map):
 
 def find_best_cycle(road_map):
     """
-    Using a combination of `swap_cities` and `shift_cities`,
-    try `10000` swaps/shifts, and each time keep the best cycle found so far.
-    After `10000` swaps/shifts, return the best cycle found so far.
-    Use randomly generated indices for swapping.
+    Using a combination of `swap_cities` and `shift_cities`,  try `10000` swaps/shifts, and each time keep the best
+    cycle found so far. After `10000` swaps/shifts, return the best cycle found so far. Use randomly generated indices
     """
     map_best = road_map[:]
     dist_best = compute_total_distance(road_map=map_best)
@@ -115,7 +113,6 @@ def find_best_cycle(road_map):
 class Itinerary:
     def __init__(self, road_map):
         self.road_map = road_map
-        # self._reset_extrema()
 
     def __len__(self):
         return len(self.road_map)
@@ -217,15 +214,15 @@ class ItineraryDrawer:
         return int(round((longitude - long_min) * px_per_deg + self.margin_px))
 
     def _points(self, itinerary, px_per_deg, lat_max, long_min):
-        return ((self._long_to_x(longitude, px_per_deg, long_min),
-                 self._lat_to_y(latitude, px_per_deg, lat_max))
+        return ((self._long_to_x(longitude=longitude, px_per_deg=px_per_deg, long_min=long_min),
+                 self._lat_to_y(latitude=latitude, px_per_deg=px_per_deg, lat_max=lat_max))
                 for latitude, longitude in itinerary.coordinates())
 
     def _point_pairs(self, itinerary, px_per_deg, lat_max, long_min):
-        return (((self._long_to_x(long_0, px_per_deg, long_min),
-                  self._lat_to_y(lat_0, px_per_deg, lat_max)),
-                 (self._long_to_x(long_1, px_per_deg, long_min),
-                  self._lat_to_y(lat_1, px_per_deg, lat_max)))
+        return (((self._long_to_x(longitude=long_0, px_per_deg=px_per_deg, long_min=long_min),
+                  self._lat_to_y(latitude=lat_0, px_per_deg=px_per_deg, lat_max=lat_max)),
+                 (self._long_to_x(longitude=long_1, px_per_deg=px_per_deg, long_min=long_min),
+                  self._lat_to_y(latitude=lat_1, px_per_deg=px_per_deg, lat_max=lat_max)))
                 for (lat_0, long_0), (lat_1, long_1) in itinerary.legs())
 
     def _canvas_dimensions(self, lat_range, long_range):
@@ -265,10 +262,12 @@ class ItineraryDrawer:
                 yield grid_line, converter(grid_line, px_per_deg, ref_point)
 
     def _lat_grid_lines(self, grid_line_spacing, lat_min, lat_max, px_per_deg):
-        return self._grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg, self._lat_to_y, lat_max)
+        return self._grid_lines(grid_line_spacing=grid_line_spacing, deg_min=lat_min, deg_max=lat_max,
+                                px_per_deg=px_per_deg, converter=self._lat_to_y, ref_point=lat_max)
 
     def _long_grid_lines(self, grid_line_spacing, long_min, long_max, px_per_deg):
-        return self._grid_lines(grid_line_spacing, long_min, long_max, px_per_deg, self._long_to_x, long_min)
+        return self._grid_lines(grid_line_spacing=grid_line_spacing, deg_min=long_min, deg_max=long_max,
+                                px_per_deg=px_per_deg, converter=self._long_to_x, ref_point=long_min)
 
     def draw(self, itinerary, canvas):
         canvas.update()
@@ -280,7 +279,7 @@ class ItineraryDrawer:
         lat_range, long_range = lat_max - lat_min, long_max - long_min
         max_range = max(lat_range, long_range)
         if max_range == 0:
-            # deal with case where all points are same
+            # deal with case where all points are same (or just one point)
             max_range = 1
             long_range += 1
             lat_range += 1
@@ -387,22 +386,34 @@ class TravellingSalesman:
 
 
 def visualise(road_map):
+    """
+    Open Gui to visualise a road map
+    """
     app = TravellingSalesman(road_map)
     app.launch()
 
 
 def open_map_dialogue_box():
+    """
+    Ask user for a file. Use with the dialouge_box context manager when no root window already
+    """
     return filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
                                       filetypes=(("text files", "*.txt"), ("all files", "*.*")))
 
 
 class dialogue_box:
+    """
+    context manager for dialogue boxes from TKinter
+    Handles the underlying root window creation, hiding and destruction
+    """
     def __enter__(self):
+        """ create root window and hide it"""
         self._root = Tk()
         self._root.withdraw()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """ destroy root window when dialogue box has been used"""
         self._root.destroy()
 
     @staticmethod
@@ -410,8 +421,9 @@ class dialogue_box:
         return open_map_dialogue_box()
 
     @staticmethod
-    def user_wants_another_file(question):
-        return messagebox.askyesno(message=question, icon='question', title='Unable to load file')
+    def yes_no_question(question):
+        """ return boolean regarding whether user wants to perform given action"""
+        return messagebox.askyesno(message=question, icon='question', title='Travelling Salesman')
 
 
 def main():
@@ -424,14 +436,14 @@ def main():
             file_path = box.get_file_name()
         if not file_path:
             with dialogue_box() as box:
-                load_another_map = box.user_wants_another_file(
+                load_another_map = box.yes_no_question(
                     question='No file specified, would you like to try again?')
         else:
             try:
                 road_map = read_cities(file_name=file_path)
             except Exception:
                 with dialogue_box() as box:
-                    load_another_map = box.user_wants_another_file(
+                    load_another_map = box.yes_no_question(
                         question='Unable to Load file given, would you like to select a different file?')
             else:
                 print('The following cities were loaded')
@@ -440,7 +452,7 @@ def main():
                 print_map(road_map=road_map)
                 visualise(road_map=road_map)
                 with dialogue_box() as box:
-                    load_another_map = box.user_wants_another_file(question='Would you like to open another map?')
+                    load_another_map = box.yes_no_question(question='Would you like to open another map?')
 
 
 if __name__ == "__main__":  # keep this in
