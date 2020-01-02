@@ -261,10 +261,6 @@ class ItineraryDrawer:
 
     def _grid_lines(self, grid_line_spacing, deg_min, deg_max, px_per_deg, converter, ref_point):
         margin_deg = self.margin_px / px_per_deg
-        # deg = grid_line_spacing * (1 + (deg_min - margin_deg) // grid_line_spacing)
-        # while deg <= deg_max + margin_deg:
-        #     yield deg, converter(deg, px_per_deg, ref_point)
-        #     deg += grid_line_spacing
         first_line = grid_line_spacing * (1 + (deg_min - margin_deg) // grid_line_spacing)
         for i in range(self.min_grid_lines * 3):
             grid_line = first_line + i*grid_line_spacing
@@ -313,14 +309,15 @@ class ItineraryDrawer:
         ''' draw gridlines '''
 
         grid_line_spacing = self._grid_line_spacing(max_range)
+        rounding = -int(log10(grid_line_spacing) - 1)
 
         for deg, y in self._lat_grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg):
             canvas.create_line(0, y, canvas_width_px, y, fill="lightblue1")
-            canvas.create_text(5, y - 5, text=str(round(deg, 10)), anchor=SW, font=('purisa', 8))
+            canvas.create_text(5, y - 5, text=format(deg,f'.{rounding}f'), anchor=SW, font=('purisa', 8))
 
         for deg, x in self._long_grid_lines(grid_line_spacing, long_min, long_max, px_per_deg):
             canvas.create_line(x, 0, x, canvas_height_px, fill="lightblue1")
-            canvas.create_text(x, 5, text=str(round(deg, 10)), anchor=NW, font=('purisa', 8))
+            canvas.create_text(x, 5, text=format(deg,f'.{rounding}f'), anchor=NW, font=('purisa', 8))
 
         ''' draw legs '''
 
