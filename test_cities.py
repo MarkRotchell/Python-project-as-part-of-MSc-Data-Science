@@ -2066,8 +2066,8 @@ def test_itinerarydrawer_grid_line_as_expected_1():
     drawer = ItineraryDrawer()
     received_grid_lines = drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81)
     for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
+        assert received[0] == pytest.approx(expected[0])
+        assert received[1] == pytest.approx(expected[1])
 
 def test_itinerarydrawer_grid_line_as_expected_2():
     expected_grid_lines = [(-100.0, 48), (-50.0, 176), (0.0, 304), (50.0, 432), (100.0, 560), (150.0, 688)]
@@ -2095,11 +2095,10 @@ def test_itinerarydrawer_grid_line_as_expected_4():
         assert received == pytest.approx(expected)
 
 
-def test_itinerarydrawer_grid_line_as_expected_5():
-    expected_grid_lines = [(51.0, 678), (52.0, 581), (53.0, 484), (54.0, 387),
-                           (55.0, 290), (56.0, 193), (57.0, 96)]
+def test_itinerarydrawer_grid_line_as_expected_single_city():
+    expected_grid_lines = [(51.0, 765), (51.2, 625), (51.4, 485), (51.6, 345), (51.8, 205), (52.0, 65)]
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(1.0, 51.063202, 57.477772, 97.01660, drawer._lat_to_y, 57.477772)
+    received_grid_lines = drawer._grid_lines(0.2, 51.021728, 52.021728, 700.0, drawer._lat_to_y, 52.021728)
     for expected, received in zip(expected_grid_lines, received_grid_lines):
         assert received == pytest.approx(expected)
 

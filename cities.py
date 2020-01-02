@@ -261,14 +261,21 @@ class ItineraryDrawer:
 
     def _grid_lines(self, grid_line_spacing, deg_min, deg_max, px_per_deg, converter, ref_point):
         margin_deg = self.margin_px / px_per_deg
-        deg = grid_line_spacing * (1 + (deg_min - margin_deg) // grid_line_spacing)
-        while deg <= deg_min + margin_deg + self.drawable_size_px / px_per_deg:
-            yield deg, converter(deg, px_per_deg, ref_point)
-            deg += grid_line_spacing
+        # deg = grid_line_spacing * (1 + (deg_min - margin_deg) // grid_line_spacing)
+        # while deg <= deg_max + margin_deg:
+        #     yield deg, converter(deg, px_per_deg, ref_point)
+        #     deg += grid_line_spacing
+        first_line = grid_line_spacing * (1 + (deg_min - margin_deg) // grid_line_spacing)
+        for i in range(self.min_grid_lines * 3):
+            grid_line = first_line + i*grid_line_spacing
+            if grid_line > deg_max + margin_deg:
+                break
+            else:
+                yield grid_line, converter(grid_line, px_per_deg, ref_point)
+
 
     def _lat_grid_lines(self, grid_line_spacing, lat_min, lat_max, px_per_deg):
-        return self._grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg,
-                                self._lat_to_y, lat_min + self.drawable_size_px / px_per_deg)
+        return self._grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg, self._lat_to_y, lat_max)
 
     def _long_grid_lines(self, grid_line_spacing, long_min, long_max, px_per_deg):
         return self._grid_lines(grid_line_spacing, long_min, long_max, px_per_deg, self._long_to_x, long_min)
@@ -286,7 +293,15 @@ class ItineraryDrawer:
         max_range = max(lat_range, long_range)
 
         if max_range == 0:
+            # deal with case where all points are same
             max_range = 1
+            long_range += 1
+            lat_range +=1
+            lat_min -= 0.5
+            lat_max += 0.5
+            long_min -= 0.5
+            long_max += 0.5
+
 
         px_per_deg = self.drawable_size_px / max_range
 
@@ -429,7 +444,7 @@ def main():
 
     while load_another_map:
         # file_path = get_file_name()
-        file_path = 'uk-cities.txt'
+        file_path = 'city-data.txt'
         if not file_path:
             load_another_map = user_wants_to_load_a_different_file(
                 'No file specified, would you like to try again?')
