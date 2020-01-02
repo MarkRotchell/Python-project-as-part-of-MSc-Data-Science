@@ -10,30 +10,21 @@ def read_cities(file_name):
     Read in the cities from the given `file_name`, and return
     them as a list of four-tuples: [(state, city, latitude, longitude), ...]
     """
-
     if not isinstance(file_name, str):
         raise TypeError()
-
     try:
         infile = open(file=file_name, mode="r")
-
     except FileNotFoundError:
         raise
-
     line = infile.readline()
-
     if not line:
         raise EOFError()
-
     lines = []
-
     while line:
         line = line.rstrip().split(sep='\t')
         lines.append((str(line[0]), str(line[1]), float(line[2]), float(line[3])))
         line = infile.readline()
-
     infile.close()
-
     return lines
 
 
@@ -111,20 +102,13 @@ def find_best_cycle(road_map):
     Use randomly generated indices for swapping.
     """
     map_best = road_map[:]
-
     dist_best = compute_total_distance(road_map=map_best)
-
     n = len(map_best) - 1
-
     for i in range(10000):
-
         map_cand, dist_cand = swap_cities(road_map=map_best[:], index1=randint(0, n), index2=randint(0, n))
-
         if dist_cand < dist_best:
             map_best, dist_best = map_cand, dist_cand
-
         shift_cities(road_map=map_best)
-
     return map_best
 
 
@@ -186,10 +170,21 @@ class Itinerary:
 
 
 class ItineraryDrawer:
-    def __init__(self, drawable_size_px=700, margin_px=50, min_grid_lines=5):
+    def __init__(self, drawable_size_px=700, margin_px=50, min_grid_lines=5, grid_line_colour='lightblue1',
+                 grid_line_thickness=1, leg_line_colour='red', leg_line_thickness=1, city_radius=2, city_fill='white',
+                 city_line_colour='black', city_line_thickness=1, label_font=('purisa', 8)):
         self.drawable_size_px = drawable_size_px
         self.margin_px = margin_px
         self.min_grid_lines = min_grid_lines
+        self.grid_line_colour = grid_line_colour
+        self.grid_line_thickness = grid_line_thickness
+        self.leg_line_colour = leg_line_colour
+        self.leg_line_thickness = leg_line_thickness
+        self.city_radius = city_radius
+        self.city_fill = city_fill
+        self.city_line_colour = city_line_colour
+        self.city_line_thickness = city_line_thickness
+        self.label_font = label_font
 
     @property
     def drawable_size_px(self):
@@ -280,13 +275,10 @@ class ItineraryDrawer:
         canvas.delete('all')
 
         ''' get map dimensions'''
-
         lat_min, lat_max = itinerary.latitude_min(), itinerary.latitude_max()
         long_min, long_max = itinerary.longitude_min(), itinerary.longitude_max()
         lat_range, long_range = lat_max - lat_min, long_max - long_min
-
         max_range = max(lat_range, long_range)
-
         if max_range == 0:
             # deal with case where all points are same
             max_range = 1
@@ -296,37 +288,33 @@ class ItineraryDrawer:
             lat_max += 0.5
             long_min -= 0.5
             long_max += 0.5
-
         px_per_deg = self.drawable_size_px / max_range
 
         ''' resize canvas '''
-
         canvas_width_px, canvas_height_px = self._canvas_dimensions(lat_range, long_range)
         canvas.config(width=canvas_width_px, height=canvas_height_px)
 
         ''' draw gridlines '''
-
         grid_line_spacing = self._grid_line_spacing(max_range)
         rounding = -int(log10(grid_line_spacing) - 1)
 
         for deg, y in self._lat_grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg):
-            canvas.create_line(0, y, canvas_width_px, y, fill="lightblue1")
-            canvas.create_text(5, y - 5, text=format(deg, f'.{rounding}f'), anchor=SW, font=('purisa', 8))
+            canvas.create_line(0, y, canvas_width_px, y, fill=self.grid_line_colour, width=self.grid_line_thickness)
+            canvas.create_text(5, y - 5, text=format(deg, f'.{rounding}f'), anchor=SW, font=self.label_font)
 
         for deg, x in self._long_grid_lines(grid_line_spacing, long_min, long_max, px_per_deg):
-            canvas.create_line(x, 0, x, canvas_height_px, fill="lightblue1")
-            canvas.create_text(x, 5, text=format(deg, f'.{rounding}f'), anchor=NW, font=('purisa', 8))
+            canvas.create_line(x, 0, x, canvas_height_px, fill=self.grid_line_colour, width=self.grid_line_thickness)
+            canvas.create_text(x, 5, text=format(deg, f'.{rounding}f'), anchor=NW, font=self.label_font)
 
         ''' draw legs '''
-
         for (x_0, y_0), (x_1, y_1) in self._point_pairs(itinerary, px_per_deg, lat_max, long_min):
-            canvas.create_line(x_0, y_0, x_1, y_1, fill="red")
+            canvas.create_line(x_0, y_0, x_1, y_1, fill=self.leg_line_colour, width=self.leg_line_thickness)
 
         ''' draw cities '''
-
         for i, (x, y) in enumerate(self._points(itinerary, px_per_deg, lat_max, long_min)):
-            canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill='white', outline='black', width=1)
-            canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=('purisa', 8))
+            canvas.create_oval(x - self.city_radius, y - self.city_radius, x + self.city_radius, y + self.city_radius,
+                               fill=self.city_fill, outline=self.city_line_colour, width=self.city_line_thickness)
+            canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=self.label_font)
 
 
 class TravellingSalesman:
@@ -403,68 +391,56 @@ def visualise(road_map):
     app.launch()
 
 
-def user_wants_to_load_a_different_file(question):
-    """
-    Asks user if they want to load another file, and returns answer as boolean.
-    """
-    root = Tk()
-    root.withdraw()
-    yes_no = messagebox.askyesno(message=question, icon='question', title='Unable to load file')
-    root.destroy()
-    return yes_no
-
-
 def open_map_dialogue_box():
     return filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
                                       filetypes=(("text files", "*.txt"), ("all files", "*.*")))
 
 
-def get_file_name():
-    """
-    Opens the file-open dialogue box to ask the user for a file
-    """
-    root = Tk()
-    root.withdraw()
-    path = open_map_dialogue_box()
-    root.destroy()
-    return path
+class dialogue_box:
+    def __enter__(self):
+        self._root = Tk()
+        self._root.withdraw()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._root.destroy()
+
+    @staticmethod
+    def get_file_name():
+        return open_map_dialogue_box()
+
+    @staticmethod
+    def user_wants_another_file(question):
+        return messagebox.askyesno(message=question, icon='question', title='Unable to load file')
 
 
 def main():
     """
     Reads in, and prints out, the city data, then creates the "best"cycle and prints it out.
     """
-
     load_another_map = True
-
     while load_another_map:
-        # file_path = get_file_name()
-        file_path = 'city-data.txt'
+        with dialogue_box() as box:
+            file_path = box.get_file_name()
         if not file_path:
-            load_another_map = user_wants_to_load_a_different_file(
-                'No file specified, would you like to try again?')
-
+            with dialogue_box() as box:
+                load_another_map = box.user_wants_another_file(
+                    question='No file specified, would you like to try again?')
         else:
-
             try:
-                road_map = read_cities(file_path)
-
+                road_map = read_cities(file_name=file_path)
             except Exception:
-                load_another_map = user_wants_to_load_a_different_file(
-                    'Unable to Load file given, would you like to select a different file?')
-
+                with dialogue_box() as box:
+                    load_another_map = box.user_wants_another_file(
+                        question='Unable to Load file given, would you like to select a different file?')
             else:
                 print('The following cities were loaded')
-
-                print_cities(road_map)
-
-                road_map = find_best_cycle(road_map)
-                print_map(road_map)
-
-                visualise(road_map)
-
-                load_another_map = user_wants_to_load_a_different_file(
-                    'Would you like to open another map?')
+                print_cities(road_map=road_map)
+                road_map = find_best_cycle(road_map=road_map)
+                print_map(road_map=road_map)
+                visualise(road_map=road_map)
+                with dialogue_box() as box:
+                    load_another_map = box.user_wants_another_file(question='Would you like to open another map?')
 
 
 if __name__ == "__main__":  # keep this in

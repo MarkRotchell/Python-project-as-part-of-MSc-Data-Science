@@ -1551,6 +1551,15 @@ def test_itinerarydrawer_default_constructor_parameters():
     assert drawer.drawable_size_px == 700
     assert drawer.margin_px == 50
     assert drawer.min_grid_lines == 5
+    assert drawer.grid_line_colour == 'lightblue1'
+    assert drawer.grid_line_thickness == 1
+    assert drawer.leg_line_colour == 'red'
+    assert drawer.leg_line_thickness == 1
+    assert drawer.city_radius == 2
+    assert drawer.city_fill == 'white'
+    assert drawer.city_line_colour == 'black'
+    assert drawer.city_line_thickness == 1
+    assert drawer.label_font == ('purisa', 8)
 
 
 def test_itinerarydrawer_constructor_parameters_1():
