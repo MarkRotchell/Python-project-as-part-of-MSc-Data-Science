@@ -262,12 +262,13 @@ class ItineraryDrawer:
     def _grid_lines(self, grid_line_spacing, deg_min, deg_max, px_per_deg, converter, ref_point):
         margin_deg = self.margin_px / px_per_deg
         deg = grid_line_spacing * (1 + (deg_min - margin_deg) // grid_line_spacing)
-        while deg < deg_max + margin_deg:
+        while deg <= deg_min + margin_deg + self.drawable_size_px / px_per_deg:
             yield deg, converter(deg, px_per_deg, ref_point)
             deg += grid_line_spacing
 
     def _lat_grid_lines(self, grid_line_spacing, lat_min, lat_max, px_per_deg):
-        return self._grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg, self._lat_to_y, lat_max)
+        return self._grid_lines(grid_line_spacing, lat_min, lat_max, px_per_deg,
+                                self._lat_to_y, lat_min + self.drawable_size_px / px_per_deg)
 
     def _long_grid_lines(self, grid_line_spacing, long_min, long_max, px_per_deg):
         return self._grid_lines(grid_line_spacing, long_min, long_max, px_per_deg, self._long_to_x, long_min)
