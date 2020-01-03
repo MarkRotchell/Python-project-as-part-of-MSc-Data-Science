@@ -1,5 +1,6 @@
 import pytest
 import types
+import collections.abc
 
 from cities import *
 
@@ -981,146 +982,146 @@ itinerary.latitudes()
 
 ################################## 
 '''
-
-
-def test_itinerary_latitudes_is_generator_1(road_map_1):
-    itinerary = Itinerary(road_map_1)
-    assert isinstance(itinerary.latitudes(), types.GeneratorType)
-
-
-def test_itinerary_latitudes_is_generator_2(road_map_2):
-    itinerary = Itinerary(road_map_2)
-    assert isinstance(itinerary.latitudes(), types.GeneratorType)
-
-
-def test_itinerary_latitudes_elements_are_floats_1(road_map_1):
-    itinerary = Itinerary(road_map_1)
-    for state in itinerary.latitudes():
-        assert isinstance(state, float)
-
-
-def test_itinerary_latitudes_elements_are_floats_2(road_map_2):
-    itinerary = Itinerary(road_map_2)
-    for state in itinerary.latitudes():
-        assert isinstance(state, float)
-
-
-def test_itinerary_latitudes_expected_length_1(road_map_1, length_1):
-    itinerary = Itinerary(road_map_1)
-    assert len(list(itinerary.latitudes())) == length_1
-
-
-def test_itinerary_latitudes_expected_length_2(road_map_2, length_2):
-    itinerary = Itinerary(road_map_2)
-    assert len(list(itinerary.latitudes())) == length_2
-
-
-def test_itinerary_latitudes_expected_length_single_city(road_map_5):
-    itinerary = Itinerary(road_map_5)
-    assert len(list(itinerary.latitudes())) == 1
-
-
-def test_itinerary_latitudes_expected_values_1(road_map_1, latitudes_1):
-    itinerary = Itinerary(road_map_1)
-    for received, expected in zip(itinerary.latitudes(), latitudes_1):
-        assert received == expected
-
-
-def test_itinerary_latitudes_expected_values_2(road_map_2, latitudes_2):
-    itinerary = Itinerary(road_map_2)
-    for received, expected in zip(itinerary.latitudes(), latitudes_2):
-        assert received == expected
-
-
-def test_itinerary_latitudes_expected_values_3(road_map_3, latitudes_3):
-    itinerary = Itinerary(road_map_3)
-    for received, expected in zip(itinerary.latitudes(), latitudes_3):
-        assert received == expected
-
-
-def test_itinerary_latitudes_expected_values_4(road_map_4, latitudes_4):
-    itinerary = Itinerary(road_map_4)
-    for received, expected in zip(itinerary.latitudes(), latitudes_4):
-        assert received == expected
-
-
-def test_itinerary_latitudes_expected_values_5(road_map_5, latitudes_5):
-    itinerary = Itinerary(road_map_5)
-    for received, expected in zip(itinerary.latitudes(), latitudes_5):
-        assert received == expected
-
-
-'''
-################################## 
-
-itinerary.longitudes()                           
-
-################################## 
-'''
-
-
-def test_itinerary_longitudes_is_generator_1(road_map_1):
-    itinerary = Itinerary(road_map_1)
-    assert isinstance(itinerary.longitudes(), types.GeneratorType)
-
-
-def test_itinerary_longitudes_is_generator_2(road_map_2):
-    itinerary = Itinerary(road_map_2)
-    assert isinstance(itinerary.longitudes(), types.GeneratorType)
-
-
-def test_itinerary_longitudes_elements_are_floats_1(road_map_1):
-    itinerary = Itinerary(road_map_1)
-    for state in itinerary.longitudes():
-        assert isinstance(state, float)
-
-
-def test_itinerary_longitudes_elements_are_floats_2(road_map_2):
-    itinerary = Itinerary(road_map_2)
-    for state in itinerary.longitudes():
-        assert isinstance(state, float)
-
-
-def test_itinerary_longitudes_expected_length_1(road_map_1, length_1):
-    assert len(list(Itinerary(road_map_1).longitudes())) == length_1
-
-
-def test_itinerary_longitudes_expected_length_2(road_map_2, length_2):
-    assert len(list(Itinerary(road_map_2).longitudes())) == length_2
-
-
-def test_itinerary_longitudes_expected_length_single_city(road_map_5):
-    assert len(list(Itinerary(road_map_5).longitudes())) == 1
-
-
-def test_itinerary_longitudes_expected_values_1(road_map_1, longitudes_1):
-    itinerary = Itinerary(road_map_1)
-    for received, expected in zip(itinerary.longitudes(), longitudes_1):
-        assert received == expected
-
-
-def test_itinerary_longitudes_expected_values_2(road_map_2, longitudes_2):
-    itinerary = Itinerary(road_map_2)
-    for received, expected in zip(itinerary.longitudes(), longitudes_2):
-        assert received == expected
-
-
-def test_itinerary_longitudes_expected_values_3(road_map_3, longitudes_3):
-    itinerary = Itinerary(road_map_3)
-    for received, expected in zip(itinerary.longitudes(), longitudes_3):
-        assert received == expected
-
-
-def test_itinerary_longitudes_expected_values_4(road_map_4, longitudes_4):
-    itinerary = Itinerary(road_map_4)
-    for received, expected in zip(itinerary.longitudes(), longitudes_4):
-        assert received == expected
-
-
-def test_itinerary_longitudes_expected_values_5(road_map_5, longitudes_5):
-    itinerary = Itinerary(road_map_5)
-    for received, expected in zip(itinerary.longitudes(), longitudes_5):
-        assert received == expected
+#
+#
+# def test_itinerary_latitudes_is_generator_1(road_map_1):
+#     itinerary = Itinerary(road_map_1)
+#     assert isinstance(itinerary.latitudes(), types.GeneratorType)
+#
+#
+# def test_itinerary_latitudes_is_generator_2(road_map_2):
+#     itinerary = Itinerary(road_map_2)
+#     assert isinstance(itinerary.latitudes(), types.GeneratorType)
+#
+#
+# def test_itinerary_latitudes_elements_are_floats_1(road_map_1):
+#     itinerary = Itinerary(road_map_1)
+#     for state in itinerary.latitudes():
+#         assert isinstance(state, float)
+#
+#
+# def test_itinerary_latitudes_elements_are_floats_2(road_map_2):
+#     itinerary = Itinerary(road_map_2)
+#     for state in itinerary.latitudes():
+#         assert isinstance(state, float)
+#
+#
+# def test_itinerary_latitudes_expected_length_1(road_map_1, length_1):
+#     itinerary = Itinerary(road_map_1)
+#     assert len(list(itinerary.latitudes())) == length_1
+#
+#
+# def test_itinerary_latitudes_expected_length_2(road_map_2, length_2):
+#     itinerary = Itinerary(road_map_2)
+#     assert len(list(itinerary.latitudes())) == length_2
+#
+#
+# def test_itinerary_latitudes_expected_length_single_city(road_map_5):
+#     itinerary = Itinerary(road_map_5)
+#     assert len(list(itinerary.latitudes())) == 1
+#
+#
+# def test_itinerary_latitudes_expected_values_1(road_map_1, latitudes_1):
+#     itinerary = Itinerary(road_map_1)
+#     for received, expected in zip(itinerary.latitudes(), latitudes_1):
+#         assert received == expected
+#
+#
+# def test_itinerary_latitudes_expected_values_2(road_map_2, latitudes_2):
+#     itinerary = Itinerary(road_map_2)
+#     for received, expected in zip(itinerary.latitudes(), latitudes_2):
+#         assert received == expected
+#
+#
+# def test_itinerary_latitudes_expected_values_3(road_map_3, latitudes_3):
+#     itinerary = Itinerary(road_map_3)
+#     for received, expected in zip(itinerary.latitudes(), latitudes_3):
+#         assert received == expected
+#
+#
+# def test_itinerary_latitudes_expected_values_4(road_map_4, latitudes_4):
+#     itinerary = Itinerary(road_map_4)
+#     for received, expected in zip(itinerary.latitudes(), latitudes_4):
+#         assert received == expected
+#
+#
+# def test_itinerary_latitudes_expected_values_5(road_map_5, latitudes_5):
+#     itinerary = Itinerary(road_map_5)
+#     for received, expected in zip(itinerary.latitudes(), latitudes_5):
+#         assert received == expected
+#
+#
+# '''
+# ##################################
+#
+# itinerary.longitudes()
+#
+# ##################################
+# '''
+#
+#
+# def test_itinerary_longitudes_is_generator_1(road_map_1):
+#     itinerary = Itinerary(road_map_1)
+#     assert isinstance(itinerary.longitudes(), types.GeneratorType)
+#
+#
+# def test_itinerary_longitudes_is_generator_2(road_map_2):
+#     itinerary = Itinerary(road_map_2)
+#     assert isinstance(itinerary.longitudes(), types.GeneratorType)
+#
+#
+# def test_itinerary_longitudes_elements_are_floats_1(road_map_1):
+#     itinerary = Itinerary(road_map_1)
+#     for state in itinerary.longitudes():
+#         assert isinstance(state, float)
+#
+#
+# def test_itinerary_longitudes_elements_are_floats_2(road_map_2):
+#     itinerary = Itinerary(road_map_2)
+#     for state in itinerary.longitudes():
+#         assert isinstance(state, float)
+#
+#
+# def test_itinerary_longitudes_expected_length_1(road_map_1, length_1):
+#     assert len(list(Itinerary(road_map_1).longitudes())) == length_1
+#
+#
+# def test_itinerary_longitudes_expected_length_2(road_map_2, length_2):
+#     assert len(list(Itinerary(road_map_2).longitudes())) == length_2
+#
+#
+# def test_itinerary_longitudes_expected_length_single_city(road_map_5):
+#     assert len(list(Itinerary(road_map_5).longitudes())) == 1
+#
+#
+# def test_itinerary_longitudes_expected_values_1(road_map_1, longitudes_1):
+#     itinerary = Itinerary(road_map_1)
+#     for received, expected in zip(itinerary.longitudes(), longitudes_1):
+#         assert received == expected
+#
+#
+# def test_itinerary_longitudes_expected_values_2(road_map_2, longitudes_2):
+#     itinerary = Itinerary(road_map_2)
+#     for received, expected in zip(itinerary.longitudes(), longitudes_2):
+#         assert received == expected
+#
+#
+# def test_itinerary_longitudes_expected_values_3(road_map_3, longitudes_3):
+#     itinerary = Itinerary(road_map_3)
+#     for received, expected in zip(itinerary.longitudes(), longitudes_3):
+#         assert received == expected
+#
+#
+# def test_itinerary_longitudes_expected_values_4(road_map_4, longitudes_4):
+#     itinerary = Itinerary(road_map_4)
+#     for received, expected in zip(itinerary.longitudes(), longitudes_4):
+#         assert received == expected
+#
+#
+# def test_itinerary_longitudes_expected_values_5(road_map_5, longitudes_5):
+#     itinerary = Itinerary(road_map_5)
+#     for received, expected in zip(itinerary.longitudes(), longitudes_5):
+#         assert received == expected
 
 
 '''
@@ -1134,43 +1135,43 @@ itinerary.latitude_max()
 
 def test_itinerary_latitude_max_is_float_1(road_map_1):
     itinerary = Itinerary(road_map_1)
-    assert isinstance(itinerary.latitude_max(), float)
+    assert isinstance(itinerary.latitude_max, float)
 
 
 def test_itinerary_latitude_max_is_float_2(road_map_2):
     itinerary = Itinerary(road_map_2)
-    assert isinstance(itinerary.latitude_max(), float)
+    assert isinstance(itinerary.latitude_max, float)
 
 
 def test_itinerary_latitude_max_expected_value_1(road_map_1):
     itinerary = Itinerary(road_map_1)
-    assert itinerary.latitude_max() == pytest.approx(48.813343)
+    assert itinerary.latitude_max == pytest.approx(48.813343)
 
 
 def test_itinerary_latitude_max_expected_value_2(road_map_2):
     itinerary = Itinerary(road_map_2)
-    assert itinerary.latitude_max() == pytest.approx(52.23)
+    assert itinerary.latitude_max == pytest.approx(52.23)
 
 
 def test_itinerary_latitude_max_expected_value_3(road_map_3):
     itinerary = Itinerary(road_map_3)
-    assert itinerary.latitude_max() == pytest.approx(51.6)
+    assert itinerary.latitude_max == pytest.approx(51.6)
 
 
 def test_itinerary_latitude_max_expected_value_4(road_map_4):
     itinerary = Itinerary(road_map_4)
-    assert itinerary.latitude_max() == pytest.approx(57.477772)
+    assert itinerary.latitude_max == pytest.approx(57.477772)
 
 
 def test_itinerary_latitude_max_expected_value_5(road_map_5):
     itinerary = Itinerary(road_map_5)
-    assert itinerary.latitude_max() == pytest.approx(51.521728)
+    assert itinerary.latitude_max == pytest.approx(51.521728)
 
 
 def test_itinerary_latitude_max_correct_after_updated_road_map(road_map_1, road_map_2):
     itinerary = Itinerary(road_map_1)
     itinerary.road_map = road_map_2
-    assert itinerary.latitude_max() == pytest.approx(52.23)
+    assert itinerary.latitude_max == pytest.approx(52.23)
 
 
 '''
@@ -1184,43 +1185,43 @@ itinerary.latitude_min()
 
 def test_itinerary_latitude_min_is_float_1(road_map_1):
     itinerary = Itinerary(road_map_1)
-    assert isinstance(itinerary.latitude_min(), float)
+    assert isinstance(itinerary.latitude_min, float)
 
 
 def test_itinerary_latitude_min_is_float_2(road_map_2):
     itinerary = Itinerary(road_map_2)
-    assert isinstance(itinerary.latitude_min(), float)
+    assert isinstance(itinerary.latitude_min, float)
 
 
 def test_itinerary_latitude_min_expected_value_1(road_map_1):
     itinerary = Itinerary(road_map_1)
-    assert itinerary.latitude_min() == pytest.approx(32.32)
+    assert itinerary.latitude_min == pytest.approx(32.32)
 
 
 def test_itinerary_latitude_min_expected_value_2(road_map_2):
     itinerary = Itinerary(road_map_2)
-    assert itinerary.latitude_min() == pytest.approx(-41.19)
+    assert itinerary.latitude_min == pytest.approx(-41.19)
 
 
 def test_itinerary_latitude_min_expected_value_3(road_map_3, ):
     itinerary = Itinerary(road_map_3)
-    assert itinerary.latitude_min() == pytest.approx(51.4927)
+    assert itinerary.latitude_min == pytest.approx(51.4927)
 
 
 def test_itinerary_latitude_min_expected_value_4(road_map_4):
     itinerary = Itinerary(road_map_4)
-    assert itinerary.latitude_min() == pytest.approx(51.063202)
+    assert itinerary.latitude_min == pytest.approx(51.063202)
 
 
 def test_itinerary_latitude_min_expected_value_5(road_map_5):
     itinerary = Itinerary(road_map_5)
-    assert itinerary.latitude_min() == pytest.approx(51.521728)
+    assert itinerary.latitude_min == pytest.approx(51.521728)
 
 
 def test_itinerary_latitude_min_correct_after_updated_road_map(road_map_1, road_map_2):
     itinerary = Itinerary(road_map_1)
     itinerary.road_map = road_map_2
-    assert itinerary.latitude_min() == pytest.approx(-41.19)
+    assert itinerary.latitude_min == pytest.approx(-41.19)
 
 
 '''
@@ -1234,43 +1235,43 @@ itinerary.longitude_max()
 
 def test_itinerary_longitude_max_is_float_1(road_map_1):
     itinerary = Itinerary(road_map_1)
-    assert isinstance(itinerary.longitude_max(), float)
+    assert isinstance(itinerary.longitude_max, float)
 
 
 def test_itinerary_longitude_max_is_float_2(road_map_2):
     itinerary = Itinerary(road_map_2)
-    assert isinstance(itinerary.longitude_max(), float)
+    assert isinstance(itinerary.longitude_max, float)
 
 
 def test_itinerary_longitude_max_expected_value_1(road_map_1):
     itinerary = Itinerary(road_map_1)
-    assert itinerary.longitude_max() == pytest.approx(-71.549127)
+    assert itinerary.longitude_max == pytest.approx(-71.549127)
 
 
 def test_itinerary_longitude_max_expected_value_2(road_map_2):
     itinerary = Itinerary(road_map_2)
-    assert itinerary.longitude_max() == pytest.approx(174.4)
+    assert itinerary.longitude_max == pytest.approx(174.4)
 
 
 def test_itinerary_longitude_max_expected_value_3(road_map_3):
     itinerary = Itinerary(road_map_3)
-    assert itinerary.longitude_max() == pytest.approx(0.1837)
+    assert itinerary.longitude_max == pytest.approx(0.1837)
 
 
 def test_itinerary_longitude_max_expected_value_4(road_map_4):
     itinerary = Itinerary(road_map_4)
-    assert itinerary.longitude_max() == pytest.approx(-0.09214)
+    assert itinerary.longitude_max == pytest.approx(-0.09214)
 
 
 def test_itinerary_longitude_max_expected_value_5(road_map_5):
     itinerary = Itinerary(road_map_5)
-    assert itinerary.longitude_max() == pytest.approx(-0.129338)
+    assert itinerary.longitude_max == pytest.approx(-0.129338)
 
 
 def test_itinerary_longitude_max_correct_after_updated_road_map(road_map_1, road_map_2):
     itinerary = Itinerary(road_map_1)
     itinerary.road_map = road_map_2
-    assert itinerary.longitude_max() == pytest.approx(174.4)
+    assert itinerary.longitude_max == pytest.approx(174.4)
 
 
 '''
@@ -1284,43 +1285,43 @@ itinerary.longitude_min()
 
 def test_itinerary_longitude_min_is_float_1(road_map_1):
     itinerary = Itinerary(road_map_1)
-    assert isinstance(itinerary.longitude_min(), float)
+    assert isinstance(itinerary.longitude_min, float)
 
 
 def test_itinerary_longitude_min_is_float_2(road_map_2):
     itinerary = Itinerary(road_map_2)
-    assert isinstance(itinerary.longitude_min(), float)
+    assert isinstance(itinerary.longitude_min, float)
 
 
 def test_itinerary_longitude_min_expected_value_1(road_map_1):
     itinerary = Itinerary(road_map_1)
-    assert itinerary.longitude_min() == pytest.approx(-119.753877)
+    assert itinerary.longitude_min == pytest.approx(-119.753877)
 
 
 def test_itinerary_longitude_min_expected_value_2(road_map_2):
     itinerary = Itinerary(road_map_2)
-    assert itinerary.longitude_min() == pytest.approx(-99.1)
+    assert itinerary.longitude_min == pytest.approx(-99.1)
 
 
 def test_itinerary_longitude_min_expected_value_3(road_map_3):
     itinerary = Itinerary(road_map_3)
-    assert itinerary.longitude_min() == pytest.approx(-0.476)
+    assert itinerary.longitude_min == pytest.approx(-0.476)
 
 
 def test_itinerary_longitude_min_expected_value_4(road_map_4):
     itinerary = Itinerary(road_map_4)
-    assert itinerary.longitude_min() == pytest.approx(-7.3074)
+    assert itinerary.longitude_min == pytest.approx(-7.3074)
 
 
 def test_itinerary_longitude_min_expected_value_5(road_map_5):
     itinerary = Itinerary(road_map_5)
-    assert itinerary.longitude_min() == pytest.approx(-0.129338)
+    assert itinerary.longitude_min == pytest.approx(-0.129338)
 
 
 def test_itinerary_longitude_min_correct_after_updated_road_map(road_map_1, road_map_2):
     itinerary = Itinerary(road_map_1)
     itinerary.road_map = road_map_2
-    assert itinerary.longitude_min() == pytest.approx(-99.1)
+    assert itinerary.longitude_min == pytest.approx(-99.1)
 
 
 '''
@@ -1471,8 +1472,8 @@ itinerary.legs()
 '''
 
 
-def test_itinerary_legs_returns_generator(road_map_1):
-    assert isinstance(Itinerary(road_map_1).legs(), types.GeneratorType)
+def test_itinerary_legs_returns_iterator(road_map_1):
+    assert isinstance(Itinerary(road_map_1).legs(), collections.abc.Iterator)
 
 
 def test_itinerary_legs_generates_tuples(road_map_1):
@@ -1834,28 +1835,28 @@ ItineraryDrawer._points
 def test_itinerarydrawer_points_returns_generator(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._points(itinerary, 10)
     assert isinstance(received_points, types.GeneratorType)
 
 
 def test_itinerarydrawer_points_generates_tuples(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+    for element in drawer._points(itinerary, 10):
         assert isinstance(element, tuple)
 
 
 def test_itinerarydrawer_points_generates_pairs(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+    for element in drawer._points(itinerary, 10):
         assert len(element) == 2
 
 
 def test_itinerarydrawer_points_generates_pairs_of_ints(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+    for element in drawer._points(itinerary, 10):
         assert isinstance(element[0], int)
         assert isinstance(element[1], int)
 
@@ -1863,21 +1864,21 @@ def test_itinerarydrawer_points_generates_pairs_of_ints(road_map_1):
 def test_itinerarydrawer_points_right_length_1(road_map_1, length_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._points(itinerary, 10)
     assert len(list(received_points)) == length_1
 
 
 def test_itinerarydrawer_points_right_length_2(road_map_2, length_2):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_2)
-    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._points(itinerary, 10)
     assert len(list(received_points)) == length_2
 
 
 def test_itinerarydrawer_points_right_length_single_city(road_map_5, length_5):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_5)
-    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._points(itinerary, 10)
     assert len(list(received_points)) == length_5
 
 
@@ -1886,7 +1887,7 @@ def test_itinerarydrawer_points_as_expected_1(road_map_1):
                        (532, 106), (500, 136), (188, 181), (510, 112), (461, 180), (240, 50)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._points(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -1898,7 +1899,7 @@ def test_itinerarydrawer_points_as_expected_2(road_map_2):
                        (2785, 984), (179, 452), (1062, 440), (1114, 482)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_2)
-    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._points(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -1908,7 +1909,7 @@ def test_itinerarydrawer_points_as_expected_3(road_map_3):
     expected_points = [(54, 51), (52, 51), (54, 50), (51, 50), (57, 50), (50, 51)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_3)
-    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._points(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -1920,7 +1921,7 @@ def test_itinerarydrawer_points_as_expected_4(road_map_4):
                        (70, 106), (84, 109), (56, 81), (64, 79), (63, 80), (60, 83), (50, 75)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_4)
-    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._points(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -1930,7 +1931,7 @@ def test_itinerarydrawer_points_as_expected_5(road_map_5):
     expected_points = [(50, 50)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_5)
-    received_points = drawer._points(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._points(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -1948,28 +1949,28 @@ ItineraryDrawer._points_pairs
 def test_itinerarydrawer_point_pairs_returns_generator(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._point_pairs(itinerary, 10)
     assert isinstance(received_points, types.GeneratorType)
 
 
 def test_itinerarydrawer_point_pairs_generates_tuples(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+    for element in drawer._point_pairs(itinerary, 10):
         assert isinstance(element, tuple)
 
 
 def test_itinerarydrawer_point_pairs_generates_pairs(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+    for element in drawer._point_pairs(itinerary, 10):
         assert len(element) == 2
 
 
 def test_itinerarydrawer_point_pairs_generates_pairs_of_tuples(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+    for element in drawer._point_pairs(itinerary, 10):
         assert isinstance(element[0], tuple)
         assert isinstance(element[1], tuple)
 
@@ -1977,7 +1978,7 @@ def test_itinerarydrawer_point_pairs_generates_pairs_of_tuples(road_map_1):
 def test_itinerarydrawer_point_pairs_generates_pairs_of_pairs_of_ints(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min()):
+    for element in drawer._point_pairs(itinerary, 10):
         assert isinstance(element[0][0], int)
         assert isinstance(element[0][1], int)
         assert isinstance(element[1][0], int)
@@ -1987,21 +1988,21 @@ def test_itinerarydrawer_point_pairs_generates_pairs_of_pairs_of_ints(road_map_1
 def test_itinerarydrawer_point_pairs_right_length_1(road_map_1, length_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._point_pairs(itinerary, 10)
     assert len(list(received_points)) == length_1
 
 
 def test_itinerarydrawer_point_pairs_right_length_2(road_map_2, length_2):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_2)
-    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._point_pairs(itinerary, 10)
     assert len(list(received_points)) == length_2
 
 
 def test_itinerarydrawer_point_pairs_right_length_single_city(road_map_5, length_5):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_5)
-    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._point_pairs(itinerary, 10)
     assert len(list(received_points)) == length_5
 
 
@@ -2020,7 +2021,7 @@ def test_itinerarydrawer_point_pairs_as_expected_1(road_map_1):
                        ((240, 50), (317, 89))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._point_pairs(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -2045,7 +2046,7 @@ def test_itinerarydrawer_point_pairs_as_expected_2(road_map_2):
                        ((1114, 482), (1614, 773))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_2)
-    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._point_pairs(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -2060,7 +2061,7 @@ def test_itinerarydrawer_point_pairs_as_expected_3(road_map_3):
                        ((50, 51), (54, 51))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_3)
-    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._point_pairs(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -2093,7 +2094,7 @@ def test_itinerarydrawer_point_pairs_as_expected_4(road_map_4):
                        ((50, 75), (97, 113))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_4)
-    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._point_pairs(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -2103,7 +2104,7 @@ def test_itinerarydrawer_point_pairs_as_expected_5(road_map_5):
     expected_points = [((50, 50), (50, 50))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_5)
-    received_points = drawer._point_pairs(itinerary, 10, itinerary.latitude_max(), itinerary.longitude_min())
+    received_points = drawer._point_pairs(itinerary, 10)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -2196,34 +2197,34 @@ ItineraryDrawer._grid_lines
 
 def test_itinerarydrawer_grid_line_returns_generator():
     drawer = ItineraryDrawer()
-    assert isinstance(drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81), types.GeneratorType)
+    assert isinstance(drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81, 90), types.GeneratorType)
 
 
 def test_itinerarydrawer_grid_line_right_length_1():
     expected_grid_lines = [(30.0, 323), (35.0, 251), (40.0, 178), (45.0, 105), (50.0, 33)]
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81)
+    received_grid_lines = drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81, 90)
     assert len(list(received_grid_lines)) == len(expected_grid_lines)
 
 
 def test_itinerarydrawer_grid_line_right_length_2():
     expected_grid_lines = [(-100.0, 48), (-50.0, 176), (0.0, 304), (50.0, 432), (100.0, 560), (150.0, 688)]
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(50.0, -99.1, 174.4, 2.559415, drawer._long_to_x, -99.1)
+    received_grid_lines = drawer._grid_lines(50.0, -99.1, 174.4, 2.559415, drawer._long_to_x, -99.1, 180)
     assert len(list(received_grid_lines)) == len(expected_grid_lines)
 
 
 def test_itinerarydrawer_grid_line_right_length_single_city():
     expected_grid_lines = [(51.0, 765), (51.2, 625), (51.4, 485), (51.6, 345), (51.8, 205), (52.0, 65)]
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(0.2, 51.021728, 52.021728, 700.0, drawer._lat_to_y, 52.021728)
+    received_grid_lines = drawer._grid_lines(0.2, 51.021728, 52.021728, 700.0, drawer._lat_to_y, 52.021728, 90)
     assert len(list(received_grid_lines)) == len(expected_grid_lines)
 
 
 def test_itinerarydrawer_grid_line_as_expected_1():
     expected_grid_lines = [(30.0, 323), (35.0, 251), (40.0, 178), (45.0, 105), (50.0, 33)]
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81)
+    received_grid_lines = drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81, 90)
     for expected, received in zip(expected_grid_lines, received_grid_lines):
         assert received[0] == pytest.approx(expected[0])
         assert received[1] == pytest.approx(expected[1])
@@ -2232,7 +2233,7 @@ def test_itinerarydrawer_grid_line_as_expected_1():
 def test_itinerarydrawer_grid_line_as_expected_2():
     expected_grid_lines = [(-100.0, 48), (-50.0, 176), (0.0, 304), (50.0, 432), (100.0, 560), (150.0, 688)]
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(50.0, -99.1, 174.4, 2.559415, drawer._long_to_x, -99.1)
+    received_grid_lines = drawer._grid_lines(50.0, -99.1, 174.4, 2.559415, drawer._long_to_x, -99.1, 180)
     for expected, received in zip(expected_grid_lines, received_grid_lines):
         assert received == pytest.approx(expected)
 
@@ -2241,7 +2242,7 @@ def test_itinerarydrawer_grid_line_as_expected_3():
     expected_grid_lines = [(-0.5, 25), (-0.4, 131), (-0.3, 237), (-0.2, 343),
                            (-0.1, 449), (0.0, 555), (0.1, 661), (0.2, 767)]
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(0.1, -0.476, 0.1837, 1061.08837350, drawer._long_to_x, -0.476)
+    received_grid_lines = drawer._grid_lines(0.1, -0.476, 0.1837, 1061.08837350, drawer._long_to_x, -0.476, 180)
     for expected, received in zip(expected_grid_lines, received_grid_lines):
         assert received == pytest.approx(expected)
 
@@ -2250,7 +2251,7 @@ def test_itinerarydrawer_grid_line_as_expected_4():
     expected_grid_lines = [(-7.0, 80), (-6.0, 177), (-5.0, 274), (-4.0, 371),
                            (-3.0, 468), (-2.0, 565), (-1.0, 662), (0.0, 759)]
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(1.0, -7.3074, -0.09214, 97.01660, drawer._long_to_x, -7.3074)
+    received_grid_lines = drawer._grid_lines(1.0, -7.3074, -0.09214, 97.01660, drawer._long_to_x, -7.3074, 180)
     for expected, received in zip(expected_grid_lines, received_grid_lines):
         assert received == pytest.approx(expected)
 
@@ -2258,7 +2259,7 @@ def test_itinerarydrawer_grid_line_as_expected_4():
 def test_itinerarydrawer_grid_line_as_expected_single_city():
     expected_grid_lines = [(51.0, 765), (51.2, 625), (51.4, 485), (51.6, 345), (51.8, 205), (52.0, 65)]
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(0.2, 51.021728, 52.021728, 700.0, drawer._lat_to_y, 52.021728)
+    received_grid_lines = drawer._grid_lines(0.2, 51.021728, 52.021728, 700.0, drawer._lat_to_y, 52.021728, 180)
     for expected, received in zip(expected_grid_lines, received_grid_lines):
         assert received == pytest.approx(expected)
 
