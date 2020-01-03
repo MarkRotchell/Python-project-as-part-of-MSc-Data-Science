@@ -401,29 +401,25 @@ def open_map_dialogue_box():
                                       filetypes=(("text files", "*.txt"), ("all files", "*.*")))
 
 
-class dialogue_box:
-    """
-    context manager for dialogue boxes from TKinter
-    Handles the underlying root window creation, hiding and destruction
-    """
-    def __enter__(self):
-        """ create root window and hide it"""
-        self._root = Tk()
-        self._root.withdraw()
-        return self
+def rootless_dialogue_box(func):
+    def wrapper(*args, **kwargs):
+        root = Tk()
+        root.withdraw()
+        result = func(*args, **kwargs)
+        root.destroy()
+        return result
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """ destroy root window when dialogue box has been used"""
-        self._root.destroy()
+    return wrapper
 
-    @staticmethod
-    def get_file_name():
-        return open_map_dialogue_box()
 
-    @staticmethod
-    def yes_no_question(question):
-        """ return boolean regarding whether user wants to perform given action"""
-        return messagebox.askyesno(message=question, icon='question', title='Travelling Salesman')
+@rootless_dialogue_box
+def open_map():
+    return open_map_dialogue_box()
+
+
+@rootless_dialogue_box
+def yes_no(question):
+    return messagebox.askyesno(message=question, icon='question', title='Travelling Salesman')
 
 
 def main():
@@ -432,27 +428,24 @@ def main():
     """
     load_another_map = True
     while load_another_map:
-        with dialogue_box() as box:
-            file_path = box.get_file_name()
+        # with dialogue_box() as box:
+        #     file_path = box.get_file_name()
+        file_path = open_map()
         if not file_path:
-            with dialogue_box() as box:
-                load_another_map = box.yes_no_question(
-                    question='No file specified, would you like to try again?')
+            load_another_map = yes_no(question='No file specified, would you like to try again?')
         else:
             try:
                 road_map = read_cities(file_name=file_path)
             except Exception:
-                with dialogue_box() as box:
-                    load_another_map = box.yes_no_question(
-                        question='Unable to Load file given, would you like to select a different file?')
+                load_another_map = yes_no(
+                    question='Unable to Load file given, would you like to select a different file?')
             else:
                 print('The following cities were loaded')
                 print_cities(road_map=road_map)
                 road_map = find_best_cycle(road_map=road_map)
                 print_map(road_map=road_map)
                 visualise(road_map=road_map)
-                with dialogue_box() as box:
-                    load_another_map = box.yes_no_question(question='Would you like to open another map?')
+                load_another_map = yes_no(question='Would you like to open another map?')
 
 
 if __name__ == "__main__":  # keep this in
