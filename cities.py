@@ -226,10 +226,7 @@ class ItineraryDrawer:
                 for (lat_0, long_0), (lat_1, long_1) in itinerary.legs())
 
     def _canvas_dimensions(self, lat_range, long_range):
-        if lat_range == long_range:
-            canvas_height_px = self.drawable_size_px + 2 * self.margin_px
-            canvas_width_px = self.drawable_size_px + 2 * self.margin_px
-        elif lat_range > long_range:
+        if lat_range > long_range:
             canvas_height_px = int(round(self.drawable_size_px + 2 * self.margin_px))
             canvas_width_px = int(round(self.drawable_size_px * long_range / lat_range + 2 * self.margin_px))
         else:
@@ -252,11 +249,13 @@ class ItineraryDrawer:
         return grid_line_spacing_deg
 
     def _grid_lines(self, grid_line_spacing, deg_min, deg_max, px_per_deg, converter, ref_point):
-        margin_deg = self.margin_px / px_per_deg
-        first_line = grid_line_spacing * (1 + (deg_min - margin_deg) // grid_line_spacing)
+        margin_in_degrees = self.margin_px / px_per_deg
+        start_of_canvas_in_degrees = deg_min - margin_in_degrees
+        end_of_canvas_in_degrees = deg_max + margin_in_degrees
+        first_grid_line = grid_line_spacing * (start_of_canvas_in_degrees // grid_line_spacing + 1)
         for i in range(self.min_grid_lines * 3):
-            grid_line = first_line + i * grid_line_spacing
-            if grid_line > deg_max + margin_deg:
+            grid_line = first_grid_line + i * grid_line_spacing
+            if grid_line > end_of_canvas_in_degrees:
                 break
             else:
                 yield grid_line, converter(grid_line, px_per_deg, ref_point)
@@ -402,6 +401,11 @@ def open_map_dialogue_box():
 
 
 def rootless_dialogue_box(func):
+    """
+    decorator for dialogue boxes opened without an existing root window - ensures
+    root is created, hidden and destroyed.
+    """
+
     def wrapper(*args, **kwargs):
         root = Tk()
         root.withdraw()
@@ -426,26 +430,23 @@ def main():
     """
     Reads in, and prints out, the city data, then creates the "best"cycle and prints it out.
     """
-    load_another_map = True
-    while load_another_map:
-        # with dialogue_box() as box:
-        #     file_path = box.get_file_name()
+    load_maps = True
+    while load_maps:
         file_path = open_map()
         if not file_path:
-            load_another_map = yes_no(question='No file specified, would you like to try again?')
+            load_maps = yes_no(question='No file specified, would you like to try again?')
         else:
             try:
                 road_map = read_cities(file_name=file_path)
             except Exception:
-                load_another_map = yes_no(
-                    question='Unable to Load file given, would you like to select a different file?')
+                load_maps = yes_no(question='Unable to Load file given, would you like to select a different file?')
             else:
                 print('The following cities were loaded')
                 print_cities(road_map=road_map)
                 road_map = find_best_cycle(road_map=road_map)
                 print_map(road_map=road_map)
                 visualise(road_map=road_map)
-                load_another_map = yes_no(question='Would you like to open another map?')
+                load_maps = yes_no(question='Would you like to open another map?')
 
 
 if __name__ == "__main__":  # keep this in
