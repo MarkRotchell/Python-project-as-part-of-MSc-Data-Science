@@ -172,6 +172,10 @@ class Itinerary:
     def longitude_min(self):
         return self._long_min
 
+    @property
+    def is_single_point(self):
+        return (len(self.road_map) == 1 or abs(self._lat_max - self._lat_min + self._long_max - self._long_min) < 1e-10)
+
     def reroute(self):
         shuffle(self.road_map)
         self.road_map = find_best_cycle(self.road_map)
@@ -184,10 +188,10 @@ class Itinerary:
 
 
 class ItineraryDrawer:
-
     def __init__(self, drawable_size_px=700, margin_px=50, min_grid_lines=5, grid_line_colour='lightblue1',
                  grid_line_thickness=1, leg_line_colour='red', leg_line_thickness=1, city_radius=2, city_fill='white',
-                 city_line_colour='black', city_line_thickness=1, label_font=('purisa', 8)):
+                 city_line_colour='black', city_line_thickness=1, label_font=('purisa', 8),
+                 degrees_to_show_for_single_point=1.0):
         self.drawable_size_px = drawable_size_px
         self.margin_px = margin_px
         self.min_grid_lines = min_grid_lines
@@ -200,6 +204,7 @@ class ItineraryDrawer:
         self.city_line_colour = city_line_colour
         self.city_line_thickness = city_line_thickness
         self.label_font = label_font
+        self.degrees_to_show_for_single_point = degrees_to_show_for_single_point
 
     @property
     def drawable_size_px(self):
@@ -246,11 +251,16 @@ class ItineraryDrawer:
         Computes the canvas x and y coordinates for the cities in an itinerary
         Returns a generator yielding tuples of ints the form (x, y)
         """
-        return ((self._long_to_x(longitude=longitude, pixels_per_degree=pixels_per_degree,
-                                 long_min=itinerary.longitude_min),
-                 self._lat_to_y(latitude=latitude, pixels_per_degree=pixels_per_degree,
-                                lat_max=itinerary.latitude_max))
-                for latitude, longitude in itinerary.coordinates())
+        # offset = self.DEGREES_TO_SHOW_FOR_SINGLE_POINT / 2 if itinerary.single_point else 0
+        if itinerary.is_single_point:
+            mid_point = int(self._margin_px + self.drawable_size_px / 2)
+            return ((x, y) for x, y in [(mid_point, mid_point)])
+        else:
+            return ((self._long_to_x(longitude=longitude, pixels_per_degree=pixels_per_degree,
+                                     long_min=itinerary.longitude_min),
+                     self._lat_to_y(latitude=latitude, pixels_per_degree=pixels_per_degree,
+                                    lat_max=itinerary.latitude_max))
+                    for latitude, longitude in itinerary.coordinates())
 
     def _point_pairs(self, itinerary, pixels_per_degree):
         """
@@ -283,15 +293,14 @@ class ItineraryDrawer:
 
         return canvas_width_px, canvas_height_px
 
-    def _grid_line_spacing(self, max_range):
-        """
-        Computes an appropriate "round" number of degrees to have the gridlines spaced at.
-        Gives the largest spacing of form x * 10^y such that :
-            x is in {1,2,5},
-            y in an integer,
-            the number of gridlines within the largest dimension is at least min_grid_lines
-        Returns a spacing in degrees as a float
-        """
+
+    def _grid_line_spacing(self, itinerary):
+        if itinerary.is_single_point:
+            max_range = self.degrees_to_show_for_single_point
+        else:
+            max_range = max(itinerary.longitude_max-itinerary.longitude_min,
+                            itinerary.latitude_max-itinerary.latitude_min)
+
         scale = 10 ** (log10(max_range / self.min_grid_lines) // 1)
         multiple = 10 ** (log10(max_range / self.min_grid_lines) % 1)
 
@@ -362,7 +371,7 @@ class ItineraryDrawer:
         canvas.config(width=canvas_width_px, height=canvas_height_px)
 
         # draw gridlines
-        grid_line_spacing = self._grid_line_spacing(max_range)
+        grid_line_spacing = self._grid_line_spacing(itinerary)
         rounding = -int(log10(grid_line_spacing) - 1)
 
         for deg, y in self._lat_grid_lines(grid_line_spacing, lat_min, lat_max, pixels_per_degree):
