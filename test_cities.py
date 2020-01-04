@@ -1472,6 +1472,42 @@ def test_itinerary_legs_as_expected_5(road_map_5):
         assert received[1][1] == pytest.approx(expected[1][1])
 
 
+def test_itinerary_is_single_point_returns_boolean(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert isinstance(itinerary.is_single_point, bool)
+
+
+def test_itinerary_is_single_point_expected_false_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    assert not itinerary.is_single_point
+
+
+def test_itinerary_is_single_point_expected_false_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    assert not itinerary.is_single_point
+
+
+def test_itinerary_is_single_point_single_city_1(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    assert itinerary.is_single_point
+
+
+def test_itinerary_is_single_point_single_city_2():
+    itinerary = Itinerary([('Awesomeville','pop-1-module', -1, 10)])
+    assert itinerary.is_single_point
+
+
+def test_itinerary_is_single_point_repeated_city():
+    itinerary = Itinerary([('Awesomeville','pop-1-module', -1, 10),
+                           ('Awesomeville','pop-1-module', -1, 10)])
+    assert itinerary.is_single_point
+
+
+def test_itinerary_is_single_point_overlapping_city():
+    itinerary = Itinerary([('Awesomeville','pop-1-module', -1, 10),
+                           ('Amazingtown','python', -1, 10)])
+    assert itinerary.is_single_point
+
 '''
 ################################## 
 
