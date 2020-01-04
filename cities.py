@@ -278,29 +278,32 @@ class ItineraryDrawer:
                                  lat_max=itinerary.latitude_max)))
                 for (lat_0, long_0), (lat_1, long_1) in itinerary.legs())
 
-    def _canvas_dimensions(self, lat_range, long_range):
+
+    def _canvas_dimensions(self, itinerary):
         """
         Computes the size of the canvas to fit around the map. The largest dimension (either latitude or longitude)
         is given the "drawable_size_px" number of pixels, and the other dimension an amount pro-rata. Each
         dimension is then packed with the margin either side
         Returns a tuple of ints of the form (width, height), each measured in pixels.
         """
-        if lat_range > long_range:
-            canvas_height_px = int(round(self.drawable_size_px + 2 * self.margin_px))
-            canvas_width_px = int(round(self.drawable_size_px * long_range / lat_range + 2 * self.margin_px))
-        else:
-            canvas_width_px = int(round(self.drawable_size_px + 2 * self.margin_px))
-            canvas_height_px = int(round(self.drawable_size_px * lat_range / long_range + 2 * self.margin_px))
+        displayed_width = self.drawable_size_px
+        displayed_height = self.drawable_size_px
+        if not itinerary.is_single_point:
+            lat_to_long_ratio = ((itinerary.latitude_max - itinerary.latitude_min)
+                                 / (itinerary.longitude_max - itinerary.longitude_min))
+            if lat_to_long_ratio > 1:
+                displayed_width = int(round(displayed_width / lat_to_long_ratio))
+            else:
+                displayed_height = int(round(displayed_height * lat_to_long_ratio))
 
-        return canvas_width_px, canvas_height_px
-
+        return displayed_width + 2 * self.margin_px, displayed_height + 2 * self.margin_px
 
     def _grid_line_spacing(self, itinerary):
         if itinerary.is_single_point:
             max_range = self.degrees_to_show_for_single_point
         else:
-            max_range = max(itinerary.longitude_max-itinerary.longitude_min,
-                            itinerary.latitude_max-itinerary.latitude_min)
+            max_range = max(itinerary.longitude_max - itinerary.longitude_min,
+                            itinerary.latitude_max - itinerary.latitude_min)
 
         scale = 10 ** (log10(max_range / self.min_grid_lines) // 1)
         multiple = 10 ** (log10(max_range / self.min_grid_lines) % 1)
@@ -368,7 +371,7 @@ class ItineraryDrawer:
         pixels_per_degree = self.drawable_size_px / max_range
 
         # resize canvas
-        canvas_width_px, canvas_height_px = self._canvas_dimensions(lat_range, long_range)
+        canvas_width_px, canvas_height_px = self._canvas_dimensions(itinerary)
         canvas.config(width=canvas_width_px, height=canvas_height_px)
 
         # draw gridlines

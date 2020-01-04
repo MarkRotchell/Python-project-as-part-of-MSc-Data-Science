@@ -1493,20 +1493,21 @@ def test_itinerary_is_single_point_single_city_1(road_map_5):
 
 
 def test_itinerary_is_single_point_single_city_2():
-    itinerary = Itinerary([('Awesomeville','pop-1-module', -1, 10)])
+    itinerary = Itinerary([('Awesomeville', 'pop-1-module', -1, 10)])
     assert itinerary.is_single_point
 
 
 def test_itinerary_is_single_point_repeated_city():
-    itinerary = Itinerary([('Awesomeville','pop-1-module', -1, 10),
-                           ('Awesomeville','pop-1-module', -1, 10)])
+    itinerary = Itinerary([('Awesomeville', 'pop-1-module', -1, 10),
+                           ('Awesomeville', 'pop-1-module', -1, 10)])
     assert itinerary.is_single_point
 
 
 def test_itinerary_is_single_point_overlapping_city():
-    itinerary = Itinerary([('Awesomeville','pop-1-module', -1, 10),
-                           ('Amazingtown','python', -1, 10)])
+    itinerary = Itinerary([('Awesomeville', 'pop-1-module', -1, 10),
+                           ('Amazingtown', 'python', -1, 10)])
     assert itinerary.is_single_point
+
 
 '''
 ################################## 
@@ -2005,39 +2006,61 @@ ItineraryDrawer._canvas_dimensions
 ################################## 
 '''
 
-
-def test_itinerarydrawer_canvas_dimensions_returns_tuple():
-    assert isinstance(ItineraryDrawer()._canvas_dimensions(1, 1), tuple)
-
-
-def test_itinerarydrawer_canvas_dimensions_returns_pair():
-    assert len(ItineraryDrawer()._canvas_dimensions(1, 1)) == 2
+def test_itinerarydrawer_canvas_dimensions_2_returns_tuple(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    assert isinstance(drawer._canvas_dimensions(itinerary), tuple)
 
 
-def test_itinerarydrawer_canvas_dimensions_returns_pair_of_ints():
-    width, height = ItineraryDrawer()._canvas_dimensions(1, 1)
+def test_itinerarydrawer_canvas_dimensions_2_returns_pair(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    assert len(drawer._canvas_dimensions(itinerary)) == 2
+
+
+def test_itinerarydrawer_canvas_dimensions_2_returns_pair_of_ints(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    width, height = drawer._canvas_dimensions(itinerary)
     assert isinstance(width, int)
     assert isinstance(height, int)
 
 
-def test_itinerarydrawer_canvas_dimensions_as_expected_1():
-    assert ItineraryDrawer()._canvas_dimensions(2, 8) == (800, 275)
+def test_itinerarydrawer_canvas_dimensions_2_as_expected_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    width, height = drawer._canvas_dimensions(itinerary)
+    assert (width, height) == (800, 340)
 
 
-def test_itinerarydrawer_canvas_dimensions_as_expected_2():
-    assert ItineraryDrawer()._canvas_dimensions(0.5, 0.45) == (730, 800)
+def test_itinerarydrawer_canvas_dimensions_2_as_expected_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    drawer = ItineraryDrawer(drawable_size_px=400, margin_px=20)
+    width, height = drawer._canvas_dimensions(itinerary)
+    assert (width, height) == (440, 177)
 
 
-def test_itinerarydrawer_canvas_dimensions_as_expected_3():
-    assert ItineraryDrawer(margin_px=100)._canvas_dimensions(10, 15) == (900, 667)
+def test_itinerarydrawer_canvas_dimensions_2_as_expected_3():
+    itinerary = Itinerary([('a', 'b', 10, 5), ('c', 'd', -10, -5)])
+    drawer = ItineraryDrawer()
+    drawer.drawable_size_px = 500
+    drawer.margin_px = 10
+    width, height = drawer._canvas_dimensions(itinerary)
+    assert (width, height) == (270, 520)
 
 
-def test_itinerarydrawer_canvas_dimensions_as_expected_4():
-    assert ItineraryDrawer(margin_px=100, drawable_size_px=300)._canvas_dimensions(15, 10) == (400, 500)
+def test_itinerarydrawer_canvas_dimension_2_as_expected_single_city(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    drawer = ItineraryDrawer()
+    width, height = drawer._canvas_dimensions(itinerary)
+    assert (width, height) == (800, 800)
 
 
-def test_itinerarydrawer_canvas_dimensions_as_expected_5():
-    assert ItineraryDrawer(drawable_size_px=5000)._canvas_dimensions(90, 40) == (2322, 5100)
+def test_itinerarydrawer_canvas_dimension_2_as_expected_single_city_with_non_default_params(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    drawer = ItineraryDrawer(drawable_size_px=300, margin_px=100)
+    width, height = drawer._canvas_dimensions(itinerary)
+    assert (width, height) == (500, 500)
 
 
 '''
@@ -2048,40 +2071,48 @@ ItineraryDrawer._grid_line_spacing
 ################################## 
 '''
 
+
 def test_itinerarydrawer_grid_line_spacing_returns_float(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
     assert isinstance(drawer._grid_line_spacing(itinerary), float)
 
+
 def test_itinerarydrawer_grid_line_spacing_as_expected_1(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    assert drawer._grid_line_spacing(itinerary) == pytest.approx(5.0, abs = 1e-10)
+    assert drawer._grid_line_spacing(itinerary) == pytest.approx(5.0, abs=1e-10)
+
 
 def test_itinerarydrawer_grid_line_spacing_as_expected_2(road_map_2):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_2)
-    assert drawer._grid_line_spacing(itinerary) == pytest.approx(50.0, abs = 1e-10)
+    assert drawer._grid_line_spacing(itinerary) == pytest.approx(50.0, abs=1e-10)
+
 
 def test_itinerarydrawer_grid_line_spacing_as_expected_3(road_map_3):
     drawer = ItineraryDrawer(min_grid_lines=100)
     itinerary = Itinerary(road_map_3)
-    assert drawer._grid_line_spacing(itinerary) == pytest.approx(0.005, abs = 1e-10)
+    assert drawer._grid_line_spacing(itinerary) == pytest.approx(0.005, abs=1e-10)
+
 
 def test_itinerarydrawer_grid_line_spacing_as_expected_4(road_map_4):
     drawer = ItineraryDrawer(min_grid_lines=100)
     itinerary = Itinerary(road_map_4)
-    assert drawer._grid_line_spacing(itinerary) == pytest.approx(0.05, abs = 1e-10)
+    assert drawer._grid_line_spacing(itinerary) == pytest.approx(0.05, abs=1e-10)
+
 
 def test_itinerarydrawer_grid_line_spacing_as_expected_single_city(road_map_5):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_5)
-    assert drawer._grid_line_spacing(itinerary) == pytest.approx(0.2, abs = 1e-10)
+    assert drawer._grid_line_spacing(itinerary) == pytest.approx(0.2, abs=1e-10)
+
 
 def test_itinerarydrawer_grid_line_spacing_as_expected_single_city_2(road_map_5):
     drawer = ItineraryDrawer(degrees_to_show_for_single_point=20)
     itinerary = Itinerary(road_map_5)
-    assert drawer._grid_line_spacing(itinerary) == pytest.approx(2.0, abs = 1e-10)
+    assert drawer._grid_line_spacing(itinerary) == pytest.approx(2.0, abs=1e-10)
+
 
 '''
 ################################## 
