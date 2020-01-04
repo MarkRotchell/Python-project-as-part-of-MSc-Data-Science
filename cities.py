@@ -323,67 +323,51 @@ class ItineraryDrawer:
 
         return grid_line_spacing_deg
 
-    def _grid_lines(self, grid_line_spacing, deg_min, deg_max, pixels_per_degree, converter,
-                    ref_point, max_allowed_deg):
+
+    def _grid_lines(self, itinerary, is_latitude):
+
+        if itinerary.is_single_point:
+            extra_buffer_margin = self.degrees_to_show_for_single_point / 2
+        else:
+            extra_buffer_margin = 0
+
+        if is_latitude:
+            min_degrees = itinerary.latitude_min - extra_buffer_margin
+            max_degrees = itinerary.latitude_max + extra_buffer_margin
+            converter = self._lat_to_y
+            max_allowed_deg = 90
+            ref_point = itinerary.latitude_max + extra_buffer_margin
+        else:
+            min_degrees = itinerary.longitude_min - extra_buffer_margin
+            max_degrees = itinerary.longitude_max + extra_buffer_margin
+            converter = self._long_to_x
+            max_allowed_deg = 180
+            ref_point = itinerary.longitude_min - extra_buffer_margin
+
+        pixels_per_degree = self._pixels_per_degree(itinerary)
         margin_in_degrees = self.margin_px / pixels_per_degree
-        start_of_canvas_in_degrees = deg_min - margin_in_degrees
-        end_of_canvas_in_degrees = deg_max + margin_in_degrees
+        start_of_canvas_in_degrees = min_degrees - margin_in_degrees
+        end_of_canvas_in_degrees = max_degrees + margin_in_degrees
+        grid_line_spacing = self._grid_line_spacing(itinerary)
         first_grid_line = grid_line_spacing * (start_of_canvas_in_degrees // grid_line_spacing + 1)
+
         for i in count(0):
             grid_line = first_grid_line + i * grid_line_spacing
             if grid_line > end_of_canvas_in_degrees:
                 break
             else:
-                # deal with gridlines that go over poles or international date line (should only happen in margins)
                 if grid_line > max_allowed_deg:
                     grid_line_label = 180 - grid_line
                 elif grid_line < -max_allowed_deg:
                     grid_line_label = -180 - grid_line
                 else:
                     grid_line_label = grid_line
-
                 yield grid_line_label, converter(grid_line, pixels_per_degree, ref_point)
 
-    def _lat_grid_lines_2(self, itinerary):
-        spacing = self._grid_line_spacing(itinerary)
-        lat_min, lat_max = itinerary.latitude_min, itinerary.latitude_max
-        if itinerary.is_single_point:
-            lat_min -= self.degrees_to_show_for_single_point / 2
-            lat_max += self.degrees_to_show_for_single_point / 2
-        px_per_deg = self._pixels_per_degree(itinerary)
-        return self._grid_lines(grid_line_spacing=spacing, deg_min=lat_min, deg_max=lat_max,
-                                pixels_per_degree=px_per_deg,converter=self._lat_to_y,
-                                ref_point=lat_max, max_allowed_deg=90)
-
-    def _lat_grid_lines(self, grid_line_spacing, lat_min, lat_max, pixels_per_degree):
-        return self._grid_lines(grid_line_spacing=grid_line_spacing, deg_min=lat_min, deg_max=lat_max,
-                                pixels_per_degree=pixels_per_degree, converter=self._lat_to_y,
-                                ref_point=lat_max, max_allowed_deg=90)
-
-    def _long_grid_lines(self, grid_line_spacing, long_min, long_max, pixels_per_degree):
-        return self._grid_lines(grid_line_spacing=grid_line_spacing, deg_min=long_min, deg_max=long_max,
-                                pixels_per_degree=pixels_per_degree, converter=self._long_to_x,
-                                ref_point=long_min, max_allowed_deg=180)
 
     def draw(self, itinerary, canvas):
         canvas.update()
         canvas.delete('all')
-
-        # get map dimensions
-        lat_min, lat_max = itinerary.latitude_min, itinerary.latitude_max
-        long_min, long_max = itinerary.longitude_min, itinerary.longitude_max
-        lat_range, long_range = lat_max - lat_min, long_max - long_min
-        max_range = max(lat_range, long_range)
-
-        if max_range == 0:
-            # deal with case where all points are same (or just one point)
-            max_range = 1
-            long_range += 1
-            lat_range += 1
-            lat_min -= 0.5
-            lat_max += 0.5
-            long_min -= 0.5
-            long_max += 0.5
 
         pixels_per_degree = self._pixels_per_degree(itinerary)
 
@@ -395,11 +379,13 @@ class ItineraryDrawer:
         grid_line_spacing = self._grid_line_spacing(itinerary)
         rounding = -int(log10(grid_line_spacing) - 1)
 
-        for deg, y in self._lat_grid_lines(grid_line_spacing, lat_min, lat_max, pixels_per_degree):
+
+        for deg, y in self._grid_lines(itinerary, is_latitude=True):
             canvas.create_line(0, y, canvas_width_px, y, fill=self.grid_line_colour, width=self.grid_line_thickness)
             canvas.create_text(5, y - 5, text=format(deg, f'.{rounding}f'), anchor=SW, font=self.label_font)
 
-        for deg, x in self._long_grid_lines(grid_line_spacing, long_min, long_max, pixels_per_degree):
+
+        for deg, x in self._grid_lines(itinerary, is_latitude=False):
             canvas.create_line(x, 0, x, canvas_height_px, fill=self.grid_line_colour, width=self.grid_line_thickness)
             canvas.create_text(x, 5, text=format(deg, f'.{rounding}f'), anchor=N, font=self.label_font)
 

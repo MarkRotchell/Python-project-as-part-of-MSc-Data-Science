@@ -2006,6 +2006,7 @@ ItineraryDrawer._canvas_dimensions
 ################################## 
 '''
 
+
 def test_itinerarydrawer_canvas_dimensions_2_returns_tuple(road_map_1):
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
@@ -2117,193 +2118,47 @@ def test_itinerarydrawer_grid_line_spacing_as_expected_single_city_2(road_map_5)
 '''
 ################################## 
 
-ItineraryDrawer._grid_lines                   
-
-################################## 
-'''
-
-
-def test_itinerarydrawer_grid_line_returns_generator():
-    drawer = ItineraryDrawer()
-    assert isinstance(drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81, 90), types.GeneratorType)
-
-
-def test_itinerarydrawer_grid_line_right_length_1():
-    expected_grid_lines = [(30.0, 323), (35.0, 251), (40.0, 178), (45.0, 105), (50.0, 33)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81, 90)
-    assert len(list(received_grid_lines)) == len(expected_grid_lines)
-
-
-def test_itinerarydrawer_grid_line_right_length_2():
-    expected_grid_lines = [(-100.0, 48), (-50.0, 176), (0.0, 304), (50.0, 432), (100.0, 560), (150.0, 688)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(50.0, -99.1, 174.4, 2.559415, drawer._long_to_x, -99.1, 180)
-    assert len(list(received_grid_lines)) == len(expected_grid_lines)
-
-
-def test_itinerarydrawer_grid_line_right_length_single_city():
-    expected_grid_lines = [(51.0, 765), (51.2, 625), (51.4, 485), (51.6, 345), (51.8, 205), (52.0, 65)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(0.2, 51.021728, 52.021728, 700.0, drawer._lat_to_y, 52.021728, 90)
-    assert len(list(received_grid_lines)) == len(expected_grid_lines)
-
-
-def test_itinerarydrawer_grid_line_as_expected_1():
-    expected_grid_lines = [(30.0, 323), (35.0, 251), (40.0, 178), (45.0, 105), (50.0, 33)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(5.0, 32.32, 48.81, 14.52, drawer._lat_to_y, 48.81, 90)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received[0] == pytest.approx(expected[0])
-        assert received[1] == pytest.approx(expected[1])
-
-
-def test_itinerarydrawer_grid_line_as_expected_2():
-    expected_grid_lines = [(-100.0, 48), (-50.0, 176), (0.0, 304), (50.0, 432), (100.0, 560), (150.0, 688)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(50.0, -99.1, 174.4, 2.559415, drawer._long_to_x, -99.1, 180)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_grid_line_as_expected_3():
-    expected_grid_lines = [(-0.5, 25), (-0.4, 131), (-0.3, 237), (-0.2, 343),
-                           (-0.1, 449), (0.0, 555), (0.1, 661), (0.2, 767)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(0.1, -0.476, 0.1837, 1061.08837350, drawer._long_to_x, -0.476, 180)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_grid_line_as_expected_4():
-    expected_grid_lines = [(-7.0, 80), (-6.0, 177), (-5.0, 274), (-4.0, 371),
-                           (-3.0, 468), (-2.0, 565), (-1.0, 662), (0.0, 759)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(1.0, -7.3074, -0.09214, 97.01660, drawer._long_to_x, -7.3074, 180)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_grid_line_as_expected_single_city():
-    expected_grid_lines = [(51.0, 765), (51.2, 625), (51.4, 485), (51.6, 345), (51.8, 205), (52.0, 65)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._grid_lines(0.2, 51.021728, 52.021728, 700.0, drawer._lat_to_y, 52.021728, 180)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-'''
-################################## 
-
-ItineraryDrawer._lat_grid_lines                   
-
-################################## 
-'''
-
-
-def test_itinerarydrawer_lat_grid_lines_returns_generator():
-    drawer = ItineraryDrawer()
-    assert isinstance(drawer._lat_grid_lines(5.0, 32.32, 48.813343, 14.5213905), types.GeneratorType)
-
-
-def test_itinerarydrawer_lat_grid_lines_right_length_1():
-    expected_grid_lines = [(30.0, 323), (35.0, 251), (40.0, 178), (45.0, 105), (50.0, 33)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._lat_grid_lines(5.0, 32.32, 48.813343, 14.521390526867163)
-    assert len(list(received_grid_lines)) == len(expected_grid_lines)
-
-
-def test_itinerarydrawer_lat_grid_lines_right_length_2():
-    expected_grid_lines = [(-50.0, 312), (0.0, 184), (50.0, 56)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._lat_grid_lines(50.0, -41.19, 52.23, 2.559415)
-    assert len(list(received_grid_lines)) == len(expected_grid_lines)
-
-
-def test_itinerarydrawer_lat_grid_lines_right_length_single_city():
-    expected_grid_lines = [(51.0, 765), (51.2, 625), (51.4, 485), (51.6, 345), (51.8, 205), (52.0, 65)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._lat_grid_lines(0.2, 51.021728, 52.021728, 700.0)
-    assert len(list(received_grid_lines)) == len(expected_grid_lines)
-
-
-def test_itinerarydrawer_lat_grid_lines_as_expected_1():
-    expected_grid_lines = [(30.0, 323), (35.0, 251), (40.0, 178), (45.0, 105), (50.0, 33)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._lat_grid_lines(5.0, 32.32, 48.813343, 14.521390526867163)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_lat_grid_lines_as_expected_2():
-    expected_grid_lines = [(-50.0, 312), (0.0, 184), (50.0, 56)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._lat_grid_lines(50.0, -41.19, 52.23, 2.559415)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_lat_grid_lines_as_expected_3():
-    expected_grid_lines = [(51.5, 156), (51.6, 50)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._lat_grid_lines(0.1, 51.4927, 51.6, 1061.0883735)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_lat_grid_lines_as_expected_4():
-    expected_grid_lines = [(51.0, 678), (52.0, 581), (53.0, 484), (54.0, 387), (55.0, 290), (56.0, 193), (57.0, 96)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._lat_grid_lines(1.0, 51.063202, 57.477772, 97.0166)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_lat_grid_lines_as_expected_single_city():
-    expected_grid_lines = [(51.0, 765), (51.2, 625), (51.4, 485), (51.6, 345), (51.8, 205), (52.0, 65)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._lat_grid_lines(0.2, 51.021728, 52.021728, 700.0)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-'''
-################################## 
-
 ItineraryDrawer._max_range                   
 
 ################################## 
 '''
+
 
 def test_itinerarydrawer_max_range_returns_float(road_map_1):
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
     assert isinstance(drawer._max_range(itinerary), float)
 
+
 def test_itinerarydrawer_max_range_as_expected_1(road_map_1):
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
     assert drawer._max_range(itinerary) == pytest.approx(48.20475)
+
 
 def test_itinerarydrawer_max_range_as_expected_2(road_map_2):
     itinerary = Itinerary(road_map_2)
     drawer = ItineraryDrawer()
     assert drawer._max_range(itinerary) == pytest.approx(273.5)
 
+
 def test_itinerarydrawer_max_range_as_expected_3(road_map_3):
     itinerary = Itinerary(road_map_3)
     drawer = ItineraryDrawer()
     assert drawer._max_range(itinerary) == pytest.approx(0.6597)
+
 
 def test_itinerarydrawer_max_range_as_expected_4(road_map_4):
     itinerary = Itinerary(road_map_4)
     drawer = ItineraryDrawer()
     assert drawer._max_range(itinerary) == pytest.approx(7.21526)
 
+
 def test_itinerarydrawer_max_range_as_expected_single_city(road_map_5):
     itinerary = Itinerary(road_map_5)
     drawer = ItineraryDrawer()
     assert drawer._max_range(itinerary) == pytest.approx(1.0)
+
 
 def test_itinerarydrawer_max_range_as_expected_single_city_non_default_size(road_map_5):
     itinerary = Itinerary(road_map_5)
@@ -2319,35 +2174,42 @@ ItineraryDrawer._pixels_per_degree
 ################################## 
 '''
 
+
 def test_itinerarydrawer_pixels_per_degree_returns_float(road_map_1):
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
     assert isinstance(drawer._pixels_per_degree(itinerary), float)
+
 
 def test_itinerarydrawer_pixels_per_degree_as_expected_1(road_map_1):
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
     assert drawer._pixels_per_degree(itinerary) == pytest.approx(14.52139)
 
+
 def test_itinerarydrawer_pixels_per_degree_as_expected_2(road_map_2):
     itinerary = Itinerary(road_map_2)
     drawer = ItineraryDrawer()
     assert drawer._pixels_per_degree(itinerary) == pytest.approx(2.5594149)
+
 
 def test_itinerarydrawer_pixels_per_degree_as_expected_3(road_map_3):
     itinerary = Itinerary(road_map_3)
     drawer = ItineraryDrawer()
     assert drawer._pixels_per_degree(itinerary) == pytest.approx(1061.0883)
 
+
 def test_itinerarydrawer_pixels_per_degree_as_expected_4(road_map_4):
     itinerary = Itinerary(road_map_4)
     drawer = ItineraryDrawer()
     assert drawer._pixels_per_degree(itinerary) == pytest.approx(97.016600)
 
+
 def test_itinerarydrawer_pixels_per_degree_as_expected_single_city(road_map_5):
     itinerary = Itinerary(road_map_5)
     drawer = ItineraryDrawer()
     assert drawer._pixels_per_degree(itinerary) == pytest.approx(700.0)
+
 
 def test_itinerarydrawer_pixels_per_degree_as_expected_single_city_non_default_size(road_map_5):
     itinerary = Itinerary(road_map_5)
@@ -2358,136 +2220,150 @@ def test_itinerarydrawer_pixels_per_degree_as_expected_single_city_non_default_s
 '''
 ################################## 
 
-ItineraryDrawer._lat_grid_lines_2                   
+ItineraryDrawer._grid_lines_2                   
 
 ################################## 
 '''
 
-def test_itinerarydrawer_lat_grid_lines_2_returns_generator(road_map_1):
+
+def test_itinerarydrawer_grid_lines_2_returns_generator_lat(road_map_1):
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
-    assert isinstance(drawer._lat_grid_lines_2(itinerary), types.GeneratorType)
+    assert isinstance(drawer._grid_lines(itinerary, is_latitude=True), types.GeneratorType)
 
 
-def test_itinerarydrawer_lat_grid_lines_2_yields_tuples(road_map_1):
+def test_itinerarydrawer_grid_lines_2_returns_generator_long(road_map_1):
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
-    assert isinstance(next(drawer._lat_grid_lines_2(itinerary)), tuple)
+    assert isinstance(drawer._grid_lines(itinerary, is_latitude=False), types.GeneratorType)
 
-def test_itinerarydrawer_lat_grid_lines_2_yields_float_and_int(road_map_1):
+
+def test_itinerarydrawer_grid_lines_2_yields_tuples_lat(road_map_1):
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
-    for degrees, pixels in drawer._lat_grid_lines_2(itinerary):
+    assert isinstance(next(drawer._grid_lines(itinerary, is_latitude=True)), tuple)
+
+
+def test_itinerarydrawer_grid_lines_2_yields_tuples_long(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    assert isinstance(next(drawer._grid_lines(itinerary, is_latitude=False)), tuple)
+
+
+def test_itinerarydrawer_grid_lines_2_yields_float_and_int_lat(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    for degrees, pixels in drawer._grid_lines(itinerary, is_latitude=True):
         assert isinstance(degrees, float)
         assert isinstance(pixels, int)
 
-def test_itinerarydrawer_lat_grid_lines_2_right_length_1(road_map_1):
+
+def test_itinerarydrawer_grid_lines_2_yields_float_and_int_long(road_map_1):
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
-    grid_lines = drawer._lat_grid_lines_2(itinerary)
+    for degrees, pixels in drawer._grid_lines(itinerary, is_latitude=False):
+        assert isinstance(degrees, float)
+        assert isinstance(pixels, int)
+
+
+def test_itinerarydrawer_grid_lines_2_right_length_1_lat(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    grid_lines = drawer._grid_lines(itinerary, is_latitude=True)
     assert len(list(grid_lines)) == 5
 
-def test_itinerarydrawer_lat_grid_lines_2_as_expected_1(road_map_1):
+
+def test_itinerarydrawer_grid_lines_2_as_expected_1_lat(road_map_1):
     expected = [(30.0, 323), (35.0, 251), (40.0, 178), (45.0, 105), (50.0, 33)]
     itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
-    received = drawer._lat_grid_lines_2(itinerary)
+    received = drawer._grid_lines(itinerary, is_latitude=True)
     for (exp_degrees, exp_pixels), (rec_degrees, rec_pixels) in zip(expected, received):
         assert rec_degrees == pytest.approx(exp_degrees)
         assert rec_pixels == pytest.approx(exp_pixels)
 
 
-def test_itinerarydrawer_lat_grid_lines_2_right_length_single_city(road_map_5):
+def test_itinerarydrawer_grid_lines_2_right_length_2_lat(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    drawer = ItineraryDrawer()
+    grid_lines = drawer._grid_lines(itinerary, is_latitude=True)
+    assert len(list(grid_lines)) == 3
+
+
+def test_itinerarydrawer_grid_lines_2_as_expected_2_lat(road_map_2):
+    expected = [(-50.0, 312), (0.0, 184), (50.0, 56)]
+    itinerary = Itinerary(road_map_2)
+    drawer = ItineraryDrawer()
+    received = drawer._grid_lines(itinerary, is_latitude=True)
+    for (exp_degrees, exp_pixels), (rec_degrees, rec_pixels) in zip(expected, received):
+        assert rec_degrees == pytest.approx(exp_degrees)
+        assert rec_pixels == pytest.approx(exp_pixels)
+
+
+def test_itinerarydrawer_grid_lines_2_right_length_single_city_lat(road_map_5):
     itinerary = Itinerary(road_map_5)
     drawer = ItineraryDrawer()
-    grid_lines = drawer._lat_grid_lines_2(itinerary)
+    grid_lines = drawer._grid_lines(itinerary, is_latitude=True)
     assert len(list(grid_lines)) == 6
 
 
-def test_itinerarydrawer_lat_grid_lines_2_as_expected_single_city(road_map_5):
+def test_itinerarydrawer_grid_lines_2_as_expected_single_city_lat(road_map_5):
     expected = [(51.0, 765), (51.2, 625), (51.4, 485), (51.6, 345), (51.8, 205), (52.0, 65)]
     itinerary = Itinerary(road_map_5)
     drawer = ItineraryDrawer()
-    received = drawer._lat_grid_lines_2(itinerary)
+    received = drawer._grid_lines(itinerary, is_latitude=True)
     for (exp_degrees, exp_pixels), (rec_degrees, rec_pixels) in zip(expected, received):
         assert rec_degrees == pytest.approx(exp_degrees)
         assert rec_pixels == pytest.approx(exp_pixels)
 
 
-'''
-################################## 
-
-ItineraryDrawer._long_grid_lines                   
-
-################################## 
-'''
-
-
-def test_itinerarydrawer_long_grid_lines_returns_generator():
+def test_itinerarydrawer_grid_lines_2_right_length_1_long(road_map_1):
+    itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
-    assert isinstance(drawer._long_grid_lines(5.0, -119.753877, -71.549127, 14.521390), types.GeneratorType)
+    grid_lines = drawer._grid_lines(itinerary, is_latitude=False)
+    assert len(list(grid_lines)) == 11
 
 
-def test_itinerarydrawer_long_grid_lines_right_length_1():
-    expected_grid_lines = [(-120.0, 46), (-115.0, 119), (-110.0, 192), (-105.0, 264), (-100.0, 337), (-95.0, 409),
-                           (-90.0, 482), (-85.0, 555), (-80.0, 627), (-75.0, 700), (-70.0, 772)]
+def test_itinerarydrawer_grid_lines_2_as_expected_1_long(road_map_1):
+    expected = [(-120.0, 46), (-115.0, 119), (-110.0, 192), (-105.0, 264), (-100.0, 337), (-95.0, 409), (-90.0, 482),
+                (-85.0, 555), (-80.0, 627), (-75.0, 700), (-70.0, 772)]
+    itinerary = Itinerary(road_map_1)
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._long_grid_lines(5.0, -119.753877, -71.549127, 14.521390)
-    assert len(list(received_grid_lines)) == len(expected_grid_lines)
+    received = drawer._grid_lines(itinerary, is_latitude=False)
+    for (exp_degrees, exp_pixels), (rec_degrees, rec_pixels) in zip(expected, received):
+        assert rec_degrees == pytest.approx(exp_degrees)
+        assert rec_pixels == pytest.approx(exp_pixels)
 
 
-def test_itinerarydrawer_long_grid_lines_right_length_2():
-    expected_grid_lines = [(-100.0, 48), (-50.0, 176), (0.0, 304), (50.0, 432), (100.0, 560), (150.0, 688)]
+def test_itinerarydrawer_grid_lines_2_right_length_2_long(road_map_2):
+    itinerary = Itinerary(road_map_2)
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._long_grid_lines(50.0, -99.1, 174.4, 2.559415)
-    assert len(list(received_grid_lines)) == len(expected_grid_lines)
+    grid_lines = drawer._grid_lines(itinerary, is_latitude=False)
+    assert len(list(grid_lines)) == 6
 
 
-def test_itinerarydrawer_long_grid_lines_right_length_single_city():
-    expected_grid_lines = [(-0.6, 71), (-0.4, 211), (-0.2, 351), (0.0, 491), (0.2, 631), (0.4, 771)]
+def test_itinerarydrawer_grid_lines_2_as_expected_2_long(road_map_2):
+    expected = [(-100.0, 48), (-50.0, 176), (0.0, 304), (50.0, 432), (100.0, 560), (150.0, 688)]
+    itinerary = Itinerary(road_map_2)
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._long_grid_lines(0.2, -0.629338, 0.370662, 700.0)
-    assert len(list(received_grid_lines)) == len(expected_grid_lines)
+    received = drawer._grid_lines(itinerary, is_latitude=False)
+    for (exp_degrees, exp_pixels), (rec_degrees, rec_pixels) in zip(expected, received):
+        assert rec_degrees == pytest.approx(exp_degrees)
+        assert rec_pixels == pytest.approx(exp_pixels)
 
 
-def test_itinerarydrawer_long_grid_lines_as_expected_1():
-    expected_grid_lines = [(-120.0, 46), (-115.0, 119), (-110.0, 192), (-105.0, 264), (-100.0, 337), (-95.0, 409),
-                           (-90.0, 482), (-85.0, 555), (-80.0, 627), (-75.0, 700), (-70.0, 772)]
+def test_itinerarydrawer_grid_lines_2_right_length_single_city_long(road_map_5):
+    itinerary = Itinerary(road_map_5)
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._long_grid_lines(5.0, -119.753877, -71.549127, 14.521390)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
+    grid_lines = drawer._grid_lines(itinerary, is_latitude=False)
+    assert len(list(grid_lines)) == 6
 
 
-def test_itinerarydrawer_long_grid_lines_as_expected_2():
-    expected_grid_lines = [(-100.0, 48), (-50.0, 176), (0.0, 304), (50.0, 432), (100.0, 560), (150.0, 688)]
+def test_itinerarydrawer_grid_lines_2_as_expected_single_city_long(road_map_5):
+    expected = [(-0.6, 71), (-0.4, 211), (-0.2, 351), (0.0, 491), (0.2, 631), (0.4, 771)]
+    itinerary = Itinerary(road_map_5)
     drawer = ItineraryDrawer()
-    received_grid_lines = drawer._long_grid_lines(50.0, -99.1, 174.4, 2.559415)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_long_grid_lines_as_expected_3():
-    expected_grid_lines = [(-0.5, 25), (-0.4, 131), (-0.3, 237), (-0.2, 343), (-0.1, 449), (0.0, 555), (0.1, 661),
-                           (0.2, 767)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._long_grid_lines(0.1, -0.476, 0.1837, 1061.0883735031075)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_long_grid_lines_as_expected_4():
-    expected_grid_lines = [(-7.0, 80), (-6.0, 177), (-5.0, 274), (-4.0, 371), (-3.0, 468), (-2.0, 565), (-1.0, 662),
-                           (0.0, 759)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._long_grid_lines(1.0, -7.3074, -0.09214, 97.01660092636993)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
-
-
-def test_itinerarydrawer_long_grid_lines_as_expected_single_city():
-    expected_grid_lines = [(-0.6, 71), (-0.4, 211), (-0.2, 351), (0.0, 491), (0.2, 631), (0.4, 771)]
-    drawer = ItineraryDrawer()
-    received_grid_lines = drawer._long_grid_lines(0.2, -0.629338, 0.370662, 700.0)
-    for expected, received in zip(expected_grid_lines, received_grid_lines):
-        assert received == pytest.approx(expected)
+    received = drawer._grid_lines(itinerary, is_latitude=False)
+    for (exp_degrees, exp_pixels), (rec_degrees, rec_pixels) in zip(expected, received):
+        assert rec_degrees == pytest.approx(exp_degrees)
+        assert rec_pixels == pytest.approx(exp_pixels)
