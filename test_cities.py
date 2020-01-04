@@ -2270,6 +2270,63 @@ def test_itinerarydrawer_lat_grid_lines_as_expected_single_city():
 '''
 ################################## 
 
+ItineraryDrawer._max_range                   
+
+################################## 
+'''
+
+def test_itinerarydrawer_max_range_returns_float(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    assert isinstance(drawer._max_range(itinerary), float)
+
+def test_itinerarydrawer_max_range_as_expected_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    assert drawer._max_range(itinerary) == pytest.approx(48.20475)
+
+def test_itinerarydrawer_max_range_as_expected_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    drawer = ItineraryDrawer()
+    assert drawer._max_range(itinerary) == pytest.approx(273.5)
+
+def test_itinerarydrawer_max_range_as_expected_3(road_map_3):
+    itinerary = Itinerary(road_map_3)
+    drawer = ItineraryDrawer()
+    assert drawer._max_range(itinerary) == pytest.approx(0.6597)
+
+def test_itinerarydrawer_max_range_as_expected_4(road_map_4):
+    itinerary = Itinerary(road_map_4)
+    drawer = ItineraryDrawer()
+    assert drawer._max_range(itinerary) == pytest.approx(7.21526)
+
+def test_itinerarydrawer_max_range_as_expected_single_city(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    drawer = ItineraryDrawer()
+    assert drawer._max_range(itinerary) == pytest.approx(1.0)
+
+def test_itinerarydrawer_max_range_as_expected_single_city_non_default_size(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    drawer = ItineraryDrawer(degrees_to_show_for_single_point=22.3)
+    assert drawer._max_range(itinerary) == pytest.approx(22.3)
+
+'''
+################################## 
+
+ItineraryDrawer._lat_grid_lines_2                   
+
+################################## 
+'''
+
+# def test_itinerarydrawer_lat_grid_lines_2_returns_generator(road_map_1):
+#     itinerary = Itinerary(road_map_1)
+#     drawer = ItineraryDrawer()
+#     assert isinstance(drawer._lat_grid_lines_2(itinerary), types.GeneratorType)
+
+
+'''
+################################## 
+
 ItineraryDrawer._long_grid_lines                   
 
 ################################## 

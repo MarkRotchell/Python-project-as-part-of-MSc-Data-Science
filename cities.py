@@ -298,12 +298,16 @@ class ItineraryDrawer:
 
         return displayed_width + 2 * self.margin_px, displayed_height + 2 * self.margin_px
 
-    def _grid_line_spacing(self, itinerary):
+    def _max_range(self, itinerary):
         if itinerary.is_single_point:
-            max_range = self.degrees_to_show_for_single_point
+            max_range = float(self.degrees_to_show_for_single_point)
         else:
             max_range = max(itinerary.longitude_max - itinerary.longitude_min,
                             itinerary.latitude_max - itinerary.latitude_min)
+        return max_range
+
+    def _grid_line_spacing(self, itinerary):
+        max_range = self._max_range(itinerary)
 
         scale = 10 ** (log10(max_range / self.min_grid_lines) // 1)
         multiple = 10 ** (log10(max_range / self.min_grid_lines) % 1)
@@ -337,6 +341,9 @@ class ItineraryDrawer:
                     grid_line_label = grid_line
 
                 yield grid_line_label, converter(grid_line, pixels_per_degree, ref_point)
+
+    def _lat_grid_lines_2(self, itinerary):
+        pass
 
     def _lat_grid_lines(self, grid_line_spacing, lat_min, lat_max, pixels_per_degree):
         return self._grid_lines(grid_line_spacing=grid_line_spacing, deg_min=lat_min, deg_max=lat_max,
