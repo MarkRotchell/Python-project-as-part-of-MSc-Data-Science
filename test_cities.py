@@ -239,6 +239,7 @@ def test_read_cities_file_not_found():
         read_cities('gobblydigook.notatextfile')
 
 
+# noinspection PyPep8Naming
 def test_read_cities_EOF_Error_for_blank_file():
     with pytest.raises(EOFError):
         read_cities('no-cities.txt')
@@ -1723,28 +1724,28 @@ ItineraryDrawer._points
 def test_itinerarydrawer_points_returns_generator(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._points(itinerary, 10)
+    received_points = drawer._points(itinerary)
     assert isinstance(received_points, types.GeneratorType)
 
 
 def test_itinerarydrawer_points_generates_tuples(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._points(itinerary, 10):
+    for element in drawer._points(itinerary):
         assert isinstance(element, tuple)
 
 
 def test_itinerarydrawer_points_generates_pairs(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._points(itinerary, 10):
+    for element in drawer._points(itinerary):
         assert len(element) == 2
 
 
 def test_itinerarydrawer_points_generates_pairs_of_ints(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._points(itinerary, 10):
+    for element in drawer._points(itinerary):
         assert isinstance(element[0], int)
         assert isinstance(element[1], int)
 
@@ -1752,74 +1753,83 @@ def test_itinerarydrawer_points_generates_pairs_of_ints(road_map_1):
 def test_itinerarydrawer_points_right_length_1(road_map_1, length_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._points(itinerary, 10)
+    received_points = drawer._points(itinerary)
     assert len(list(received_points)) == length_1
 
 
 def test_itinerarydrawer_points_right_length_2(road_map_2, length_2):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_2)
-    received_points = drawer._points(itinerary, 10)
+    received_points = drawer._points(itinerary)
     assert len(list(received_points)) == length_2
 
 
 def test_itinerarydrawer_points_right_length_single_city(road_map_5, length_5):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_5)
-    received_points = drawer._points(itinerary, 10)
+    received_points = drawer._points(itinerary)
     assert len(list(received_points)) == length_5
 
 
 def test_itinerarydrawer_points_as_expected_1(road_map_1):
-    expected_points = [(317, 89), (345, 215), (326, 152), (127, 72), (281, 130), (50, 147),
-                       (532, 106), (500, 136), (188, 181), (510, 112), (461, 180), (240, 50)]
+    expected_points = [(437, 106), (479, 290), (450, 199), (162, 82), (385, 166), (50, 190), (750, 131), (703, 175),
+                       (250, 241), (718, 139), (647, 239), (326, 50)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._points(itinerary, 10)
+    received_points = drawer._points(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
 
 
 def test_itinerarydrawer_points_as_expected_2(road_map_2):
-    expected_points = [(1614, 773), (1492, 697), (50, 380), (2621, 507), (1326, 102), (1364, 828),
-                       (2003, 408), (1211, 796), (1893, 298), (1086, 50), (351, 452), (2704, 794),
-                       (2785, 984), (179, 452), (1062, 440), (1114, 482)]
+    expected_points = [(450, 235), (419, 216), (50, 135), (708, 167), (377, 63), (386, 249), (550, 142), (347, 241),
+                       (522, 113), (315, 50), (127, 153), (729, 240), (750, 289), (83, 153), (309, 150), (322, 161)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_2)
-    received_points = drawer._points(itinerary, 10)
+    received_points = drawer._points(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
 
 
 def test_itinerarydrawer_points_as_expected_3(road_map_3):
-    expected_points = [(54, 51), (52, 51), (54, 50), (51, 50), (57, 50), (50, 51)]
+    expected_points = [(496, 108), (307, 164), (436, 50), (200, 61), (750, 70), (50, 109)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_3)
-    received_points = drawer._points(itinerary, 10)
+    received_points = drawer._points(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
 
 
 def test_itinerarydrawer_points_as_expected_4(road_map_4):
-    expected_points = [(97, 113), (122, 110), (110, 114), (102, 99), (101, 103), (112, 85), (102, 53), (93, 60),
-                       (91, 65), (81, 66), (81, 50), (89, 61), (84, 64), (82, 92), (91, 110), (93, 109), (89, 92),
-                       (70, 106), (84, 109), (56, 81), (64, 79), (63, 80), (60, 83), (50, 75)]
+    expected_points = [(502, 658), (750, 628), (632, 672), (554, 524), (544, 563), (654, 391), (555, 82), (471, 149),
+                       (450, 198), (346, 207), (349, 50), (425, 155), (377, 182), (358, 462), (451, 632), (470, 622),
+                       (424, 459), (248, 593), (376, 618), (112, 353), (184, 328), (173, 337), (143, 370), (50, 291)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_4)
-    received_points = drawer._points(itinerary, 10)
+    received_points = drawer._points(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
 
 
-def test_itinerarydrawer_points_as_expected_5(road_map_5):
+def test_itinerarydrawer_points_as_expected_single_city(road_map_5):
     expected_points = [(400, 400)]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_5)
-    received_points = drawer._points(itinerary, 700)
+    received_points = drawer._points(itinerary)
+    for received, expected in zip(received_points, expected_points):
+        assert received[0] == expected[0]
+        assert received[1] == expected[1]
+
+
+def test_itinerarydrawer_points_as_expected_single_city_non_default_drawer(road_map_5):
+    expected_points = [(510, 510)]
+    drawer = ItineraryDrawer(margin_px=10, drawable_size_px=1000)
+    itinerary = Itinerary(road_map_5)
+    received_points = drawer._points(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -1837,28 +1847,28 @@ ItineraryDrawer._points_pairs
 def test_itinerarydrawer_point_pairs_returns_generator(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._point_pairs(itinerary, 10)
+    received_points = drawer._point_pairs(itinerary)
     assert isinstance(received_points, types.GeneratorType)
 
 
 def test_itinerarydrawer_point_pairs_generates_tuples(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._point_pairs(itinerary, 10):
+    for element in drawer._point_pairs(itinerary):
         assert isinstance(element, tuple)
 
 
 def test_itinerarydrawer_point_pairs_generates_pairs(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._point_pairs(itinerary, 10):
+    for element in drawer._point_pairs(itinerary):
         assert len(element) == 2
 
 
 def test_itinerarydrawer_point_pairs_generates_pairs_of_tuples(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._point_pairs(itinerary, 10):
+    for element in drawer._point_pairs(itinerary):
         assert isinstance(element[0], tuple)
         assert isinstance(element[1], tuple)
 
@@ -1866,7 +1876,7 @@ def test_itinerarydrawer_point_pairs_generates_pairs_of_tuples(road_map_1):
 def test_itinerarydrawer_point_pairs_generates_pairs_of_pairs_of_ints(road_map_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    for element in drawer._point_pairs(itinerary, 10):
+    for element in drawer._point_pairs(itinerary):
         assert isinstance(element[0][0], int)
         assert isinstance(element[0][1], int)
         assert isinstance(element[1][0], int)
@@ -1876,113 +1886,113 @@ def test_itinerarydrawer_point_pairs_generates_pairs_of_pairs_of_ints(road_map_1
 def test_itinerarydrawer_point_pairs_right_length_1(road_map_1, length_1):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._point_pairs(itinerary, 10)
+    received_points = drawer._point_pairs(itinerary)
     assert len(list(received_points)) == length_1
 
 
 def test_itinerarydrawer_point_pairs_right_length_2(road_map_2, length_2):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_2)
-    received_points = drawer._point_pairs(itinerary, 10)
+    received_points = drawer._point_pairs(itinerary)
     assert len(list(received_points)) == length_2
 
 
 def test_itinerarydrawer_point_pairs_right_length_single_city(road_map_5, length_5):
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_5)
-    received_points = drawer._point_pairs(itinerary, 10)
+    received_points = drawer._point_pairs(itinerary)
     assert len(list(received_points)) == length_5
 
 
 def test_itinerarydrawer_point_pairs_as_expected_1(road_map_1):
-    expected_points = [((317, 89), (345, 215)),
-                       ((345, 215), (326, 152)),
-                       ((326, 152), (127, 72)),
-                       ((127, 72), (281, 130)),
-                       ((281, 130), (50, 147)),
-                       ((50, 147), (532, 106)),
-                       ((532, 106), (500, 136)),
-                       ((500, 136), (188, 181)),
-                       ((188, 181), (510, 112)),
-                       ((510, 112), (461, 180)),
-                       ((461, 180), (240, 50)),
-                       ((240, 50), (317, 89))]
+    expected_points = [((437, 106), (479, 290)),
+                       ((479, 290), (450, 199)),
+                       ((450, 199), (162, 82)),
+                       ((162, 82), (385, 166)),
+                       ((385, 166), (50, 190)),
+                       ((50, 190), (750, 131)),
+                       ((750, 131), (703, 175)),
+                       ((703, 175), (250, 241)),
+                       ((250, 241), (718, 139)),
+                       ((718, 139), (647, 239)),
+                       ((647, 239), (326, 50)),
+                       ((326, 50), (437, 106))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_1)
-    received_points = drawer._point_pairs(itinerary, 10)
+    received_points = drawer._point_pairs(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
 
 
 def test_itinerarydrawer_point_pairs_as_expected_2(road_map_2):
-    expected_points = [((1614, 773), (1492, 697)),
-                       ((1492, 697), (50, 380)),
-                       ((50, 380), (2621, 507)),
-                       ((2621, 507), (1326, 102)),
-                       ((1326, 102), (1364, 828)),
-                       ((1364, 828), (2003, 408)),
-                       ((2003, 408), (1211, 796)),
-                       ((1211, 796), (1893, 298)),
-                       ((1893, 298), (1086, 50)),
-                       ((1086, 50), (351, 452)),
-                       ((351, 452), (2704, 794)),
-                       ((2704, 794), (2785, 984)),
-                       ((2785, 984), (179, 452)),
-                       ((179, 452), (1062, 440)),
-                       ((1062, 440), (1114, 482)),
-                       ((1114, 482), (1614, 773))]
+    expected_points = [((450, 235), (419, 216)),
+                       ((419, 216), (50, 135)),
+                       ((50, 135), (708, 167)),
+                       ((708, 167), (377, 63)),
+                       ((377, 63), (386, 249)),
+                       ((386, 249), (550, 142)),
+                       ((550, 142), (347, 241)),
+                       ((347, 241), (522, 113)),
+                       ((522, 113), (315, 50)),
+                       ((315, 50), (127, 153)),
+                       ((127, 153), (729, 240)),
+                       ((729, 240), (750, 289)),
+                       ((750, 289), (83, 153)),
+                       ((83, 153), (309, 150)),
+                       ((309, 150), (322, 161)),
+                       ((322, 161), (450, 235))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_2)
-    received_points = drawer._point_pairs(itinerary, 10)
+    received_points = drawer._point_pairs(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
 
 
 def test_itinerarydrawer_point_pairs_as_expected_3(road_map_3):
-    expected_points = [((54, 51), (52, 51)),
-                       ((52, 51), (54, 50)),
-                       ((54, 50), (51, 50)),
-                       ((51, 50), (57, 50)),
-                       ((57, 50), (50, 51)),
-                       ((50, 51), (54, 51))]
+    expected_points = [((496, 108), (307, 164)),
+                       ((307, 164), (436, 50)),
+                       ((436, 50), (200, 61)),
+                       ((200, 61), (750, 70)),
+                       ((750, 70), (50, 109)),
+                       ((50, 109), (496, 108))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_3)
-    received_points = drawer._point_pairs(itinerary, 10)
+    received_points = drawer._point_pairs(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
 
 
 def test_itinerarydrawer_point_pairs_as_expected_4(road_map_4):
-    expected_points = [((97, 113), (122, 110)),
-                       ((122, 110), (110, 114)),
-                       ((110, 114), (102, 99)),
-                       ((102, 99), (101, 103)),
-                       ((101, 103), (112, 85)),
-                       ((112, 85), (102, 53)),
-                       ((102, 53), (93, 60)),
-                       ((93, 60), (91, 65)),
-                       ((91, 65), (81, 66)),
-                       ((81, 66), (81, 50)),
-                       ((81, 50), (89, 61)),
-                       ((89, 61), (84, 64)),
-                       ((84, 64), (82, 92)),
-                       ((82, 92), (91, 110)),
-                       ((91, 110), (93, 109)),
-                       ((93, 109), (89, 92)),
-                       ((89, 92), (70, 106)),
-                       ((70, 106), (84, 109)),
-                       ((84, 109), (56, 81)),
-                       ((56, 81), (64, 79)),
-                       ((64, 79), (63, 80)),
-                       ((63, 80), (60, 83)),
-                       ((60, 83), (50, 75)),
-                       ((50, 75), (97, 113))]
+    expected_points = [((502, 658), (750, 628)),
+                       ((750, 628), (632, 672)),
+                       ((632, 672), (554, 524)),
+                       ((554, 524), (544, 563)),
+                       ((544, 563), (654, 391)),
+                       ((654, 391), (555, 82)),
+                       ((555, 82), (471, 149)),
+                       ((471, 149), (450, 198)),
+                       ((450, 198), (346, 207)),
+                       ((346, 207), (349, 50)),
+                       ((349, 50), (425, 155)),
+                       ((425, 155), (377, 182)),
+                       ((377, 182), (358, 462)),
+                       ((358, 462), (451, 632)),
+                       ((451, 632), (470, 622)),
+                       ((470, 622), (424, 459)),
+                       ((424, 459), (248, 593)),
+                       ((248, 593), (376, 618)),
+                       ((376, 618), (112, 353)),
+                       ((112, 353), (184, 328)),
+                       ((184, 328), (173, 337)),
+                       ((173, 337), (143, 370)),
+                       ((143, 370), (50, 291)),
+                       ((50, 291), (502, 658))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_4)
-    received_points = drawer._point_pairs(itinerary, 10)
+    received_points = drawer._point_pairs(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]
@@ -1992,7 +2002,7 @@ def test_itinerarydrawer_point_pairs_as_expected_5(road_map_5):
     expected_points = [((50, 50), (50, 50))]
     drawer = ItineraryDrawer()
     itinerary = Itinerary(road_map_5)
-    received_points = drawer._point_pairs(itinerary, 10)
+    received_points = drawer._point_pairs(itinerary)
     for received, expected in zip(received_points, expected_points):
         assert received[0] == expected[0]
         assert received[1] == expected[1]

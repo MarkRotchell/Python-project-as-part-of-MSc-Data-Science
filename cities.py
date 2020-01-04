@@ -8,7 +8,7 @@ from itertools import chain, count, tee
 def read_cities(file_name):
     """Read File and return road_map
 
-    :param file_name (str): a path to the file containing the road_map
+    :param file_name: (str) a path to the file containing the road_map
     :return: list of four-tuples: [(state, city, latitude, longitude), ...]
     """
     if not isinstance(file_name, str):
@@ -141,12 +141,6 @@ class Itinerary:
     def __init__(self, road_map):
         self.road_map = road_map
 
-    def _reset_extrema(self):
-        self._lat_max = max(latitude for _, _, latitude, _ in self.road_map)
-        self._lat_min = min(latitude for _, _, latitude, _ in self.road_map)
-        self._long_max = max(longitude for _, _, _, longitude in self.road_map)
-        self._long_min = min(longitude for _, _, _, longitude in self.road_map)
-
     @property
     def road_map(self):
         return self._road_map
@@ -154,7 +148,10 @@ class Itinerary:
     @road_map.setter
     def road_map(self, road_map):
         self._road_map = road_map
-        self._reset_extrema()
+        self._lat_max = max(latitude for _, _, latitude, _ in self.road_map)
+        self._lat_min = min(latitude for _, _, latitude, _ in self.road_map)
+        self._long_max = max(longitude for _, _, _, longitude in self.road_map)
+        self._long_min = min(longitude for _, _, _, longitude in self.road_map)
 
     @property
     def latitude_max(self):
@@ -191,7 +188,7 @@ class Itinerary:
 class ItineraryDrawer:
     def __init__(self, drawable_size_px=700, margin_px=50, min_grid_lines=5, grid_line_colour='lightblue1',
                  grid_line_thickness=1, leg_line_colour='red', leg_line_thickness=1, city_radius=2, city_fill='white',
-                 city_line_colour='black', city_line_thickness=1, label_font=('purisa', 8),
+                 city_line_colour='black', city_line_thickness=1, label_font=('purisa', 7),
                  degrees_to_show_for_single_point=1.0):
         self.drawable_size_px = drawable_size_px
         self.margin_px = margin_px
@@ -231,6 +228,10 @@ class ItineraryDrawer:
     def min_grid_lines(self, min_grid_lines):
         self._min_grid_lines = max(1, int(round(min_grid_lines)))
 
+    @property
+    def _font_offset(self):
+        return self.label_font[1] // 2 + 1
+
     def _lat_to_y(self, latitude, pixels_per_degree, lat_max):
         """
         Converts a latitude in degrees to a canvas y-coordinate in pixels. 'lat_max' is placed the
@@ -247,12 +248,14 @@ class ItineraryDrawer:
         """
         return int(round((longitude - long_min) * pixels_per_degree + self.margin_px))
 
-    def _points(self, itinerary, pixels_per_degree):
+    def _points(self, itinerary):
         """
         Computes the canvas x and y coordinates for the cities in an itinerary
         Returns a generator yielding tuples of ints the form (x, y)
         """
-        # offset = self.DEGREES_TO_SHOW_FOR_SINGLE_POINT / 2 if itinerary.single_point else 0
+
+        pixels_per_degree = self._pixels_per_degree(itinerary)
+
         if itinerary.is_single_point:
             mid_point = int(self._margin_px + self.drawable_size_px / 2)
             return ((x, y) for x, y in [(mid_point, mid_point)])
@@ -263,11 +266,12 @@ class ItineraryDrawer:
                                     lat_max=itinerary.latitude_max))
                     for latitude, longitude in itinerary.coordinates())
 
-    def _point_pairs(self, itinerary, pixels_per_degree):
+    def _point_pairs(self, itinerary):
         """
         Computes the canvas x and y coordinates for the start and end cities for each leg of an itinerary
         Returns a generator yielding tuples of ints of the form ((x0, y0), (x1, y1))
         """
+        pixels_per_degree = self._pixels_per_degree(itinerary)
         return (((self._long_to_x(longitude=long_0, pixels_per_degree=pixels_per_degree,
                                   long_min=itinerary.longitude_min),
                   self._lat_to_y(latitude=lat_0, pixels_per_degree=pixels_per_degree,
@@ -365,27 +369,33 @@ class ItineraryDrawer:
                     grid_line_label = -180 - grid_line
                 else:
                     grid_line_label = grid_line
-                yield format(grid_line_label, f'.{rounding}f'), \
-                      converter_function_to_pixels(grid_line, pixels_per_degree, ref_point)
+                yield (format(grid_line_label, f'.{rounding}f'),
+                       converter_function_to_pixels(grid_line, pixels_per_degree, ref_point))
 
     def _draw_grid_line(self, canvas, x0, y0, x1, y1, label, anchor):
         canvas.create_line(x0, y0, x1, y1, fill=self.grid_line_colour, width=self.grid_line_thickness)
         if anchor == N:
-            y0 += self.label_font[1] // 2 + 1
+            y0 += self._font_offset
         else:
-            x0 += self.label_font[1] // 2 + 1
+            x0 += self._font_offset
         canvas.create_text(x0, y0, text=label, anchor=anchor, font=self.label_font)
+
+    def _draw_city(self, canvas, x, y, label):
+        canvas.create_oval(x - self.city_radius, y - self.city_radius,
+                           x + self.city_radius, y + self.city_radius,
+                           fill=self.city_fill, outline=self.city_line_colour,
+                           width=self.city_line_thickness)
+        canvas.create_text(x, y - self._font_offset, text=label, anchor=S, font=self.label_font)
 
     def draw(self, itinerary, canvas):
         canvas.update()
         canvas.delete('all')
 
-        pixels_per_degree = self._pixels_per_degree(itinerary)
-
         # resize canvas
         canvas_width_px, canvas_height_px = self._canvas_dimensions(itinerary)
         canvas.config(width=canvas_width_px, height=canvas_height_px)
 
+        # draw gridlines
         for label, y in self._grid_lines(itinerary, is_latitude=True):
             self._draw_grid_line(canvas=canvas, x0=0, y0=y, x1=canvas_width_px, y1=y, label=label, anchor=W)
 
@@ -393,14 +403,12 @@ class ItineraryDrawer:
             self._draw_grid_line(canvas=canvas, x0=x, y0=0, x1=x, y1=canvas_height_px, label=label, anchor=N)
 
         # draw legs
-        for (x_0, y_0), (x_1, y_1) in self._point_pairs(itinerary, pixels_per_degree):
+        for (x_0, y_0), (x_1, y_1) in self._point_pairs(itinerary):
             canvas.create_line(x_0, y_0, x_1, y_1, fill=self.leg_line_colour, width=self.leg_line_thickness)
 
         # draw cities
-        for i, (x, y) in enumerate(self._points(itinerary, pixels_per_degree)):
-            canvas.create_oval(x - self.city_radius, y - self.city_radius, x + self.city_radius, y + self.city_radius,
-                               fill=self.city_fill, outline=self.city_line_colour, width=self.city_line_thickness)
-            canvas.create_text(x, y - 5, text=str(i + 1), anchor=S, font=self.label_font)
+        for i, (x, y) in enumerate(self._points(itinerary)):
+            self._draw_city(canvas=canvas, x=x, y=y, label=str(i + 1))
 
 
 class TravellingSalesman:
@@ -410,11 +418,19 @@ class TravellingSalesman:
 
         self._window = Tk()
         self._control_frame = Frame(master=self._window)
-        self._open_button = Button(master=self._control_frame, text='Open', command=self.open)
-        self._re_route_button = Button(master=self._control_frame, text='Re-route', command=self.reroute)
         self._control_frame.grid(column=0, row=0, sticky=N)
+
+        self._open_button = Button(master=self._control_frame, text='Open', command=self.open)
         self._open_button.grid(column=0, row=0, sticky=N + E + W)
+        self._re_route_button = Button(master=self._control_frame, text='Re-route', command=self.reroute)
         self._re_route_button.grid(column=0, row=1, sticky=N + E + W)
+
+        self._zoom_in_button = Button(master=self._control_frame, text='Zoom In', command=self.zoom_in)
+        self._zoom_in_button.grid(column=0, row=2, sticky=N + E + W)
+
+        self._zoom_out_button = Button(master=self._control_frame, text='Zoom Out', command=self.zoom_out)
+        self._zoom_out_button.grid(column=0, row=3, sticky=N + E + W)
+
 
         self._canvas = Canvas(master=self._window, bg='white')
         self._canvas.grid(column=1, row=0, rowspan=2, sticky=N)
@@ -464,6 +480,17 @@ class TravellingSalesman:
                 self.draw()
                 self.fill_text()
 
+    def zoom_in(self):
+        x_offset = self._canvas.winfo_width() / 2
+        y_offset = self._canvas.winfo_height() / 2
+        self._canvas.scale("all", x_offset, y_offset, 1.25, 1.25)
+
+    def zoom_out(self):
+        x_offset = self._canvas.winfo_width() / 2
+        y_offset = self._canvas.winfo_height() / 2
+        self._canvas.scale("all", x_offset, y_offset, 0.8, 0.8)
+
+
     def launch(self):
         self.draw()
         self.fill_text()
@@ -476,8 +503,7 @@ def visualise(road_map):
     """
     Open Gui to visualise a road map
     """
-    app = TravellingSalesman(road_map)
-    app.launch()
+    TravellingSalesman(road_map).launch()
 
 
 def open_map_dialogue_box():
@@ -514,6 +540,7 @@ def yes_no(question):
     return messagebox.askyesno(message=question, icon='question', title='Travelling Salesman')
 
 
+# noinspection PyBroadException
 def main():
     """
     Reads in, and prints out, the city data, then creates the "best" cycle and prints it out.
