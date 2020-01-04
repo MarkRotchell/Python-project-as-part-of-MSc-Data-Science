@@ -323,32 +323,35 @@ class ItineraryDrawer:
 
         return grid_line_spacing_deg
 
-
     def _grid_lines(self, itinerary, is_latitude):
-
-        if itinerary.is_single_point:
-            extra_buffer_margin = self.degrees_to_show_for_single_point / 2
-        else:
-            extra_buffer_margin = 0
-
-        if is_latitude:
-            min_degrees = itinerary.latitude_min - extra_buffer_margin
-            max_degrees = itinerary.latitude_max + extra_buffer_margin
-            converter = self._lat_to_y
-            max_allowed_deg = 90
-            ref_point = itinerary.latitude_max + extra_buffer_margin
-        else:
-            min_degrees = itinerary.longitude_min - extra_buffer_margin
-            max_degrees = itinerary.longitude_max + extra_buffer_margin
-            converter = self._long_to_x
-            max_allowed_deg = 180
-            ref_point = itinerary.longitude_min - extra_buffer_margin
 
         pixels_per_degree = self._pixels_per_degree(itinerary)
         margin_in_degrees = self.margin_px / pixels_per_degree
-        start_of_canvas_in_degrees = min_degrees - margin_in_degrees
-        end_of_canvas_in_degrees = max_degrees + margin_in_degrees
+
+        if is_latitude:
+            start_of_canvas_in_degrees = itinerary.latitude_min - margin_in_degrees
+            end_of_canvas_in_degrees = itinerary.latitude_max + margin_in_degrees
+            converter_function_to_pixels = self._lat_to_y
+            max_allowed_deg = 90
+            ref_point = itinerary.latitude_max
+        else:
+            start_of_canvas_in_degrees = itinerary.longitude_min - margin_in_degrees
+            end_of_canvas_in_degrees = itinerary.longitude_max + margin_in_degrees
+            converter_function_to_pixels = self._long_to_x
+            max_allowed_deg = 180
+            ref_point = itinerary.longitude_min
+
+        if itinerary.is_single_point:
+            start_of_canvas_in_degrees -= self.degrees_to_show_for_single_point / 2
+            end_of_canvas_in_degrees += self.degrees_to_show_for_single_point / 2
+            if is_latitude:
+                ref_point += self.degrees_to_show_for_single_point / 2
+            else:
+                ref_point -= self.degrees_to_show_for_single_point / 2
+
         grid_line_spacing = self._grid_line_spacing(itinerary)
+        rounding = -int(log10(grid_line_spacing) - 1)
+
         first_grid_line = grid_line_spacing * (start_of_canvas_in_degrees // grid_line_spacing + 1)
 
         for i in count(0):
@@ -362,8 +365,16 @@ class ItineraryDrawer:
                     grid_line_label = -180 - grid_line
                 else:
                     grid_line_label = grid_line
-                yield grid_line_label, converter(grid_line, pixels_per_degree, ref_point)
+                yield format(grid_line_label, f'.{rounding}f'), \
+                      converter_function_to_pixels(grid_line, pixels_per_degree, ref_point)
 
+    def _draw_grid_line(self, canvas, x0, y0, x1, y1, label, anchor):
+        canvas.create_line(x0, y0, x1, y1, fill=self.grid_line_colour, width=self.grid_line_thickness)
+        if anchor == N:
+            y0 += self.label_font[1] // 2 + 1
+        else:
+            x0 += self.label_font[1] // 2 + 1
+        canvas.create_text(x0, y0, text=label, anchor=anchor, font=self.label_font)
 
     def draw(self, itinerary, canvas):
         canvas.update()
@@ -375,19 +386,11 @@ class ItineraryDrawer:
         canvas_width_px, canvas_height_px = self._canvas_dimensions(itinerary)
         canvas.config(width=canvas_width_px, height=canvas_height_px)
 
-        # draw gridlines
-        grid_line_spacing = self._grid_line_spacing(itinerary)
-        rounding = -int(log10(grid_line_spacing) - 1)
+        for label, y in self._grid_lines(itinerary, is_latitude=True):
+            self._draw_grid_line(canvas=canvas, x0=0, y0=y, x1=canvas_width_px, y1=y, label=label, anchor=W)
 
-
-        for deg, y in self._grid_lines(itinerary, is_latitude=True):
-            canvas.create_line(0, y, canvas_width_px, y, fill=self.grid_line_colour, width=self.grid_line_thickness)
-            canvas.create_text(5, y - 5, text=format(deg, f'.{rounding}f'), anchor=SW, font=self.label_font)
-
-
-        for deg, x in self._grid_lines(itinerary, is_latitude=False):
-            canvas.create_line(x, 0, x, canvas_height_px, fill=self.grid_line_colour, width=self.grid_line_thickness)
-            canvas.create_text(x, 5, text=format(deg, f'.{rounding}f'), anchor=N, font=self.label_font)
+        for label, x in self._grid_lines(itinerary, is_latitude=False):
+            self._draw_grid_line(canvas=canvas, x0=x, y0=0, x1=x, y1=canvas_height_px, label=label, anchor=N)
 
         # draw legs
         for (x_0, y_0), (x_1, y_1) in self._point_pairs(itinerary, pixels_per_degree):
