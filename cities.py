@@ -427,10 +427,10 @@ class TravellingSalesman:
         self._re_route_button.grid(column=0, row=1, columnspan=3, sticky=N + E + W)
 
         self._zoom_in_button = Button(master=self._control_frame, text='Zoom In', command=self.zoom_in)
-        self._zoom_in_button.grid(column=0, row=2,columnspan=3, sticky=N + E + W)
+        self._zoom_in_button.grid(column=0, row=2, columnspan=3, sticky=N + E + W)
 
         self._zoom_out_button = Button(master=self._control_frame, text='Zoom Out', command=self.zoom_out)
-        self._zoom_out_button.grid(column=0, row=3,columnspan=3, sticky=N + E + W)
+        self._zoom_out_button.grid(column=0, row=3, columnspan=3, sticky=N + E + W)
 
         self._up_button = Button(master=self._control_frame, text='up', command=self.pan_up)
         self._up_button.grid(column=1, row=4, sticky=N + E + W)
@@ -480,7 +480,6 @@ class TravellingSalesman:
         self.draw()
         self.fill_text()
 
-
     def open(self):
         path = open_map_dialogue_box()
         if path:
@@ -505,16 +504,16 @@ class TravellingSalesman:
         self._canvas.scale("all", x_offset, y_offset, 0.8, 0.8)
 
     def pan_up(self):
-        self._canvas.yview_scroll(-1,'unit')
+        self._canvas.yview_scroll(-1, 'unit')
 
     def pan_down(self):
-        self._canvas.yview_scroll(1,'unit')
+        self._canvas.yview_scroll(1, 'unit')
 
     def pan_left(self):
-        self._canvas.xview_scroll(-1,'unit')
+        self._canvas.xview_scroll(-1, 'unit')
 
     def pan_right(self):
-        self._canvas.xview_scroll(1,'unit')
+        self._canvas.xview_scroll(1, 'unit')
 
     def launch(self):
         self.draw()
