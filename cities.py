@@ -393,6 +393,7 @@ class ItineraryDrawer:
 
         # resize canvas
         canvas_width_px, canvas_height_px = self._canvas_dimensions(itinerary)
+        canvas.config(width=0, height=0)
         canvas.config(width=canvas_width_px, height=canvas_height_px)
 
         # draw gridlines
@@ -421,20 +422,32 @@ class TravellingSalesman:
         self._control_frame.grid(column=0, row=0, sticky=N)
 
         self._open_button = Button(master=self._control_frame, text='Open', command=self.open)
-        self._open_button.grid(column=0, row=0, sticky=N + E + W)
+        self._open_button.grid(column=0, row=0, columnspan=3, sticky=N + E + W)
         self._re_route_button = Button(master=self._control_frame, text='Re-route', command=self.reroute)
-        self._re_route_button.grid(column=0, row=1, sticky=N + E + W)
+        self._re_route_button.grid(column=0, row=1, columnspan=3, sticky=N + E + W)
 
         self._zoom_in_button = Button(master=self._control_frame, text='Zoom In', command=self.zoom_in)
-        self._zoom_in_button.grid(column=0, row=2, sticky=N + E + W)
+        self._zoom_in_button.grid(column=0, row=2,columnspan=3, sticky=N + E + W)
 
         self._zoom_out_button = Button(master=self._control_frame, text='Zoom Out', command=self.zoom_out)
-        self._zoom_out_button.grid(column=0, row=3, sticky=N + E + W)
+        self._zoom_out_button.grid(column=0, row=3,columnspan=3, sticky=N + E + W)
 
+        self._up_button = Button(master=self._control_frame, text='up', command=self.pan_up)
+        self._up_button.grid(column=1, row=4, sticky=N + E + W)
 
-        self._canvas = Canvas(master=self._window, bg='white')
-        self._canvas.grid(column=1, row=0, rowspan=2, sticky=N)
+        self._left_button = Button(master=self._control_frame, text='left', command=self.pan_left)
+        self._left_button.grid(column=0, row=5, sticky=N + E + W)
 
+        self._right_button = Button(master=self._control_frame, text='right', command=self.pan_right)
+        self._right_button.grid(column=2, row=5, sticky=N + E + W)
+
+        self._down_button = Button(master=self._control_frame, text='down', command=self.pan_down)
+        self._down_button.grid(column=1, row=6, sticky=N + E + W)
+
+        self._canvas_frame = Frame(master=self._window)
+        self._canvas_frame.grid(column=1, row=0, rowspan=2, sticky=N)
+        self._canvas = Canvas(master=self._canvas_frame, bg='white')
+        self._canvas.grid(column=0, row=0, sticky=N)
         self._cities_scroll_bar = Scrollbar(master=self._window, orient=VERTICAL)
         self._cities_list_box = Listbox(master=self._window, height=20, width=70, font='TkFixedFont')
         self._cities_scroll_bar.config(command=self._cities_list_box.yview)
@@ -467,6 +480,7 @@ class TravellingSalesman:
         self.draw()
         self.fill_text()
 
+
     def open(self):
         path = open_map_dialogue_box()
         if path:
@@ -490,6 +504,17 @@ class TravellingSalesman:
         y_offset = self._canvas.winfo_height() / 2
         self._canvas.scale("all", x_offset, y_offset, 0.8, 0.8)
 
+    def pan_up(self):
+        self._canvas.yview_scroll(-1,'unit')
+
+    def pan_down(self):
+        self._canvas.yview_scroll(1,'unit')
+
+    def pan_left(self):
+        self._canvas.xview_scroll(-1,'unit')
+
+    def pan_right(self):
+        self._canvas.xview_scroll(1,'unit')
 
     def launch(self):
         self.draw()
