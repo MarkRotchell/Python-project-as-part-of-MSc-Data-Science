@@ -345,7 +345,15 @@ class ItineraryDrawer:
                 yield grid_line_label, converter(grid_line, pixels_per_degree, ref_point)
 
     def _lat_grid_lines_2(self, itinerary):
-        pass
+        spacing = self._grid_line_spacing(itinerary)
+        lat_min, lat_max = itinerary.latitude_min, itinerary.latitude_max
+        if itinerary.is_single_point:
+            lat_min -= self.degrees_to_show_for_single_point / 2
+            lat_max += self.degrees_to_show_for_single_point / 2
+        px_per_deg = self._pixels_per_degree(itinerary)
+        return self._grid_lines(grid_line_spacing=spacing, deg_min=lat_min, deg_max=lat_max,
+                                pixels_per_degree=px_per_deg,converter=self._lat_to_y,
+                                ref_point=lat_max, max_allowed_deg=90)
 
     def _lat_grid_lines(self, grid_line_spacing, lat_min, lat_max, pixels_per_degree):
         return self._grid_lines(grid_line_spacing=grid_line_spacing, deg_min=lat_min, deg_max=lat_max,
