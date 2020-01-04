@@ -2310,6 +2310,51 @@ def test_itinerarydrawer_max_range_as_expected_single_city_non_default_size(road
     drawer = ItineraryDrawer(degrees_to_show_for_single_point=22.3)
     assert drawer._max_range(itinerary) == pytest.approx(22.3)
 
+
+'''
+################################## 
+
+ItineraryDrawer._pixels_per_degree                   
+
+################################## 
+'''
+
+def test_itinerarydrawer_pixels_per_degree_returns_float(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    assert isinstance(drawer._pixels_per_degree(itinerary), float)
+
+def test_itinerarydrawer_pixels_per_degree_as_expected_1(road_map_1):
+    itinerary = Itinerary(road_map_1)
+    drawer = ItineraryDrawer()
+    assert drawer._pixels_per_degree(itinerary) == pytest.approx(14.52139)
+
+def test_itinerarydrawer_pixels_per_degree_as_expected_2(road_map_2):
+    itinerary = Itinerary(road_map_2)
+    drawer = ItineraryDrawer()
+    assert drawer._pixels_per_degree(itinerary) == pytest.approx(2.5594149)
+
+def test_itinerarydrawer_pixels_per_degree_as_expected_3(road_map_3):
+    itinerary = Itinerary(road_map_3)
+    drawer = ItineraryDrawer()
+    assert drawer._pixels_per_degree(itinerary) == pytest.approx(1061.0883)
+
+def test_itinerarydrawer_pixels_per_degree_as_expected_4(road_map_4):
+    itinerary = Itinerary(road_map_4)
+    drawer = ItineraryDrawer()
+    assert drawer._pixels_per_degree(itinerary) == pytest.approx(97.016600)
+
+def test_itinerarydrawer_pixels_per_degree_as_expected_single_city(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    drawer = ItineraryDrawer()
+    assert drawer._pixels_per_degree(itinerary) == pytest.approx(700.0)
+
+def test_itinerarydrawer_pixels_per_degree_as_expected_single_city_non_default_size(road_map_5):
+    itinerary = Itinerary(road_map_5)
+    drawer = ItineraryDrawer(degrees_to_show_for_single_point=22.3)
+    assert drawer._pixels_per_degree(itinerary) == pytest.approx(31.390134)
+
+
 '''
 ################################## 
 
