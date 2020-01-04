@@ -174,7 +174,8 @@ class Itinerary:
 
     @property
     def is_single_point(self):
-        return (len(self.road_map) == 1 or abs(self._lat_max - self._lat_min + self._long_max - self._long_min) < 1e-10)
+        unique_coordinates = set((latitude, longitude) for _, _, latitude, longitude in self.road_map)
+        return len(unique_coordinates) == 1
 
     def reroute(self):
         shuffle(self.road_map)
