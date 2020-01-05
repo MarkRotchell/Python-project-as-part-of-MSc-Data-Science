@@ -3,6 +3,9 @@ from random import randint, shuffle
 from tkinter import filedialog, messagebox
 from tkinter import *
 from itertools import chain, count, tee
+from collections import namedtuple
+
+City = namedtuple('City', ['state', 'name', 'latitude', 'longitude'])
 
 
 def read_cities(file_name):
@@ -22,8 +25,8 @@ def read_cities(file_name):
         raise EOFError()
     lines = []
     while line:
-        line = line.rstrip().split(sep='\t')
-        lines.append((str(line[0]), str(line[1]), float(line[2]), float(line[3])))
+        city = City(*line.rstrip().split(sep='\t'))
+        lines.append((str(city.state), str(city.name), float(city.latitude), float(city.longitude)))
         line = infile.readline()
     infile.close()
     return lines
@@ -44,20 +47,32 @@ def cities_as_string(road_map):
     :return: multi-line string
     """
     result = '     State                City                  Latitude  Longitude\n'
-    for i, (state, city, lat, long) in enumerate(road_map):
-        result += f'{i + 1:<4} {state:<20.20} {city:<20.20}  {lat:>8.2f}   {long:>8.2f}\n'
+    for i, city in enumerate(road_map):
+        city = City(*city)
+        result += f'{i + 1:<4} {city.state:<20.20} {city.name:<20.20}  {city.latitude:>8.2f}   {city.longitude:>8.2f}\n'
     return result
 
 
-def distance(start, destination):
-    """Calculates the Euclidean distance between two cities assuming flat world
+def distance(city0, city1):
+    """Calculates the Euclidean distance between two cities assuming a flat (i.e. cartesian) world
 
-    :param start: a tuple of the form (state, city, latitude, longitude)
-    :param destination: (state, city, latitude, longitude)
-    :return (float): the Euclidean distance between the two cities
+    :param city0: a tuple of the form (state, city, latitude, longitude)
+    :param city1: a tuple of the form (state, city, latitude, longitude)
+    :return : (float) the Euclidean distance between the two cities
     """
+    city0, city1 = City(*city0), City(*city1)
+    return sqrt((city1.latitude - city0.latitude) ** 2 + (city1.longitude - city0.longitude) ** 2)
 
-    return sqrt((destination[2] - start[2]) ** 2 + (destination[3] - start[3]) ** 2)
+
+def pairwise_circuit(iterable):
+    """Yields pairs of adjacent elements from an iterable. The last element is paired with the first
+
+    :param iterable: any iterable
+    :return: iterator yielding pairs of form (x_i, x_i+1) for 0 <= i < n, and final pair (x_n, x_0)
+    """
+    a, b = tee(iterable)
+    b = chain(b, [next(b)])
+    return zip(a, b)
 
 
 def print_map(road_map):
@@ -75,24 +90,14 @@ def map_as_string(road_map):
     :return: multi-line string
     """
     result = 'Estimated optimal cycle:\n\n'
-    for city1, city2 in zip(road_map, road_map[1:] + [road_map[0]]):
-        dist = distance(city1, city2)
-        result += f'{city1[1]:>20.20} --> {city2[1]:<20.20}  {dist:>8.2f}\n'
+    for city0, city1 in pairwise_circuit(iterable=road_map):
+        dist = distance(city0, city1)
+        city0, city1 = City(*city0), City(*city1)
+        result += f'{city0.name:>20.20} --> {city1.name:<20.20}  {dist:>8.2f}\n'
     result += '                                           -------------\n'
     total = compute_total_distance(road_map=road_map)
     result += f'                              Total Distance   {total:8.2f}\n'
     return result
-
-
-def pairwise_circuit(iterable):
-    """Yields pairs of adjacent elements from an iterable. The last element is paired with the first
-
-    :param iterable: any iterable
-    :return: iterator yielding pairs of form (x_i, x_i+1) for 0 <= i < n, and final pair (x_n, x_0)
-    """
-    a, b = tee(iterable)
-    b = chain(b, [next(b)])
-    return zip(a, b)
 
 
 def compute_total_distance(road_map):
@@ -100,7 +105,7 @@ def compute_total_distance(road_map):
     :param road_map: list of four-tuples: [(state, city, latitude, longitude), ...]
     :return: float
     """
-    return sum(distance(start=city1, destination=city2) for city1, city2 in pairwise_circuit(road_map))
+    return sum(distance(city0=city1, city1=city2) for city1, city2 in pairwise_circuit(road_map))
 
 
 def swap_cities(road_map, index1, index2):
@@ -148,10 +153,10 @@ class Itinerary:
     @road_map.setter
     def road_map(self, road_map):
         self._road_map = road_map
-        self._lat_max = max(latitude for _, _, latitude, _ in self.road_map)
-        self._lat_min = min(latitude for _, _, latitude, _ in self.road_map)
-        self._long_max = max(longitude for _, _, _, longitude in self.road_map)
-        self._long_min = min(longitude for _, _, _, longitude in self.road_map)
+        self._lat_max = max(latitude for *_, latitude, _ in self.road_map)
+        self._lat_min = min(latitude for *_, latitude, _ in self.road_map)
+        self._long_max = max(longitude for *_, longitude in self.road_map)
+        self._long_min = min(longitude for *_, longitude in self.road_map)
 
     @property
     def latitude_max(self):
@@ -171,7 +176,7 @@ class Itinerary:
 
     @property
     def is_single_point(self):
-        unique_coordinates = set((latitude, longitude) for _, _, latitude, longitude in self.road_map)
+        unique_coordinates = set((latitude, longitude) for *_, latitude, longitude in self.road_map)
         return len(unique_coordinates) == 1
 
     def reroute(self):
@@ -179,7 +184,7 @@ class Itinerary:
         self.road_map = find_best_cycle(self.road_map)
 
     def coordinates(self):
-        return ((latitude, longitude) for _, _, latitude, longitude in self.road_map)
+        return ((latitude, longitude) for *_, latitude, longitude in self.road_map)
 
     def legs(self):
         return pairwise_circuit(self.coordinates())
@@ -188,7 +193,7 @@ class Itinerary:
 class ItineraryDrawer:
     def __init__(self, drawable_size_px=700, margin_px=50, min_grid_lines=5, grid_line_colour='lightblue1',
                  grid_line_thickness=1, leg_line_colour='red', leg_line_thickness=1, city_radius=2, city_fill='white',
-                 city_line_colour='black', city_line_thickness=1, label_font=('purisa', 7),
+                 city_line_colour='black', city_line_thickness=1, label_font=('purisa', 8),
                  degrees_to_show_for_single_point=1.0):
         self.drawable_size_px = drawable_size_px
         self.margin_px = margin_px
@@ -564,7 +569,6 @@ def yes_no(question):
     return messagebox.askyesno(message=question, icon='question', title='Travelling Salesman')
 
 
-# noinspection PyBroadException
 def main():
     """
     Reads in, and prints out, the city data, then creates the "best" cycle and prints it out.
