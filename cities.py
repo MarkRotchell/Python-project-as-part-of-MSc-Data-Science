@@ -607,7 +607,7 @@ class TravellingSalesman:
 
     def open(self):
         """Ask the user for a new file to display"""
-        path = open_map_dialogue_box()
+        path = _open_map_dialogue_box()
         if path:
             try:
                 road_map = read_cities(path)
@@ -663,7 +663,7 @@ def visualise(road_map):
     TravellingSalesman(road_map).launch()
 
 
-def open_map_dialogue_box():
+def _open_map_dialogue_box():
     """Ask user for a file.
     NB - Use the open_map() function instead if no root window already open
     :return: (str) the path to the file chosen by the user
@@ -672,7 +672,7 @@ def open_map_dialogue_box():
                                       filetypes=(("text files", "*.txt"), ("all files", "*.*")))
 
 
-def rootless_dialogue_box(func):
+def _rootless_dialogue_box(func):
     """
     decorator for dialogue boxes opened without an existing root window - ensures
     root is created, hidden and destroyed.
@@ -695,16 +695,16 @@ def rootless_dialogue_box(func):
     return wrapper
 
 
-@rootless_dialogue_box
-def open_map():
+@_rootless_dialogue_box
+def _open_map():
     """Ask user for a path to a file specifying the route map
     :return: (str) a path to a file specifying a route map
     """
-    return open_map_dialogue_box()
+    return _open_map_dialogue_box()
 
 
-@rootless_dialogue_box
-def yes_no(question):
+@_rootless_dialogue_box
+def _yes_no(question):
     """Ask user a yes/no question
     :param question: (str) the question to ask the user
     :return: (bool) the user's response
@@ -716,21 +716,21 @@ def main():
     """Reads in and prints out a list of cities; finds an optimised route, prints and then visualises it in a GUI"""
     load_a_map = True
     while load_a_map:
-        file_path = open_map()
+        file_path = _open_map()
         if not file_path:
-            load_a_map = yes_no(question='No file specified, would you like to try again?')
+            load_a_map = _yes_no(question='No file specified, would you like to try again?')
         else:
             try:
                 road_map = read_cities(file_name=file_path)
             except Exception:
-                load_a_map = yes_no(question='Unable to Load file given, would you like to select a different file?')
+                load_a_map = _yes_no(question='Unable to Load file given, would you like to select a different file?')
             else:
                 print('The following cities were loaded')
                 print_cities(road_map=road_map)
                 road_map = find_best_cycle(road_map=road_map)
                 print_map(road_map=road_map)
                 visualise(road_map=road_map)
-                load_a_map = yes_no(question='Would you like to open another map?')
+                load_a_map = _yes_no(question='Would you like to open another map?')
 
 
 if __name__ == "__main__":  # keep this in
