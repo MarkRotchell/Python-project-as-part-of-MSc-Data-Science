@@ -551,12 +551,25 @@ class TravellingSalesman:
             button = Button(master=self._control_frame, text=text, command=command)
             button.grid(column=column, row=row, columnspan=columnspan, sticky=N + E + W)
 
+        def add_frame(column, row, rowspan=1):
+            frame = Frame(master=self._window)
+            frame.grid(column=column, row=row, rowspan=rowspan, sticky=N)
+            return frame
+
+        def add_scrollable_list_box(row):
+            scroll_bar = Scrollbar(master=self._window, orient=VERTICAL)
+            list_box = Listbox(master=self._window, height=20, width=70, font='TkFixedFont')
+            scroll_bar.config(command=list_box.yview)
+            list_box.config(yscrollcommand=scroll_bar.set)
+            list_box.grid(column=2, row=row, sticky=N + E + S + W)
+            scroll_bar.grid(column=3, row=row, sticky=N + E + S + W)
+            return list_box
+
         self.itinerary = Itinerary(road_map=road_map)
         self.drawer = ItineraryDrawer()
 
         self._window = Tk()
-        self._control_frame = Frame(master=self._window)
-        self._control_frame.grid(column=0, row=0, sticky=N)
+        self._control_frame = add_frame(column=0, row=0)
 
         add_button(text='Open', command=self.open, column=0, row=0, columnspan=3)
         add_button(text='Re-route', command=self.reroute, column=0, row=1, columnspan=3)
@@ -567,23 +580,12 @@ class TravellingSalesman:
         add_button(text='right', command=self.pan_right, column=2, row=5)
         add_button(text='down', command=self.pan_down, column=1, row=6)
 
-        self._canvas_frame = Frame(master=self._window)
-        self._canvas_frame.grid(column=1, row=0, rowspan=2, sticky=N)
+        self._canvas_frame = add_frame(column=1, row=0, rowspan=2)
         self._canvas = Canvas(master=self._canvas_frame, bg='white')
         self._canvas.grid(column=0, row=0, sticky=N)
-        self._cities_scroll_bar = Scrollbar(master=self._window, orient=VERTICAL)
-        self._cities_list_box = Listbox(master=self._window, height=20, width=70, font='TkFixedFont')
-        self._cities_scroll_bar.config(command=self._cities_list_box.yview)
-        self._cities_list_box.config(yscrollcommand=self._cities_scroll_bar.set)
-        self._cities_list_box.grid(column=2, row=0, sticky=N + E + S + W)
-        self._cities_scroll_bar.grid(column=3, row=0, sticky=N + E + S + W)
 
-        self._route_scroll_bar = Scrollbar(master=self._window, orient=VERTICAL)
-        self._route_list_box = Listbox(master=self._window, height=20, width=70, font='TkFixedFont')
-        self._route_scroll_bar.config(command=self._route_list_box.yview)
-        self._route_list_box.config(yscrollcommand=self._route_scroll_bar.set)
-        self._route_list_box.grid(column=2, row=1, sticky=N + E + S + W)
-        self._route_scroll_bar.grid(column=3, row=1, sticky=N + E + S + W)
+        self._cities_list_box = add_scrollable_list_box(row=0)
+        self._route_list_box = add_scrollable_list_box(row=1)
 
     def draw(self):
         """Draw the itinerary on the canvas"""
@@ -591,14 +593,11 @@ class TravellingSalesman:
 
     def fill_text(self):
         """Fill the list boxes with the cities and the route"""
-        self._cities_list_box.delete(0, END)
-        self._route_list_box.delete(0, END)
-
-        for i, line in enumerate(cities_as_string(self.itinerary.road_map).splitlines()):
-            self._cities_list_box.insert(i, line)
-
-        for i, line in enumerate(map_as_string(self.itinerary.road_map).splitlines()):
-            self._route_list_box.insert(i, line)
+        for string_generator_function, list_box in [(cities_as_string, self._cities_list_box),
+                                                    (map_as_string, self._route_list_box)]:
+            list_box.delete(0, END)
+            for i, line in enumerate(string_generator_function(self.itinerary.road_map).splitlines()):
+                list_box.insert(i, line)
 
     def reroute(self):
         """Calculate a new route and display it"""
