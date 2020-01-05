@@ -497,6 +497,13 @@ class ItineraryDrawer:
         canvas.create_text(x0, y0, text=label, anchor=anchor, font=self.label_font)
 
     def _draw_city(self, canvas, x, y, label):
+        """Draw a city on the canvas at the given coordinates and label it
+
+        :param canvas: (Canvas) the canvas to draw the city on
+        :param x: the x coordinate to center the city at
+        :param y: the y coordinate to center the city at
+        :param label: (str) the text to label the city with
+        """
         canvas.create_oval(x - self.city_radius, y - self.city_radius,
                            x + self.city_radius, y + self.city_radius,
                            fill=self.city_fill, outline=self.city_line_colour,
@@ -504,6 +511,10 @@ class ItineraryDrawer:
         canvas.create_text(x, y - self._font_offset, text=label, anchor=S, font=self.label_font)
 
     def draw(self, itinerary, canvas):
+        """Draw an Itinerary on a Canvas
+        :param itinerary: (Itinerary) the itinerary to draw
+        :param canvas: (Canvas) the canvas to draw on
+        """
         canvas.update()
         canvas.delete('all')
 
@@ -529,7 +540,17 @@ class ItineraryDrawer:
 
 
 class TravellingSalesman:
+    """GUI for displaying the travelling salesman problem"""
+
     def __init__(self, road_map):
+        """Constructor
+        :param road_map: list of four-tuples: [(state, city, latitude, longitude), ...]
+        """
+
+        def add_button(text, command, column, row, columnspan=1):
+            button = Button(master=self._control_frame, text=text, command=command)
+            button.grid(column=column, row=row, columnspan=columnspan, sticky=N + E + W)
+
         self.itinerary = Itinerary(road_map=road_map)
         self.drawer = ItineraryDrawer()
 
@@ -537,28 +558,14 @@ class TravellingSalesman:
         self._control_frame = Frame(master=self._window)
         self._control_frame.grid(column=0, row=0, sticky=N)
 
-        self._open_button = Button(master=self._control_frame, text='Open', command=self.open)
-        self._open_button.grid(column=0, row=0, columnspan=3, sticky=N + E + W)
-        self._re_route_button = Button(master=self._control_frame, text='Re-route', command=self.reroute)
-        self._re_route_button.grid(column=0, row=1, columnspan=3, sticky=N + E + W)
-
-        self._zoom_in_button = Button(master=self._control_frame, text='Zoom In', command=self.zoom_in)
-        self._zoom_in_button.grid(column=0, row=2, columnspan=3, sticky=N + E + W)
-
-        self._zoom_out_button = Button(master=self._control_frame, text='Zoom Out', command=self.zoom_out)
-        self._zoom_out_button.grid(column=0, row=3, columnspan=3, sticky=N + E + W)
-
-        self._up_button = Button(master=self._control_frame, text='up', command=self.pan_up)
-        self._up_button.grid(column=1, row=4, sticky=N + E + W)
-
-        self._left_button = Button(master=self._control_frame, text='left', command=self.pan_left)
-        self._left_button.grid(column=0, row=5, sticky=N + E + W)
-
-        self._right_button = Button(master=self._control_frame, text='right', command=self.pan_right)
-        self._right_button.grid(column=2, row=5, sticky=N + E + W)
-
-        self._down_button = Button(master=self._control_frame, text='down', command=self.pan_down)
-        self._down_button.grid(column=1, row=6, sticky=N + E + W)
+        add_button(text='Open', command=self.open, column=0, row=0, columnspan=3)
+        add_button(text='Re-route', command=self.reroute, column=0, row=1, columnspan=3)
+        add_button(text='Zoom In', command=self.zoom_in, column=0, row=2, columnspan=3)
+        add_button(text='Zoom Out', command=self.zoom_out, column=0, row=3, columnspan=3)
+        add_button(text='up', command=self.pan_up, column=1, row=4)
+        add_button(text='left', command=self.pan_left, column=0, row=5)
+        add_button(text='right', command=self.pan_right, column=2, row=5)
+        add_button(text='down', command=self.pan_down, column=1, row=6)
 
         self._canvas_frame = Frame(master=self._window)
         self._canvas_frame.grid(column=1, row=0, rowspan=2, sticky=N)
@@ -579,9 +586,11 @@ class TravellingSalesman:
         self._route_scroll_bar.grid(column=3, row=1, sticky=N + E + S + W)
 
     def draw(self):
+        """Draw the itinerary on the canvas"""
         self.drawer.draw(self.itinerary, self._canvas)
 
     def fill_text(self):
+        """Fill the list boxes with the cities and the route"""
         self._cities_list_box.delete(0, END)
         self._route_list_box.delete(0, END)
 
@@ -592,11 +601,13 @@ class TravellingSalesman:
             self._route_list_box.insert(i, line)
 
     def reroute(self):
+        """Calculate a new route and display it"""
         self.itinerary.reroute()
         self.draw()
         self.fill_text()
 
     def open(self):
+        """Ask the user for a new file to display"""
         path = open_map_dialogue_box()
         if path:
             try:
@@ -610,28 +621,35 @@ class TravellingSalesman:
                 self.fill_text()
 
     def zoom_in(self):
+        """Zoom in on the canvas"""
         x_offset = self._canvas.winfo_width() / 2
         y_offset = self._canvas.winfo_height() / 2
         self._canvas.scale("all", x_offset, y_offset, 1.25, 1.25)
 
     def zoom_out(self):
+        """Zoom out on the canvas"""
         x_offset = self._canvas.winfo_width() / 2
         y_offset = self._canvas.winfo_height() / 2
         self._canvas.scale("all", x_offset, y_offset, 0.8, 0.8)
 
     def pan_up(self):
+        """Scroll UP on the canvas"""
         self._canvas.yview_scroll(-1, 'unit')
 
     def pan_down(self):
+        """Scroll DOWN on the canvas"""
         self._canvas.yview_scroll(1, 'unit')
 
     def pan_left(self):
+        """Scroll LEFT on the canvas"""
         self._canvas.xview_scroll(-1, 'unit')
 
     def pan_right(self):
+        """ Scroll RIGHT on the canvas"""
         self._canvas.xview_scroll(1, 'unit')
 
     def launch(self):
+        """ Launch the application window and display the map"""
         self.draw()
         self.fill_text()
         self._window.attributes('-topmost', 1)
@@ -647,8 +665,9 @@ def visualise(road_map):
 
 
 def open_map_dialogue_box():
-    """
-    Ask user for a file. Use with the dialouge_box context manager when no root window already
+    """Ask user for a file.
+    NB - Use the open_map() function instead if no root window already open
+    :return: (str) the path to the file chosen by the user
     """
     return filedialog.askopenfilename(initialdir="/", title="Select Route Map File",
                                       filetypes=(("text files", "*.txt"), ("all files", "*.*")))
@@ -658,9 +677,16 @@ def rootless_dialogue_box(func):
     """
     decorator for dialogue boxes opened without an existing root window - ensures
     root is created, hidden and destroyed.
+    :param func: (function) a function which calls a tkinter dialogue box
+    :return: (function (decorator)) a decorator for the dialouge box function
     """
 
     def wrapper(*args, **kwargs):
+        """Manage the creation, hiding and destruction of the tkinter root window when opening a dialogue box
+        :param args: positional arguments to pass on
+        :param kwargs: keyword arguments to pass on
+        :return: the result of the function being wrapped
+        """
         root = Tk()
         root.withdraw()
         result = func(*args, **kwargs)
@@ -672,35 +698,40 @@ def rootless_dialogue_box(func):
 
 @rootless_dialogue_box
 def open_map():
+    """Ask user for a path to a file specifying the route map
+    :return: (str) a path to a file specifying a route map
+    """
     return open_map_dialogue_box()
 
 
 @rootless_dialogue_box
 def yes_no(question):
+    """Ask user a yes/no question
+    :param question: (str) the question to ask the user
+    :return: (bool) the user's response
+    """
     return messagebox.askyesno(message=question, icon='question', title='Travelling Salesman')
 
 
 def main():
-    """
-    Reads in, and prints out, the city data, then creates the "best" cycle and prints it out.
-    """
-    load_maps = True
-    while load_maps:
+    """Reads in and prints out a list of cities; finds an optimised route, prints and then visualises it in a GUI"""
+    load_a_map = True
+    while load_a_map:
         file_path = open_map()
         if not file_path:
-            load_maps = yes_no(question='No file specified, would you like to try again?')
+            load_a_map = yes_no(question='No file specified, would you like to try again?')
         else:
             try:
                 road_map = read_cities(file_name=file_path)
             except Exception:
-                load_maps = yes_no(question='Unable to Load file given, would you like to select a different file?')
+                load_a_map = yes_no(question='Unable to Load file given, would you like to select a different file?')
             else:
                 print('The following cities were loaded')
                 print_cities(road_map=road_map)
                 road_map = find_best_cycle(road_map=road_map)
                 print_map(road_map=road_map)
                 visualise(road_map=road_map)
-                load_maps = yes_no(question='Would you like to open another map?')
+                load_a_map = yes_no(question='Would you like to open another map?')
 
 
 if __name__ == "__main__":  # keep this in
