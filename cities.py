@@ -520,7 +520,6 @@ class ItineraryDrawer:
 
         # resize canvas
         canvas_width_px, canvas_height_px = self._canvas_dimensions(itinerary)
-        canvas.config(width=0, height=0)
         canvas.config(width=canvas_width_px, height=canvas_height_px)
 
         # draw gridlines
@@ -569,6 +568,7 @@ class TravellingSalesman:
         self.drawer = ItineraryDrawer()
 
         self._window = Tk()
+        self._window.title('Travelling Salesman')
         self._control_frame = add_frame(column=0, row=0)
 
         add_button(text='Open', command=self.open, column=0, row=0, columnspan=3)
