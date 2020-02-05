@@ -1,3 +1,9 @@
+# Python Project - Part of MSc Data Science
+
+This repo contains the Python project I completed as part of my studies towards a MSc Data Science.
+The requirements are set out below exactly as they were by the universtity.
+The main file is cities.py.
+
 # Traveling Salesman
 
 This coursework considers a simplified version of the travelling salesman problem.
