@@ -1,6 +1,6 @@
 # Python Project - Part of MSc Data Science
 
-This repo contains the Python project I completed as part of my studies towards a MSc Data Science. For this work I received full marks - the full feedback can be found in MARK ROTCHELL.pdf. The requirements are set out below exactly as they were by the universtity. The main file is cities.py.
+This repo contains the Python project I completed as part of my studies towards a MSc Data Science. My marks and feedback can be found in MARK ROTCHELL.pdf. The requirements are set out below exactly as they were by the universtity. The main file is cities.py.
 
 # Traveling Salesman
 
